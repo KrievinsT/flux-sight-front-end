@@ -124,8 +124,8 @@ export default function Login() {
                 />
               </div>
               <div className="flex items-center justify-start">
-                <span className=" cursor-pointer text-sm text-gray-700 mb-5 font-medium">
-                  Forgot your password?
+                <span className=" cursor-pointer text-sm text-gray-700 hover:text-gray-800 mb-5 font-medium">
+                <Link to="/forgotpassword">Forgot your password? </Link>  
                 </span>
               </div>
               <div className="flex items-center justify-between">
