@@ -103,9 +103,18 @@ export default function ForgotPassword() {
           'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("./images/register-background.jpg")',
       }}
     >
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg w-[80%] px-4 py-10 sticky top-9 inset-x-0 mx-auto z-50">
-        {/* Header content */}
-      </header>
+        <header className="flex justify-center items-center bg-white bg-opacity-90 shadow-md rounded-xl w-[80%] px-4 py-5 sticky top-9 inset-x-0 mx-auto z-50">
+        
+        <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
+            <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>  
+        <img src="./images/profile.gif" alt="Profile icon" className="w-6 h-6 mr-1" />
+            <Link to="/profile" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Profile </Link>  
+        <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1 " />
+            <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Sign Up </Link>  
+        <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1" />
+            <Link to="/login" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Log In</Link>  
+    
+       </header>
 
       <main className="mt-20 flex items-center justify-center">
         <div className="flex justify-center w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl p-6 mx-auto">

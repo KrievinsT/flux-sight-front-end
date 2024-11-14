@@ -91,9 +91,17 @@ export default function Register() {
       }}
     >
       {/* Header */}
-      <header className="flex justify-between items-center bg-white shadow-md rounded-lg w-[80%] px-4 py-10 sticky top-9 inset-x-0 mx-auto z-50">
-        {/* Header content */}
+      <header className="flex justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-4 py-5 sticky top-9 inset-x-0 mx-auto z-50">
         
+           <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
+               <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>  
+           <img src="./images/profile.gif" alt="Profile icon" className="w-6 h-6 mr-1" />
+               <Link to="/profile" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Profile </Link>  
+           <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1 " />
+               <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Sign Up </Link>  
+           <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1" />
+               <Link to="/login" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Log In</Link>  
+       
       </header>
 
       {/* Main Content */}
@@ -104,7 +112,7 @@ export default function Register() {
               className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
               style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
             >
-              <h2 className="text-xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
                 Sign up
               </h2>
               <div className="flex justify-center mt-6 mb-3 space-x-4">
