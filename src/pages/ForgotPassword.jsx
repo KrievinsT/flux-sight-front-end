@@ -5,16 +5,16 @@ import '../index.css';
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
-    const [isSubmitted, setIsSubmitted] = useState(false); // State to control form submission
-    const [code, setCode] = useState(['', '', '', '', '']); // State to store the entered code
+    const [isSubmitted, setIsSubmitted] = useState(false); 
+    const [code, setCode] = useState(['', '', '', '', '']); 
     const [codeError, setCodeError] = useState('');
-    const [isCodeValid, setIsCodeValid] = useState(false); // State to track if the code is valid
+    const [isCodeValid, setIsCodeValid] = useState(false); 
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false); // State for success message
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
     const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -40,7 +40,7 @@ export default function ForgotPassword() {
       setCodeError('Please enter the complete code');
       return false;
     }
-    setIsCodeValid(true); // If code is complete, it's considered valid
+    setIsCodeValid(true); 
     return true;
   };
 
