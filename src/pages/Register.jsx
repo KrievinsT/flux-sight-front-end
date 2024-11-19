@@ -176,65 +176,65 @@ export default function Register() {
                 />
               </div>
               <div className="mb-4 flex gap-4 items-center">
-  {/* Custom Dropdown */}
-  <div className="relative w-1/3">
-    <button
-      className="flex items-center justify-between w-full px-3 py-2 text-gray-700 bg-white border rounded shadow focus:outline-none hover:border-gray-400"
-      onClick={() => setDropdownOpen(!dropdownOpen)}
-    >
-      <span className="flex items-center">
-        {selectedCountry?.flag && (
-          <img
-            src={selectedCountry.flag}
-            alt={selectedCountry.name}
-            className="w-5 h-5 mr-2 rounded"
-          />
-        )}
-        {selectedCountry?.code} 
-      </span>
-      <span className="text-gray-600">&#9660;</span> 
-    </button>
-    {dropdownOpen && countries?.length > 0 && (
-      <div className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
-        <ul>
-          {/* Sort countries alphabetically by name */}
-          {countries
-            ?.sort((a, b) => a.name.localeCompare(b.name)) 
-            .map((country) => (
-              <li
-                key={country.code}
-                className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  setCountryCode(country.code);
-                  setSelectedCountry(country);
-                  setDropdownOpen(false);
-                }}
+            {/* Custom Dropdown */}
+            <div className="relative w-1/3">
+              <button
+                className="flex items-center justify-between w-full px-3 py-2 text-gray-700 bg-white border rounded shadow focus:outline-none hover:border-gray-400"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <span className="flex items-center">
-                  {country?.flag && (
+                  {selectedCountry?.flag && (
                     <img
-                      src={country.flag}
-                      alt={country.name}
+                      src={selectedCountry.flag}
+                      alt={selectedCountry.name}
                       className="w-5 h-5 mr-2 rounded"
                     />
                   )}
-                  {country.name}
+                  {selectedCountry?.code} 
                 </span>
-              </li>
-            ))}
-        </ul>
-      </div>
-    )}
-  </div>
-  <input
-    className="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
-    id="phone"
-    type="tel"
-    placeholder="Phone"
-    value={phone}
-    onChange={(e) => setPhone(e.target.value)}
-  />
-</div>
+                <span className="text-gray-600">&#9660;</span> 
+              </button>
+              {dropdownOpen && countries?.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
+                  <ul>
+                    {/* Sort countries alphabetically by name */}
+                    {countries
+                      ?.sort((a, b) => a.name.localeCompare(b.name)) 
+                      .map((country) => (
+                        <li
+                          key={country.code}
+                          className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setCountryCode(country.code);
+                            setSelectedCountry(country);
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          <span className="flex items-center">
+                            {country?.flag && (
+                              <img
+                                src={country.flag}
+                                alt={country.name}
+                                className="w-5 h-5 mr-2 rounded"
+                              />
+                            )}
+                            {country.name}
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <input
+              className="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
+              id="phone"
+              type="tel"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
 
               <div className="mb-4">
                 <input
