@@ -4,7 +4,7 @@ import { FaClock } from "react-icons/fa";
 import { CSSTransition } from "react-transition-group";
 
 const NotificationDropdown = () => {
-  // State to manage dropdown visibility and notifications
+
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -30,16 +30,16 @@ const NotificationDropdown = () => {
     },
   ]);
 
-  // Calculate unread notifications count
+
   const unreadCount = notifications.filter((notification) => !notification.read).length;
 
   const dropdownRef = useRef(null);
 
-  // Toggle dropdown visibility and mark notifications as read
+
   const toggleDropdown = () => {
     setIsOpen((prevIsOpen) => {
       if (!prevIsOpen) {
-        // Mark all notifications as read when dropdown is opened
+  
         setNotifications((prevNotifications) =>
           prevNotifications.map((notif) => ({ ...notif, read: true }))
         );
@@ -48,18 +48,18 @@ const NotificationDropdown = () => {
     });
   };
 
-  // Close dropdown when clicking outside
+ 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
     }
   };
 
-  // Add event listener when component mounts
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup event listener on unmount
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -67,13 +67,13 @@ const NotificationDropdown = () => {
 
   return (
     <div className="relative">
-      {/* Notification Icon with unread count badge */}
+     
       <div
         className="cursor-pointer text-gray-600 relative"
         onClick={toggleDropdown}
       >
         <IoMdNotificationsOutline className="w-5 h-5" />
-        {/* Show unread count badge if there are unread notifications */}
+      
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 flex items-center justify-center w-3 h-3 text-[10px] font-semibold text-white bg-red-500 rounded-full">
             {unreadCount}
@@ -81,7 +81,6 @@ const NotificationDropdown = () => {
         )}
       </div>
 
-      {/* Dropdown Menu with fade-in/fade-out animation */}
       <CSSTransition
         in={isOpen}
         timeout={300}
@@ -98,7 +97,7 @@ const NotificationDropdown = () => {
                 href="#"
                 className="dropdown-item flex items-center p-2 rounded-md hover:bg-gray-100"
                 onClick={() => {
-                  // You can also handle individual read here if you need additional actions
+          
                 }}
               >
                 <div className="flex items-center">
