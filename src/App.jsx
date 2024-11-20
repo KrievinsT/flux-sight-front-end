@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login'; // Your login page component
 import Register from './pages/Register'; 
 import ForgotPassword from './pages/ForgotPassword';// Your register page component
-import Dashboard from './pages/Dashboard'; 
+import Dashboard from './pages/Dashboard';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.withCredentials = true;
 
 import axios from 'axios';
 
