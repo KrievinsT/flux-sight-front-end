@@ -17,8 +17,23 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaRegCreditCard } from "react-icons/fa";
 import { BsFillKeyFill } from "react-icons/bs";
 import { GiMoneyStack } from "react-icons/gi";
+import { IoSpeedometerOutline } from "react-icons/io5";
+import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
+import { SiInstatus } from "react-icons/si";
 
 import { Link, useNavigate } from 'react-router-dom';
+
+
+const seoPerformance = [
+  { label: 'Good', color: 'green', icon: <FaCheckCircle />, description: 'Optimized SEO for all key pages.' },
+  { label: 'Needs Improvement', color: 'orange', icon: <FaExclamationTriangle />, description: 'Some elements are missing metadata.' },
+  { label: 'Poor', color: 'red', icon: <FaTimesCircle />, description: 'Critical SEO issues detected.' },
+];
+
+// Replace the `status` dynamically with your data
+const status = 'Poor'; // Example status from backend
+const currentPerformance = seoPerformance.find((perf) => perf.label === status);
+
 
 export default function Dashboard  () {
 
@@ -159,19 +174,25 @@ export default function Dashboard  () {
           <span className="mr-2">
             <MdInsertLink className="w-5 h-5 text-gray-600" />
           </span>
-          RTL
+          Websites
         </li>
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <IoMdNotificationsOutline className="w-5 h-5 text-gray-600" />
           </span>
-          Notifications
+          Alerts
         </li>
       </ul>
       <div className="font-semibold text-[15px] text-gray-500 mt-8 pl-6">
         ACCOUNT PAGES
       </div>
       <ul className="space-y-2">
+      <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
+          <span className="mr-2">
+          <IoSettingsOutline className="w-5 h-5  text-gray-600"/> 
+          </span>
+          Settings
+        </li>
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <FaRegUser className="w-5 h-5 text-gray-600" />
@@ -193,7 +214,7 @@ export default function Dashboard  () {
       </ul>
 
       {/* Buttons */}
-      <div className="pt-[4.5rem] flex flex-col space-y-6">
+      <div className="pt-[2rem] flex flex-col space-y-6">
         <button className="p-1.5 border border-gray-400 rounded-md hover:bg-gray-200">
           Documentation
         </button>
@@ -214,7 +235,9 @@ export default function Dashboard  () {
         <header className="flex items-center justify-between mb-8">
         <div className=" pl-3 flex items-center text-[16px] font-small text-gray-600">
             Pages /
-            <h1 className="text-[16px] font-small text-black ml-1" >Dashboard</h1> 
+            <Link to="/dashboard">
+            <h1 className="text-[16px] cursor-pointer font-small text-black ml-1" >Dashboard</h1> 
+            </Link>
         </div>
           
           <div className="flex items-center space-x-4">
@@ -246,17 +269,34 @@ export default function Dashboard  () {
         {/* Dashboard Cards */}
         <div className="grid grid-cols-4 gap-6 mb-6">
         <div className="bg-white border border-gray-200 rounded-lg p-4">
+
           <div className="flex justify-between items-center">
             <div>
-              <div className="text-gray-600">Page speed</div>
-              <div className="text-2xl font-bold">$53k</div>
+              <div className="text-gray-600">Page Speed</div>
+              <div className="text-2xl font-bold">53ms</div>
+              <div className="text-sm text-gray-500">Load Time</div>
             </div>
-            <div className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
-                <FaRegUser className="w-5 h-5 text-white" />
+            <div className="w-[50px] h-[50px] mb-4 rounded-lg flex justify-center items-center" 
+                style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
+                  <IoSpeedometerOutline className="w-5 h-5 text-white" />
+              
             </div>
           </div>
-          <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
-          <div className="text-green-500 mt-2">+55% than last week</div>
+          <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2"></div>
+          {/* Visualization Section */}
+          <div className="mt-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Optimization Score</span>
+              <span className="font-bold text-green-500">92%</span> {/* values from your backend or APIs */}
+            </div>
+            <div className="relative h-2 w-full bg-gray-200 rounded-lg overflow-hidden">
+              <div
+                className="absolute top-0 left-0 h-full bg-green-500"
+                style={{ width: '92%' }} //  values from your backend or APIs 
+              ></div>
+            </div>
+            <div className="text-green-500 mt-4 ">+55% improvement compared to last week</div> {/* values from your backend or APIs */}
+          </div>
         </div>
           <div className="bg-white border border-gray-200  rounded-lg p-4">
           <div className="flex justify-between items-center">
@@ -271,32 +311,61 @@ export default function Dashboard  () {
             <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
             <div className="text-green-500  mt-2">+3% than last month</div>
           </div>
-          <div className="bg-white border border-gray-200  rounded-lg p-4">
-          <div className="flex justify-between items-center">
-          <div>
-            <div className="text-gray-600">Uptime status</div>
-            <div className="text-2xl font-bold">3,462</div>
-            </div>
-            <div className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
-               <FaRegUser className="w-5 h-5 text-white" />
-            </div>
-            </div>
-            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
-            <div className="text-red-500  mt-2">-2% than yesterday</div>
-          </div>
-          <div className="bg-white border border-gray-200  rounded-lg p-4">
-          <div className="flex justify-between items-center">
-          <div>
-            <div className="text-gray-600">Sales</div>
-            <div className="text-2xl font-bold">$103,430</div>
-            </div>
-            <div className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
-                <FaRegUser className="w-5 h-5 text-white" />
-            </div>
-            </div>
-            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
-            <div className="text-green-500  mt-2">+5% than yesterday</div>
-          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+  
+    <div className="flex justify-between items-center">
+      <div>
+        <div className="text-gray-600 text-sm">SEO Performance</div>
+        <div className="text-xl font-bold text-gray-800">{currentPerformance.label}</div>
+      </div>
+      <div
+        className={`w-[50px] h-[50px] flex justify-center items-center rounded-full`}
+        style={{ backgroundColor: currentPerformance.color }}
+      >
+        <div className="text-white text-2xl" >{currentPerformance.icon}</div>
+      </div>
+    </div>
+
+    
+    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2"></div>
+
+    <div className="mt-4 text-sm text-gray-600"  style={{ color: currentPerformance.color }}>{currentPerformance.description}</div>
+  </div>
+
+  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-md">
+  <div className="flex justify-between items-center">
+    <div>
+      <div className="text-2xl font-bold text-gray-800">Uptime Status</div>
+    </div>
+    <div
+      className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center"
+      style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+    >
+      <SiInstatus  className="w-5 h-5 text-white" />
+    </div>
+  </div>
+
+  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2"></div>
+  {/* Performance Section */}
+  <div className="mt-4">
+    <div className="flex justify-between items-center">
+      <span className="text-gray-600">Daily Uptime</span>
+      <span className="font-bold text-green-500">99%</span>
+    </div>
+    <div className="relative h-2 w-full bg-gray-200 rounded-lg overflow-hidden mt-1">
+      <div
+        className="absolute top-0 left-0 h-full bg-green-500"
+        style={{ width: '99%' }}
+      ></div>
+    </div>
+    <div className="text-green-500 mt-2">+5% than yesterday</div>
+  </div>
+
+  <div className="mt-4 text-sm text-gray-600">
+    The system maintained excellent uptime performance.
+  </div>
+</div>
         </div>
 
         {/* Graphs */}
