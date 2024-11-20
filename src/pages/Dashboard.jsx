@@ -21,6 +21,8 @@ import { IoSpeedometerOutline } from "react-icons/io5";
 import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
 import { SiInstatus } from "react-icons/si";
 
+import NotificationDropdown from "../modal/NotificationDropdown";
+
 import { Link, useNavigate } from 'react-router-dom';
 
 
@@ -258,7 +260,8 @@ export default function Dashboard  () {
                  <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
                  </Link>
 
-                <IoMdNotificationsOutline className="w-5 h-5 cursor-pointer text-gray-600"/>
+                 <NotificationDropdown />
+                
                 <Link to="/register">
                 <FaRegUserCircle  className="w-5 h-5 cursor-pointer text-gray-600 " />
                 </Link>
@@ -330,7 +333,7 @@ export default function Dashboard  () {
     
     <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2"></div>
 
-    <div className="mt-4 text-sm text-gray-600"  style={{ color: currentPerformance.color }}>{currentPerformance.description}</div>
+    <div className="mt-4"  style={{ color: currentPerformance.color }}>{currentPerformance.description}</div>
   </div>
 
   <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-md">
