@@ -351,7 +351,7 @@ export default function Dashboard  () {
 
  <div className="card-body px-0 pb-1">
   <div
-    className="max-h-[350px] overflow-y-auto 
+    className="max-h-[340px] overflow-y-auto 
       scrollbar-thin 
       scrollbar-thumb-gray-400  
       "
