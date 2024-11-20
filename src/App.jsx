@@ -5,6 +5,11 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';// Your register page component
 import Dashboard from './pages/Dashboard'; 
 
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.withCredentials = true;
+
 function App() {
   return (
     <Router>
