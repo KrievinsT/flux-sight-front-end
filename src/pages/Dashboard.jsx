@@ -20,8 +20,13 @@ import { GiMoneyStack } from "react-icons/gi";
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
 import { SiInstatus } from "react-icons/si";
+import { FaRankingStar } from "react-icons/fa6";
 
 import NotificationDropdown from "../modal/NotificationDropdown";
+import WebsiteViewsCard from "../modal/WebsiteViewsCard";
+import DailySalesCard from "../modal/DailySalesCard";
+import TrafficByCountryCard from "../modal/TrafficByCountryCard";
+
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -32,7 +37,7 @@ const seoPerformance = [
   { label: 'Poor', color: 'red', icon: <FaTimesCircle />, description: 'Critical SEO issues detected.' },
 ];
 
-// Replace the `status` dynamically with your data
+
 const status = 'Poor'; // Example status from backend
 const currentPerformance = seoPerformance.find((perf) => perf.label === status);
 
@@ -166,12 +171,7 @@ export default function Dashboard  () {
           </span>
           Billing
         </li>
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <PiVirtualReality className="w-5 h-5 text-gray-600" />
-          </span>
-          Virtual Reality
-        </li>
+        
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <MdInsertLink className="w-5 h-5 text-gray-600" />
@@ -214,21 +214,7 @@ export default function Dashboard  () {
           Sign Up
         </li>
       </ul>
-
-      {/* Buttons */}
-      <div className="pt-[2rem] flex flex-col space-y-6">
-        <button className="p-1.5 border border-gray-400 rounded-md hover:bg-gray-200">
-          Documentation
-        </button>
-        <button
-          className="p-1.5 border border-gray-400 rounded-md text-white font-medium hover:shadow-md"
-          style={{
-            backgroundImage: "linear-gradient(195deg, #42424a, #191919)",
-          }}
-        >
-          Upgrade to pro
-        </button>
-      </div>
+     
     </nav>
   </aside>
 
@@ -248,14 +234,19 @@ export default function Dashboard  () {
                 placeholder="Type here..."
                 className="border border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700   focus:ring-1 focus:ring-pink-700 shadow-sm"
                 />
-            <button className=" border border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md">Online Builder</button>
-            <div className="flex items-center">
-            <span className="flex items-center bg-[#ebf0f4] border border-gray-300 pl-[5px] pt-[5px]  pb-[5px] text-sm pr-[5px] rounded-s-[5px]">
-                <FaRegStar className="mr-1" /> Star
-           </span>
-                <span className="flex items-center bg-white border border-gray-300 pl-[5px] pt-[5px] pb-[5px]  text-sm pr-[5px] rounded-r-[5px]">
-                    11,044</span>
-                </div>
+
+<Link to="/dashboard/addwebsite">
+                 <button onClick={addRow} className="border border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md">
+                 Add website
+                 </button>
+                 </Link>
+        <button
+       
+          className="border border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
+        >
+         Check Insights
+        </button>
+            
                 <Link to="/settings">
                  <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
                  </Link>
@@ -268,7 +259,7 @@ export default function Dashboard  () {
           </div>
         </header>
       <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Dashboard </div>
-       <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Check the sales, value and bounce rate by country. </div>
+       <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Check the websites, speed, users and much more. </div>
         {/* Dashboard Cards */}
         <div className="grid grid-cols-4 gap-6 mb-6">
         <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -304,15 +295,16 @@ export default function Dashboard  () {
           <div className="bg-white border border-gray-200  rounded-lg p-4">
           <div className="flex justify-between items-center">
           <div>
-            <div className="text-gray-600">Today's Users</div>
-            <div className="text-2xl font-bold">2300</div>
+            <div className="text-gray-600">Global Rank</div>
+            <div className="text-2xl font-bold">#20,465</div>
             </div>
             <div className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
-               <FaRegUser className="w-5 h-5 text-white" />
+            <FaRankingStar className="w-5 h-5 text-white "/>
+   
             </div>
             </div>
             <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
-            <div className="text-green-500  mt-2">+3% than last month</div>
+            <div className="text-gray-600  mt-2">Traffic rank of site, compared to all other sites in the world</div>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -323,7 +315,7 @@ export default function Dashboard  () {
         <div className="text-xl font-bold text-gray-800">{currentPerformance.label}</div>
       </div>
       <div
-        className={`w-[50px] h-[50px] flex justify-center items-center rounded-full`}
+        className={`w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center`}
         style={{ backgroundColor: currentPerformance.color }}
       >
         <div className="text-white text-2xl" >{currentPerformance.icon}</div>
@@ -336,7 +328,7 @@ export default function Dashboard  () {
     <div className="mt-4"  style={{ color: currentPerformance.color }}>{currentPerformance.description}</div>
   </div>
 
-  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-md">
+  <div className="bg-white border border-gray-200 rounded-lg p-4 ">
   <div className="flex justify-between items-center">
     <div>
       <div className="text-2xl font-bold text-gray-800">Uptime Status</div>
@@ -349,7 +341,7 @@ export default function Dashboard  () {
     </div>
   </div>
 
-  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2"></div>
+  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 "></div>
   {/* Performance Section */}
   <div className="mt-4">
     <div className="flex justify-between items-center">
@@ -373,53 +365,23 @@ export default function Dashboard  () {
 
         {/* Graphs */}
         <div className="grid grid-cols-3 gap-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h2 className="font-semibold">Website Views</h2>
-            <p className="text-gray-500 text-sm">Last Campaign Performance</p>
-            <div className="mt-4">
-              <div className="h-[13rem] bg-gray-200 rounded-md flex items-center justify-center">
-                Graph here
-              </div>
-              <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-4 "></div>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200  rounded-lg p-4">
-            <h2 className="font-semibold">Daily Sales</h2>
-            <p className="text-gray-500 text-sm">(+15%) increase in today sales</p>
-            <div className="mt-4">
-              <div className="h-[13rem] bg-gray-200 rounded-md flex items-center justify-center">
-                Graph here
-              </div>
-              <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-4 "></div>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200  rounded-lg p-4">
-            <h2 className="font-semibold">Completed Tasks</h2>
-            <p className="text-gray-500 text-sm">Last Campaign Performance</p>
-            <div className="mt-4">
-              <div className="h-[13rem] bg-gray-200 rounded-md flex items-center justify-center">
-                Graph here
-              </div>
-              <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-4 "></div>
-            </div>
-          </div>
+            <WebsiteViewsCard />
+
+            <DailySalesCard />
+       
+            <TrafficByCountryCard />
+         
         </div>
         <div className="flex max-w-[100%] mx-auto mt-6 gap-6">
         <div className="w-[66%] min-h-[450px] bg-white border border-gray-200 rounded-lg p-0">
         <div className="flex justify-between items-center px-5 py-5 pb-0">
-        <h2 className="text-[18px] font-semibold">Projects</h2>
-        <button
-          onClick={addRow}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-        >
-          Add new project
-        </button>
+        <h2 className="text-[18px] font-semibold">Websites</h2>
+       
       </div>
   <div className="text-gray-600 pt-2 pb-2">
     <span className="font-bold text-gray-600 pl-5">30 done</span>
     <span className="ml-1 text-gray-500">this month</span>
   </div>
-  
 
  <div className="card-body px-0 pb-1">
   <div

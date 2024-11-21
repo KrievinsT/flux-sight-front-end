@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login'; // Your login page component
+import Login from './pages/Login';
 import Register from './pages/Register'; 
-import ForgotPassword from './pages/ForgotPassword';// Your register page component
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
+import AddWebsite from './pages/AddWebsite';
 
 import axios from 'axios';
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/addwebsite" element={<AddWebsite />} />
       </Routes>
     </Router>
   );
