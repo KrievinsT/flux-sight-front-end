@@ -5,6 +5,9 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import AddWebsite from './pages/AddWebsite';
+import EditWebsite from './pages/EditWebsite';
+import Profile from './pages/Profile';
+import Alerts from './pages/Alerts';
 
 import axios from 'axios';
 
@@ -22,6 +25,9 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/addwebsite" element={<AddWebsite />} />
+        <Route path="/dashboard/editwebsite" element={<EditWebsite />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/alerts" element={<Alerts />} />
       </Routes>
     </Router>
   );

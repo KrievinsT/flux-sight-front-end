@@ -21,6 +21,7 @@ import { IoSpeedometerOutline } from "react-icons/io5";
 import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
 import { SiInstatus } from "react-icons/si";
 import { FaRankingStar } from "react-icons/fa6";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import WebsiteViewsCard from "../modal/WebsiteViewsCard";
@@ -86,6 +87,19 @@ export default function Dashboard  () {
       completionWidth: "20%",
     };
     setRows([...rows, newRow]);
+  };
+
+  const handleEdit = (index) => {
+    // Logic to edit the row
+    const updatedRows = [...rows];
+    updatedRows[index].budget = "$10,000"; // Just as an example
+    setRows(updatedRows);
+  };
+
+  const handleDelete = (index) => {
+    // Logic to delete the row
+    const updatedRows = rows.filter((row, i) => i !== index);
+    setRows(updatedRows);
   };
 
   const timelineItems = [
@@ -178,29 +192,27 @@ export default function Dashboard  () {
           </span>
           Websites
         </li>
+        <Link to="/alerts"> 
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <IoMdNotificationsOutline className="w-5 h-5 text-gray-600" />
           </span>
           Alerts
         </li>
+        </Link>
       </ul>
       <div className="font-semibold text-[15px] text-gray-500 mt-8 pl-6">
         ACCOUNT PAGES
       </div>
       <ul className="space-y-2">
-      <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-          <IoSettingsOutline className="w-5 h-5  text-gray-600"/> 
-          </span>
-          Settings
-        </li>
+        <Link to="/profile"> 
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <FaRegUser className="w-5 h-5 text-gray-600" />
           </span>
           Profile
         </li>
+        </Link>
         <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
           <span className="mr-2">
             <SlLogin className="w-5 h-5 text-gray-600" />
@@ -353,15 +365,15 @@ export default function Dashboard  () {
         className="absolute top-0 left-0 h-full bg-green-500"
         style={{ width: '99%' }}
       ></div>
+      </div>
+      <div className="text-green-500 mt-2">+5% than yesterday</div>
     </div>
-    <div className="text-green-500 mt-2">+5% than yesterday</div>
-  </div>
 
-  <div className="mt-4 text-sm text-gray-600">
-    The system maintained excellent uptime performance.
-  </div>
-</div>
-        </div>
+      <div className="mt-4 text-sm text-gray-600">
+        The system maintained excellent uptime performance.
+      </div>
+    </div>
+            </div>
 
         {/* Graphs */}
         <div className="grid grid-cols-3 gap-6">
@@ -383,73 +395,86 @@ export default function Dashboard  () {
     <span className="ml-1 text-gray-500">this month</span>
   </div>
 
- <div className="card-body px-0 pb-1">
-  <div
-    className="max-h-[340px] overflow-y-auto 
-      scrollbar-thin 
-      scrollbar-thumb-gray-400  
-      "
-  >
-    <table className="min-w-full text-left table-auto border-separate border-spacing-y-0">
-      <thead className="bg-gray-100 sticky top-0 z-10">
-        <tr className="text-gray-500 text-xs font-bold uppercase">
-          <th className="py-2 pl-5">Companies</th>
-          <th className="py-2 pl-6">Members</th>
-          <th className="py-2 text-center">Budget</th>
-          <th className="py-2 text-center">Completion</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, index) => (
-          <tr className="bg-white" key={index}>
-            <td className="px-4 py-3 border-t-2 border-gray-600">
-              <div className="flex items-center">
-                <img
-                  src={row.companyImage}
-                  alt={row.companyName}
-                  className="w-8 h-8 mr-5 rounded-lg"
-                />
-                <div>
-                  <h6 className="text-sm font-semibold text-gray-800">
-                    {row.companyName}
-                  </h6>
-                </div>
-              </div>
-            </td>
-            <td className="px-4 py-3 border-t-2 border-gray-600">
-              <div className="flex -space-x-2">
-                {row.members.map((member, memberIndex) => (
-                  <img
-                    src={member}
-                    alt={`team${memberIndex + 1}`}
-                    key={memberIndex}
-                    className="w-6 h-6 rounded-full border-2 border-white"
-                  />
-                ))}
-              </div>
-            </td>
-            <td className="text-center px-4 py-3 border-t-2 border-gray-600 text-sm">
-              <span className="font-bold text-gray-700">{row.budget}</span>
-            </td>
-            <td className="px-4 py-3 border-t-2 border-gray-600">
-              <div className="w-3/4 mx-auto">
-                <div className="text-start text-xs font-bold text-gray-700 mb-1">
-                  {row.completion}
-                </div>
-                <div className="relative h-2 bg-gray-200 rounded">
-                  <div
-                    className="absolute top-0 left-0 h-2 bg-blue-500 rounded"
-                    style={{ width: row.completionWidth }}
-                  ></div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
+  <div className="card-body px-0 pb-1">
+      <div className="max-h-[340px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
+        <table className="min-w-full text-left table-auto border-separate border-spacing-y-0">
+          <thead className="bg-gray-100 sticky top-0 z-10">
+            <tr className="text-gray-500 text-xs font-bold uppercase">
+              <th className="py-2 pl-5">Companies</th>
+              <th className="py-2 pl-6">Members</th>
+              <th className="py-2 text-center">Completion</th>
+              <th className="py-2 text-center">CRUD</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr className="bg-white" key={index}>
+                <td className="px-4 py-3 border-t-2 border-gray-600">
+                  <div className="flex items-center">
+                    <img
+                      src={row.companyImage}
+                      alt={row.companyName}
+                      className="w-8 h-8 mr-5 rounded-lg"
+                    />
+                    <div>
+                      <h6 className="text-sm font-semibold text-gray-800">
+                        {row.companyName}
+                      </h6>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 border-t-2 border-gray-600">
+                  <div className="flex -space-x-2">
+                    {row.members.map((member, memberIndex) => (
+                      <img
+                        src={member}
+                        alt={`team${memberIndex + 1}`}
+                        key={memberIndex}
+                        className="w-6 h-6 rounded-full border-2 border-white"
+                      />
+                    ))}
+                  </div>
+                </td>
+              
+                <td className="px-4 py-3 border-t-2 border-gray-600">
+                  <div className="w-3/4 mx-auto">
+                    <div className="text-start text-xs font-bold text-gray-700 mb-1">
+                      {row.completion}
+                    </div>
+                    <div className="relative h-2 bg-gray-200 rounded">
+                      <div
+                        className="absolute top-0 left-0 h-2 bg-blue-500 rounded"
+                        style={{ width: row.completionWidth }}
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td className="text-center px-4 py-3 border-t-2 border-gray-600 text-sm">
+                  <div className="mt-2 flex justify-center space-x-2">
+                    <button
+                      onClick={() => handleEdit(index)}
+                      className="text-blue-500 hover:text-blue-700"
+                      aria-label="Edit"
+                    >
+                      <Link to="/dashboard/editwebsite">
+                      <FaEdit className="w-5 h-5" />
+                      </Link>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(index)}
+                      className="text-red-500 hover:text-red-700"
+                      aria-label="Delete"
+                    >
+                      <FaTrashAlt className="w-5 h-5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
 
 

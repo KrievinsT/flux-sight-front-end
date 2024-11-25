@@ -15,7 +15,7 @@ import NotificationDropdown from "../modal/NotificationDropdown";
 
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function AddWebsite () {
+export default function EditWebsite () {
 
     const [formData, setFormData] = useState({
         websiteName: "",
@@ -192,7 +192,7 @@ export default function AddWebsite () {
             <h1 className="text-[16px] cursor-pointer font-small text-gray-600 ml-1" >Dashboard /</h1> 
             </Link>
             <Link to="/dashboard/addwebsite">
-            <h1 className="text-[16px] cursor-pointer font-small text-black ml-1" >Add website</h1> 
+            <h1 className="text-[16px] cursor-pointer font-small text-black ml-1" >Edit website</h1> 
             </Link>
         </div>
           
@@ -202,16 +202,15 @@ export default function AddWebsite () {
                 placeholder="Type here..."
                 className="border border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700   focus:ring-1 focus:ring-pink-700 shadow-sm"
                 />
+                <Link to="/dashboard/addwebsite">
                  <button
-          
-          className="border border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md"
-        >
-          Add website
-        </button>
+                 className="border border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md" >
+                 Add website
+              </button>
+              </Link>
+        
         <button
-       
-          className="border border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
-        >
+         className="border border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md" >
          Check Insights
         </button>
             
@@ -226,8 +225,8 @@ export default function AddWebsite () {
                 </Link>
           </div>
         </header>
-      <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Add website </div>
-       <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Add you're website, to watch list. </div>
+      <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Edit website </div>
+       <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Edit you're website, to watch list. </div>
 
        
         <div className="flex justify-center items-center">
@@ -235,10 +234,10 @@ export default function AddWebsite () {
 
       <div
               className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
-              style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+              style={{ backgroundImage: 'linear-gradient(195deg, #313152, #010d21)' }}
             >
               <h2 className="text-2xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
-                Add website
+                Edit website
               </h2>
               
             </div>
@@ -249,7 +248,7 @@ export default function AddWebsite () {
                 htmlFor="websiteName"
                 className="block text-sm font-semibold text-gray-700 mb-2"
             >
-                Website Name
+                Edit Website Name
             </label>
             <input
                 type="text"
@@ -279,7 +278,7 @@ export default function AddWebsite () {
                 htmlFor="url"
                 className="block text-sm font-semibold text-gray-700 mb-2"
             >
-                Website URL
+               Edit Website URL
             </label>
             <input
                 type="text"
@@ -309,7 +308,7 @@ export default function AddWebsite () {
                 htmlFor="memberName"
                 className="block text-sm font-semibold text-gray-700 mb-2"
                 >
-                Member Name
+                 Edit Member Name
                 </label>
                 <input
                 type="text"
@@ -339,7 +338,7 @@ export default function AddWebsite () {
                 htmlFor="memberEmail"
                 className="block text-sm font-semibold text-gray-700 mb-2"
                 >
-                Member Email
+               Edit Member Email
                 </label>
                 <input
                 type="email"
@@ -373,10 +372,10 @@ export default function AddWebsite () {
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}   
-             style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+              style={{ backgroundImage: 'linear-gradient(195deg, #313152, #010d21)' }}
               disabled={Object.values(errors).some((err) => err)}
             >
-              Submit
+             Save
             </button>
           </div>
         </form>
