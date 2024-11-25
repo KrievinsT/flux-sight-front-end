@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -89,7 +89,51 @@ export default function AddWebsite () {
           console.log("Please fix the errors before submitting.");
         }
       };
+
+      const [users, setUsers] = useState([]);
+
+      // Simulate fetching users from an API
+      useEffect(() => {
+        const fetchUsers = async () => {
+          const mockUsers = [
+            {
+              id: 1,
+              name: "John Doe",
+              email: "john.doe@example.com",
+              phone: "123-456-7890",
+              role: "Admin",
+              profileImage: "/images/p4.jpg",
+            },
+            {
+              id: 2,
+              name: "Jane Smith",
+              email: "jane.smith@example.com",
+              phone: "098-765-4321",
+              role: "User",
+              profileImage: "/images/p2.jpg",
+            },
+            {
+              id: 3,
+              name: "Emily Johnson",
+              email: "emily.johnson@example.com",
+              phone: "555-123-4567",
+              role: "Moderator",
+              profileImage: "/images/p3.jpg",
+            },
+          ];
+          setUsers(mockUsers);
+        };
     
+        fetchUsers();
+      }, []);
+    
+      
+      const handleSelectUser = (userId) => {
+        alert(`User with ID ${userId} selected`);
+      };
+  
+      
+
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
     {/* Sidebar */}
@@ -215,66 +259,81 @@ export default function AddWebsite () {
             )}
             </div>
             <div className="flex flex-wrap gap-4 mb-4">
-            {/* Member Name */}
+         
             <div className="flex-1">
                 <label
-                htmlFor="memberName"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                    htmlFor="memberName"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
                 >
-                Member Name
+                    Search member
                 </label>
                 <input
-                type="text"
-                name="memberName"
-                id="memberName"
-                value={formData.memberName}
-                onChange={handleChange}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline
-                    ${
-                    errors.memberName
-                        ? "border-red-500 focus:ring-2 focus:ring-red-400"
-                        : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
-                    }
-                `}
-                placeholder="Enter member name"
+                    type="text"
+                    name="memberName"
+                    id="memberName"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline border border-gray-300 focus:ring-2 focus:ring-blue-400"
+                    placeholder="Search member by name or email"
                 />
-                {errors.memberName && (
-                <span className="text-red-500 text-xs mt-2 inline-block">
-                    {errors.memberName}
-                </span>
-                )}
             </div>
 
-            {/* Member Email */}
+         
             <div className="flex-1">
-                <label
-                htmlFor="memberEmail"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                Member Email
-                </label>
-                <input
-                type="email"
-                name="memberEmail"
-                id="memberEmail"
-                value={formData.memberEmail}
-                onChange={handleChange}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline
-                    ${
-                    errors.memberEmail
-                        ? "border-red-500 focus:ring-2 focus:ring-red-400"
-                        : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
-                    }
-                `}
-                placeholder="Enter email address"
-                />
-                {errors.memberEmail && (
-                <span className="text-red-500 text-xs mt-2 inline-block">
-                    {errors.memberEmail}
-                </span>
-                )}
-            </div>
-            </div>
+      <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table className="min-w-full table-auto">
+                <thead>
+                <tr className="bg-gray-200 text-gray-600 uppercase text-xs">
+                  <th className="px-4 py-2 text-left">Name</th>
+                  <th className="px-4 py-2 text-left">Email</th>
+                  <th className="px-4 py-2 text-left">Phone Number</th>
+                  <th className="px-4 py-2 text-left">Role</th>
+                  <th className="px-4 py-2 text-center">Action</th>
+                </tr>
+              </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr className="border-t" key={user.id}>
+                <td className="px-6 py-4">
+                  <div className="flex items-center">
+                    <img
+                      src={user.profileImage}
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full mr-3"
+                    />
+                    <div>
+                      <h6 className="text-sm font-bold text-gray-800">
+                        {user.name}
+                      </h6>
+                    </div>
+                  </div>
+                </td>
+
+                {/* User Email */}
+                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.email}</td>
+
+                {/* User Phone Number */}
+                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.phone}</td>
+
+                {/* User Role */}
+                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.role}</td>
+
+                {/* Action - Select Button */}
+                <td className="text-center px-6 py-4">
+                  <button
+                    onClick={() => handleSelectUser(user.id)}
+                    className="px-2 py-1 bg-pink-500 text-white rounded-md hover:bg-pink-700"
+                  >
+                    Select
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+            
+        </div>
 
           {/* Submit Button */}
           <div className="flex justify-center pt-6">

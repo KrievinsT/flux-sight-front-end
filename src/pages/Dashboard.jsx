@@ -91,14 +91,14 @@ export default function Dashboard  () {
   };
 
   const handleEdit = (index) => {
-    // Logic to edit the row
+    
     const updatedRows = [...rows];
-    updatedRows[index].budget = "$10,000"; // Just as an example
+    updatedRows[index].budget = "$10,000"; 
     setRows(updatedRows);
   };
 
   const handleDelete = (index) => {
-    // Logic to delete the row
+    
     const updatedRows = rows.filter((row, i) => i !== index);
     setRows(updatedRows);
   };
