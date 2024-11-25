@@ -24,6 +24,14 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function Alerts () {
 
+    const [showBlueAlert, setShowBlueAlert] = useState(true);
+    const [showGrayAlert, setShowGrayAlert] = useState(true);
+    const [showGreenAlert, setShowGreenAlert] = useState(true);
+    const [showRedAlert, setShowRedAlert] = useState(true);
+    const [showYellowAlert, setShowYellowAlert] = useState(true);
+
+    
+
 
     const [toastType, setToastType] = useState("");
 
@@ -32,6 +40,51 @@ export default function Alerts () {
     const toast = document.getElementById(`${type}Toast`);
     const bootstrapToast = new window.bootstrap.Toast(toast);
     bootstrapToast.show();
+  };
+
+  const buttonStyles = {
+    success: {
+      backgroundImage: "linear-gradient(200deg, #34d399, #10b981)",
+      shadow: "0 4px 6px rgba(34,197,94,0.5)",
+      hoverShadow: "0 8px 10px rgba(34,197,94,0.7)"
+    },
+    info: {
+      backgroundImage: "linear-gradient(200deg, #60a5fa, #3b82f6)",
+      shadow: "0 4px 6px rgba(59,130,246,0.5)",
+      hoverShadow: "0 8px 10px rgba(59,130,246,0.7)"
+    },
+    warning: {
+      backgroundImage: "linear-gradient(200deg, #fcd34d, #f59e0b)",
+      shadow: "0 4px 6px rgba(234,179,8,0.5)",
+      hoverShadow: "0 8px 10px rgba(234,179,8,0.7)"
+    },
+    danger: {
+      backgroundImage: "linear-gradient(200deg, #f87171, #ef4444)",
+      shadow: "0 4px 6px rgba(239,68,68,0.5)",
+      hoverShadow: "0 8px 10px rgba(239,68,68,0.7)"
+    }
+  };
+
+  const handleCloseAlert = (alertType) => {
+    switch (alertType) {
+      case "blue":
+        setShowBlueAlert(false);
+        break;
+      case "gray":
+        setShowGrayAlert(false);
+        break;
+      case "green":
+        setShowGreenAlert(false);
+        break;
+      case "red":
+        setShowRedAlert(false);
+        break;
+      case "yellow":
+        setShowYellowAlert(false);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -171,10 +224,11 @@ export default function Alerts () {
         <div className="container mx-auto md:w-[80%] py-1">
       {/* Alerts Section */}
       <div className="card mt-2 bg-white shadow-lg rounded-lg">
-        <div className="card-header bg-white px-6 py-4 bg-gray-100 ">
-          <h5 className="mb-0 text-2xl font-semibold">Alerts</h5>
-        </div>
-        <div className="card-body px-6 py-4 space-y-4">
+      <div className="card-header bg-white px-6 py-4 bg-gray-100">
+        <h5 className="mb-0 text-2xl font-semibold">Alerts</h5>
+      </div>
+      <div className="card-body px-6 py-4 space-y-4">
+        {showBlueAlert && (
           <div className="bg-blue-500 text-white px-4 py-3 rounded-lg relative">
             <span className="text-sm">
               A simple primary alert with{" "}
@@ -186,10 +240,13 @@ export default function Alerts () {
             <button
               className="absolute top-2.5 right-2.5 text-2xl"
               aria-label="Close"
+              onClick={() => handleCloseAlert("blue")}
             >
               &times;
             </button>
           </div>
+        )}
+        {showGrayAlert && (
           <div className="bg-gray-500 text-white px-4 py-3 rounded-lg relative">
             <span className="text-sm">
               A simple secondary alert with{" "}
@@ -201,10 +258,13 @@ export default function Alerts () {
             <button
               className="absolute top-2.5 right-2.5 text-2xl"
               aria-label="Close"
+              onClick={() => handleCloseAlert("gray")}
             >
               &times;
             </button>
           </div>
+        )}
+        {showGreenAlert && (
           <div className="bg-green-500 text-white px-4 py-3 rounded-lg relative">
             <span className="text-sm">
               A simple success alert with{" "}
@@ -216,10 +276,13 @@ export default function Alerts () {
             <button
               className="absolute top-2.5 right-2.5 text-2xl"
               aria-label="Close"
+              onClick={() => handleCloseAlert("green")}
             >
               &times;
             </button>
           </div>
+        )}
+        {showRedAlert && (
           <div className="bg-red-500 text-white px-4 py-3 rounded-lg relative">
             <span className="text-sm">
               A simple danger alert with{" "}
@@ -231,10 +294,13 @@ export default function Alerts () {
             <button
               className="absolute top-2.5 right-2.5 text-2xl"
               aria-label="Close"
+              onClick={() => handleCloseAlert("red")}
             >
               &times;
             </button>
           </div>
+        )}
+        {showYellowAlert && (
           <div className="bg-yellow-500 text-white px-4 py-3 rounded-lg relative">
             <span className="text-sm">
               A simple warning alert with{" "}
@@ -246,12 +312,14 @@ export default function Alerts () {
             <button
               className="absolute top-2.5 right-2.5 text-2xl"
               aria-label="Close"
+              onClick={() => handleCloseAlert("yellow")}
             >
               &times;
             </button>
           </div>
-        </div>
+        )}
       </div>
+    </div>
 
       {/* Notifications Section */}
       <div className="card mt-6 bg-white shadow-lg rounded-lg">
@@ -271,136 +339,169 @@ export default function Alerts () {
         </div>
         <div className="card-body px-6 py-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button
-                onClick={() => handleShowToast("success")}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-[0_4px_6px_rgba(34,197,94,0.5)] hover:shadow-[0_6px_8px_rgba(34,197,94,0.7)] transition-shadow"
-            >
-                Success
-            </button>
-            <button
-                onClick={() => handleShowToast("info")}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-[0_4px_6px_rgba(59,130,246,0.5)] hover:shadow-[0_6px_8px_rgba(59,130,246,0.7)] transition-shadow"
-            >
-                Info
-            </button>
-            <button
-                onClick={() => handleShowToast("warning")}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-[0_4px_6px_rgba(234,179,8,0.5)] hover:shadow-[0_6px_8px_rgba(234,179,8,0.7)] transition-shadow"
-            >
-                Warning
-            </button>
-            <button
-                onClick={() => handleShowToast("danger")}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-[0_4px_6px_rgba(239,68,68,0.5)] hover:shadow-[0_6px_8px_rgba(239,68,68,0.7)] transition-shadow"
-            >
-                Danger
-            </button>
-          </div>
+      <button
+        onClick={() => handleShowToast("success")}
+        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
+        style={{
+          backgroundImage: buttonStyles.success.backgroundImage,
+          boxShadow: buttonStyles.success.shadow,
+        }}
+      >
+        Success
+      </button>
+      <button
+        onClick={() => handleShowToast("info")}
+        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
+        style={{
+          backgroundImage: buttonStyles.info.backgroundImage,
+          boxShadow: buttonStyles.info.shadow,
+        }}
+      >
+        Info
+      </button>
+      <button
+        onClick={() => handleShowToast("warning")}
+        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
+        style={{
+          backgroundImage: buttonStyles.warning.backgroundImage,
+          boxShadow: buttonStyles.warning.shadow,
+        }}
+      >
+        Warning
+      </button>
+      <button
+        onClick={() => handleShowToast("danger")}
+        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
+        style={{
+          backgroundImage: buttonStyles.danger.backgroundImage,
+          boxShadow: buttonStyles.danger.shadow,
+        }}
+      >
+        Danger
+      </button>
+    </div>
+
       </div>
     </div>
 
-    <div className="position-fixed bottom-3 end-1 z-50">
-  {/* Success Toast */}
-  <div
-    className="toast fade p-2 bg-green-500"
-    role="alert"
-    id="successToast"
-    aria-live="assertive"
-    aria-atomic="true"
-  >
-    <div className="toast-header bg-green-500 text-white border-0">
-      <FaCheck className="material-symbols-rounded text-white me-2 h-4 w-4" />
-      <span className="me-auto text-white font-medium">Success</span>
-      <small className="text-white">11 mins ago</small>
-      <button
-        type="button"
-        className="btn-close text-white btn-close-white ms-3"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
-    <div className="toast-body text-white">
-      Hello, world! This is a notification message.
-    </div>
-  </div>
+            <div className="position-fixed bottom-3 end-1 z-50">
+        {/* Success Toast */}
+        <div
+            className="toast fade p-2"
+            role="alert"
+            id="successToast"
+            aria-live="assertive"
+            aria-atomic="true"
+            style={{
+            backgroundImage: "linear-gradient(200deg, #34d399, #10b981)",
+            boxShadow: "0 4px 6px rgba(34,197,94,0.5)"
+            }}
+        >
+            <div className="toast-header" style={{ backgroundImage: "linear-gradient(200deg, #34d399, #10b981)" }}>
+            <FaCheck className="material-symbols-rounded text-white me-2 h-4 w-4" />
+            <span className="me-auto text-white font-medium">Success</span>
+            <small className="text-white font-medium">11 mins ago</small>
+            <button
+                type="button"
+                className="btn-close text-white btn-close-white ms-3"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+            ></button>
+            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
+            <div className="toast-body font-medium text-white">
+            Hello, world! This is a notification message.
+            </div>
+        </div>
 
-  {/* Info Toast */}
-  <div
-    className="toast fade p-2 mt-2 bg-blue-500 text-white"
-    role="alert"
-    id="infoToast"
-    aria-live="assertive"
-    aria-atomic="true"
-  >
-    <div className="toast-header bg-blue-500 border-0">
-      <HiOutlineBell className="material-symbols-rounded text-white me-2 h-4 w-4" />
-      <span className="me-auto text-white font-medium">Info</span>
-      <small className="text-white">11 mins ago</small>
-      <button
-        type="button"
-        className="btn-close text-white btn-close-white ms-3"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
-    <div className="toast-body text-white">
-      Hello, world! This is a notification message.
-    </div>
-  </div>
-  
-  {/* Warning Toast */}
-  <div
-    className="toast fade p-2 mt-2 bg-yellow-500"
-    role="alert"
-    id="warningToast"
-    aria-live="assertive"
-    aria-atomic="true"
-  >
-    <div className="toast-header bg-yellow-500 border-0">
-      <TbWorldSearch className="material-symbols-rounded text-white text-warning me-2 h-4 w-4" />
-      <span className="me-auto text-white font-medium">Warning</span>
-      <small className="text-white">11 mins ago</small>
-      <button
-        type="button"
-        className="btn-close text-white btn-close-white ms-3"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
-    <div className="toast-body text-white">
-      Hello, world! This is a notification message.
-    </div>
-  </div>
+        {/* Info Toast */}
+        <div
+            className="toast fade p-2 mt-2"
+            role="alert"
+            id="infoToast"
+            aria-live="assertive"
+            aria-atomic="true"
+            style={{
+            backgroundImage: "linear-gradient(200deg, #60a5fa, #3b82f6)",
+            boxShadow: "0 4px 6px rgba(59,130,246,0.5)"
+            }}
+        >
+            <div className="toast-header" style={{ backgroundImage: "linear-gradient(200deg, #60a5fa, #3b82f6)" }}>
+            <HiOutlineBell className="material-symbols-rounded text-white me-2 h-4 w-4" />
+            <span className="me-auto text-white font-medium">Info</span>
+            <small className="text-white font-medium">11 mins ago</small>
+            <button
+                type="button"
+                className="btn-close text-white btn-close-white ms-3"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+            ></button>
+            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
+            <div className="toast-body font-medium text-white">
+            Hello, world! This is a notification message.
+            </div>
+        </div>
 
-  {/* Danger Toast */}
-  <div
-    className="toast fade p-2 mt-2 bg-red-500"
-    role="alert"
-    id="dangerToast"
-    aria-live="assertive"
-    aria-atomic="true"
-  >
-    <div className="toast-header bg-red-500 border-0">
-      <IoMdMegaphone className="material-symbols-rounded text-white me-2 h-4 w-4" />
-      <span className="me-auto text-white font-medium"> Danger</span>
-      <small className="text-white">11 mins ago</small>
-      <button
-        type="button"
-        className="btn-close text-white btn-close-white ms-3"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      ></button>
-    </div>
-   
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
-    <div className="toast-body text-white">
-      Hello, world! This is a notification message.
-    </div>
-  </div>
-</div>
+        {/* Warning Toast */}
+        <div
+            className="toast fade p-2 mt-2"
+            role="alert"
+            id="warningToast"
+            aria-live="assertive"
+            aria-atomic="true"
+            style={{
+            backgroundImage: "linear-gradient(200deg, #fcd34d, #f59e0b)",
+            boxShadow: "0 4px 6px rgba(234,179,8,0.5)"
+            }}
+        >
+            <div className="toast-header" style={{ backgroundImage: "linear-gradient(200deg, #fcd34d, #f59e0b)" }}>
+            <TbWorldSearch className="material-symbols-rounded text-white text-warning me-2 h-4 w-4" />
+            <span className="me-auto text-white font-medium">Warning</span>
+            <small className="text-white font-medium">11 mins ago</small>
+            <button
+                type="button"
+                className="btn-close text-white btn-close-white ms-3"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+            ></button>
+            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
+            <div className="toast-body font-medium text-white">
+            Hello, world! This is a notification message.
+            </div>
+        </div>
+
+        {/* Danger Toast */}
+        <div
+            className="toast fade p-2 mt-2"
+            role="alert"
+            id="dangerToast"
+            aria-live="assertive"
+            aria-atomic="true"
+            style={{
+            backgroundImage: "linear-gradient(200deg, #f87171, #ef4444)",
+            boxShadow: "0 4px 6px rgba(239,68,68,0.5)"
+            }}
+        >
+            <div className="toast-header" style={{ backgroundImage: "linear-gradient(200deg, #f87171, #ef4444)" }}>
+            <IoMdMegaphone className="material-symbols-rounded text-white me-2 h-4 w-4" />
+            <span className="me-auto text-white font-medium"> Danger</span>
+            <small className="text-white font-medium">11 mins ago</small>
+            <button
+                type="button"
+                className="btn-close text-white btn-close-white ms-3"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+            ></button>
+            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-1"></div>
+            <div className="toast-body font-medium text-white">
+            Hello, world! This is a notification message.
+            </div>
+        </div>
+        </div>
+
     </div>
 
        
