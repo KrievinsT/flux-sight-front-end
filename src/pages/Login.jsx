@@ -87,7 +87,7 @@ export default function Login() {
           style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("./images/register-background.jpg")' }}
         >
           {/* Header */}
-          <header className="flex justify-center items-center bg-white bg-opacity-90 shadow-md rounded-xl w-[80%] px-4 py-5 sticky top-9 inset-x-0 mx-auto z-50">
+          <header className="flex justify-center items-center bg-white bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
         
         <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
             <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>  
@@ -112,7 +112,7 @@ export default function Login() {
                     Log in
                   </h2>
                   <div className="flex justify-center mt-6 mb-3 space-x-4">
-                    <button className="flex items-center bg-white text-gray-900 rounded-lg p-4 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500">
+                    <button className="flex items-center bg-white text-gray-900 rounded-lg p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500">
                       <img src="./images/google.png" alt="Google logo" className="w-6 h-6 mr-3" />
                       <span className="font-medium text-gray-700">Log in with Google</span>
                     </button>
@@ -141,7 +141,7 @@ export default function Login() {
                     />
                   </div>
                   <div className="flex items-center justify-start">
-                    <span className=" cursor-pointer text-sm text-gray-700 hover:text-gray-800 mb-5 font-medium">
+                    <span className=" cursor-pointer text-sm text-gray-700 hover:text-gray-800 mb-3 font-medium">
                     <Link to="/forgotpassword">Forgot your password? </Link>  
                     </span>
                   </div>

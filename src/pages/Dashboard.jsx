@@ -27,6 +27,7 @@ import NotificationDropdown from "../modal/NotificationDropdown";
 import WebsiteViewsCard from "../modal/WebsiteViewsCard";
 import DailySalesCard from "../modal/DailySalesCard";
 import TrafficByCountryCard from "../modal/TrafficByCountryCard";
+import SidebarModal from "../modal/Sidebar";
 
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -142,93 +143,10 @@ export default function Dashboard  () {
   ];
   
   return (
-    <div className="min-h-screen flex bg-gray-100 p-2">
+    <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
     {/* Sidebar */}
-    <aside
-      className="w-[15rem] bg-white rounded-lg border border-gray-200 p-4 flex flex-col"
-      style={{
-        position: "sticky",
-        top: "0",
-        height: "100vh", 
-      }}
-    >
-
-    <div className="flex items-center justify-center cursor-pointer">
-      <img
-        src="./images/fluxsight.png"
-        alt="fluxsight logo"
-        className="w-[9.8rem] h-[3rem] mb-2"
-      />
-    </div>
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-4"></div>
-
-    <nav className="flex flex-col flex-1 space-y-4">
-      <ul className="space-y-2">
-        <li
-          className="flex items-center p-2 text-[13.5px] font-medium rounded-md bg-gray-900 text-white cursor-pointer"
-          style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
-        >
-          <span className="mr-2">
-            <MdOutlineDashboard className="w-5 h-5" />
-          </span>
-          Dashboard
-        </li>
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <MdOutlineTableView className="w-5 h-5 text-gray-600" />
-          </span>
-          Tables
-        </li>
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <RiBillLine className="w-5 h-5 text-gray-600" />
-          </span>
-          Billing
-        </li>
-        
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <MdInsertLink className="w-5 h-5 text-gray-600" />
-          </span>
-          Websites
-        </li>
-        <Link to="/alerts"> 
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <IoMdNotificationsOutline className="w-5 h-5 text-gray-600" />
-          </span>
-          Alerts
-        </li>
-        </Link>
-      </ul>
-      <div className="font-semibold text-[15px] text-gray-500 mt-8 pl-6">
-        ACCOUNT PAGES
-      </div>
-      <ul className="space-y-2">
-        <Link to="/profile"> 
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <FaRegUser className="w-5 h-5 text-gray-600" />
-          </span>
-          Profile
-        </li>
-        </Link>
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <SlLogin className="w-5 h-5 text-gray-600" />
-          </span>
-          Sign In
-        </li>
-        <li className="flex items-center p-2 text-[13.5px] font-medium rounded-md text-gray-700 hover:bg-gray-200 cursor-pointer">
-          <span className="mr-2">
-            <SlLogin className="w-5 h-5 text-gray-600" />
-          </span>
-          Sign Up
-        </li>
-      </ul>
-     
-    </nav>
-  </aside>
+    
+    <SidebarModal />
 
       {/* Main content */}
       <div className="flex-1 pl-4 pr-2 overflow-y-auto">
@@ -247,14 +165,14 @@ export default function Dashboard  () {
                 className="border border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700   focus:ring-1 focus:ring-pink-700 shadow-sm"
                 />
 
-<Link to="/dashboard/addwebsite">
-                 <button onClick={addRow} className="border border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md">
-                 Add website
-                 </button>
+              <Link to="/dashboard/addwebsite">
+              <button onClick={addRow} className="border-1 border-pink-600 text-pink-600 p-[0.5rem] text-[14px] font-small rounded-md">
+              Add website
+          </button>
                  </Link>
         <button
        
-          className="border border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
+          className="border-1 border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
         >
          Check Insights
         </button>
@@ -324,10 +242,10 @@ export default function Dashboard  () {
     <div className="flex justify-between items-center">
       <div>
         <div className="text-gray-600 text-sm">SEO Performance</div>
-        <div className="text-xl font-bold text-gray-800">{currentPerformance.label}</div>
+        <div className="text-xl font-bold ">{currentPerformance.label}</div>
       </div>
       <div
-        className={`w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center`}
+        className={`w-[50px] h-[50px]  rounded-lg flex justify-center items-center`}
         style={{ backgroundColor: currentPerformance.color }}
       >
         <div className="text-white text-2xl" >{currentPerformance.icon}</div>
@@ -343,7 +261,7 @@ export default function Dashboard  () {
   <div className="bg-white border border-gray-200 rounded-lg p-4 ">
   <div className="flex justify-between items-center">
     <div>
-      <div className="text-2xl font-bold text-gray-800">Uptime Status</div>
+      <div className="text-xl font-bold text-gray-800">Uptime Status</div>
     </div>
     <div
       className="w-[50px] h-[50px] bg-black rounded-lg flex justify-center items-center"

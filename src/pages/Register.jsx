@@ -124,7 +124,7 @@ export default function Register() {
       }}
     >
       {/* Header */}
-      <header className="flex justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-4 py-5 sticky top-9 inset-x-0 mx-auto z-50">
+      <header className="flex justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
         <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
         <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>  
         <img src="./images/profile.gif" alt="Profile icon" className="w-6 h-6 mr-1" />
@@ -147,14 +147,14 @@ export default function Register() {
                 Sign up
               </h2>
               <div className="flex justify-center mt-6 mb-3 space-x-4">
-                <button className="flex items-center bg-white text-gray-900 rounded-lg p-4 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500">
+                <button className="flex items-center bg-white text-gray-900 rounded-lg p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500">
                   <img src="./images/google.png" alt="Google logo" className="w-6 h-6 mr-3" />
                   <span className="font-medium text-gray-700">Sign up with Google</span>
                 </button>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="px-0 pt-6 pb-6">
+            <form onSubmit={handleSubmit} className="px-0 pt-6 pb-0">
               <div className="mb-4">
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
@@ -268,10 +268,10 @@ export default function Register() {
               </div>
 
               {errorMessage && (
-                <div className="text-red-500 font-medium text-center mt-3">{errorMessage}</div>
+                <div className="text-red-500 font-medium text-sm">{errorMessage}</div>
               )}
               {successMessage && (
-                <div className="text-green-500 text-center mt-3">{successMessage}</div>
+                <div className="text-green-500 font-medium text-sm">{successMessage}</div>
               )}
             </form>
             <div className="text-center text-sm font-medium text-gray-600 mt-4">
