@@ -142,93 +142,94 @@ export default function EditTable() {
                 Edit Role
               </h2>
             </div>
-
             <div className="p-6">
-      <div className="flex items-center mb-6">
-        <img
-          src={user.avatar}
-          alt={user.name}
-          className="w-20 h-20 rounded-lg mr-4"
-        />
-        <div>
-          <h3 className="text-lg font-semibold">{user.name}</h3>
-          <p className="text-sm text-gray-600 font-medium">{user.email}</p>
-        </div>
-      </div>
+                <div className="flex items-center mb-6">
+                    <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-20 h-20 rounded-lg mr-4"
+                    />
+                    <div>
+                    <h3 className="text-lg font-semibold">{user.name}</h3>
+                    <p className="text-sm text-gray-600 font-medium">{user.email}</p>
+                    </div>
+                </div>
 
-      <div className="space-y-6">
-        <div className="flex justify-between items-center border-b pb-4">
-          {/* Box 1: Role */}
-          <div className="flex items-center">
-            <span className="text-gray-800 text-[17px] font-medium">Role:</span>
-            <span
-              className="px-3 py-1 rounded-lg text-xs font-semibold uppercase text-white inline-flex items-center justify-center ml-2"
-              style={{
-                backgroundImage:
-                  user.role === "Admin"
-                    ? "linear-gradient(195deg, #ff4d4d, #ff1a1a)"
-                    : user.role === "Editor"
-                    ? "linear-gradient(195deg, #1d74e4, #0a58d4)"
-                    : user.role === "Viewer"
-                    ? "linear-gradient(195deg, #6c757d, #495057)"
-                    : "linear-gradient(195deg, #28a745, #218838)",
-                width: "70px", 
-              }}
-            >
-              {user.role}
-            </span>
-          </div>
-          {/* Box 2: Status */}
-          <div className="flex items-center">
-            <span className="text-gray-800 text-[17px] font-medium">Status:</span>
-            <span
-              className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase text-white ml-2`}
-              style={{
-                backgroundImage:
-                  user.status === "Online"
-                    ? "linear-gradient(195deg, #3fb906, #1a9e08)"
-                    : "linear-gradient(195deg, #757575, #424242)",
-              }}
-            >
-              {user.status}
-            </span>
-          </div>
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center border-b pb-4">
+                    {/* Box 1: Role */}
+                    <div className="flex items-center">
+                        <span className="text-gray-800 text-[17px] font-medium">Role:</span>
+                        <span
+                        className="px-3 py-1 rounded-lg text-xs font-semibold uppercase text-white inline-flex items-center justify-center ml-2"
+                        style={{
+                            backgroundImage:
+                            selectedRole === "Admin"
+                                ? "linear-gradient(195deg, #ff4d4d, #ff1a1a)"
+                                : selectedRole === "Editor"
+                                ? "linear-gradient(195deg, #1d74e4, #0a58d4)"
+                                : selectedRole === "Viewer"
+                                ? "linear-gradient(195deg, #6c757d, #495057)"
+                                : "linear-gradient(195deg, #28a745, #218838)",
+                            width: "70px", 
+                        }}
+                        >
+                        {selectedRole}
+                        </span>
+                    </div>
 
-          {/* Box 3: Employed Since */}
-          <div className="flex items-center">
-            <span className="text-gray-800 text-[17px] font-medium">Employed Since:</span>
-            <span className="pl-1 text-gray-600 font-medium">{user.employed}</span>
-          </div>
-        </div>
-      </div>
+                    {/* Box 2: Status */}
+                    <div className="flex items-center">
+                        <span className="text-gray-800 text-[17px] font-medium">Status:</span>
+                        <span
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase text-white ml-2`}
+                        style={{
+                            backgroundImage:
+                            user.status === "Online"
+                                ? "linear-gradient(195deg, #3fb906, #1a9e08)"
+                                : "linear-gradient(195deg, #757575, #424242)",
+                        }}
+                        >
+                        {user.status}
+                        </span>
+                    </div>
 
-      <div className="flex items-center justify-between mt-6">
-        <div className="flex items-center">
-            <span className="text-gray-800 text-[17px] font-medium">Change Role:</span>
-            <select
-            className="ml-4 p-1 border rounded-md bg-white"
-            value={selectedRole} 
-            onChange={(e) => setSelectedRole(e.target.value)} 
-            >
-            <option value="Admin">Admin</option>
-            <option value="Editor">Editor</option>
-            <option value="Viewer">Viewer</option>
-            <option value="User">User</option>
-            </select>
-        </div>
+                    {/* Box 3: Employed Since */}
+                    <div className="flex items-center">
+                        <span className="text-gray-800 text-[17px] font-medium">Employed Since:</span>
+                        <span className="pl-1 text-gray-600 font-medium">{user.employed}</span>
+                    </div>
+                    </div>
+                </div>
 
-        <button
-            className="ml-6 px-6 py-2  text-white rounded-md"
-            style={{
-                backgroundImage: "linear-gradient(195deg, #42424a, #191919)",
-            }}
-            onClick={handleSave} 
-        >
-            Save Changes
-        </button>
-        </div>
+                {/* Box 4: Role Input Dropdown and Save Button */}
+                <div className="flex items-center justify-between mt-6">
+                    <div className="flex items-center">
+                    <span className="text-gray-800 text-[17px] font-medium">Change Role:</span>
+                    <select
+                        className="ml-4 p-1 border rounded-md bg-white"
+                        value={selectedRole} 
+                        onChange={(e) => setSelectedRole(e.target.value)} 
+                    >
+                        <option value="Admin">Admin</option>
+                        <option value="Editor">Editor</option>
+                        <option value="Viewer">Viewer</option>
+                        <option value="User">User</option>
+                    </select>
+                    </div>
 
-    </div>
+                    <button
+                    className="ml-6 px-6 py-2 text-white rounded-md"
+                    style={{
+                        backgroundImage: "linear-gradient(195deg, #42424a, #191919)",
+                    }}
+                    onClick={handleSave} 
+                    >
+                    Save Changes
+                    </button>
+                </div>
+                </div>
+
           </div>
         </div>
       </div>
