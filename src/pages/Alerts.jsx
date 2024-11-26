@@ -31,9 +31,6 @@ export default function Alerts () {
     const [showRedAlert, setShowRedAlert] = useState(true);
     const [showYellowAlert, setShowYellowAlert] = useState(true);
 
-    
-
-
     const [toastType, setToastType] = useState("");
 
   const handleShowToast = (type) => {

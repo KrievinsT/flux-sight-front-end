@@ -127,7 +127,6 @@ const conversations = [
                 <Link to="/settings">
                  <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
                  </Link>
-
                  <NotificationDropdown />
                 
                 <Link to="/register">

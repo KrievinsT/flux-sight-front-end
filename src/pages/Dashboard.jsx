@@ -162,7 +162,7 @@ export default function Dashboard  () {
           <input
                 type="text"
                 placeholder="Type here..."
-                className="border border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700   focus:ring-1 focus:ring-pink-700 shadow-sm"
+                className="border-2 border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700 "
                 />
 
               <Link to="/dashboard/addwebsite">

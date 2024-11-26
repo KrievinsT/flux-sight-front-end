@@ -27,7 +27,7 @@ export default function AuthCodeModal({ email, onClose }) {
     };
 
     const handleAuthSubmit = (enteredCode) => {
-        if (enteredCode === '111111') { // Replace '111111' with your actual verification logic
+        if (enteredCode === '111111') { 
             setErrorMessage('');
             setSuccessMessage('Successful authentication. Redirecting to dashboard...');
             
