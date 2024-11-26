@@ -153,17 +153,13 @@ export default function AddWebsite () {
         </div>
           
           <div className="flex items-center space-x-4">
-          <input
-                type="text"
-                placeholder="Type here..."
-                className="border border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700   focus:ring-1 focus:ring-pink-700 shadow-sm"
-                />
+        
+          <Link to="/dashboard/addwebsite">
                  <button
-          
-          className="border-1 border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md"
-        >
-          Add website
-        </button>
+                 className="border-1 border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md" >
+                 Add website
+              </button>
+              </Link>
         <button
        
           className="border-1 border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
