@@ -21,29 +21,33 @@ import SidebarModal from "../modal/Sidebar";
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile () {
-    const [settings, setSettings] = useState([
-        {
-          id: "email_follow",
-          label: "Email me when someone follows me",
-          checked: true,
-        },
-        {
-          id: "email_post",
-          label: "Email me when someone answers on my post",
-          checked: false,
-        },
-        {
-          id: "email_mention",
-          label: "Email me when someone mentions me",
-          checked: true,
-        },
-        {
-          id: "new_launches",
-          label: "Disable/Enable alerts",
-          checked: false,
-        },
-        
-      ]);
+  const [settings, setSettings] = useState([
+    {
+      id: "email_send",
+      label: "Send emails",
+      checked: true,
+    },
+    {
+      id: "sms_send",
+      label: "Send sms",
+      checked: false,
+    },
+    {
+      id: "alerts",
+      label: "Disable/Enable alerts",
+      checked: true,
+    },
+  ]);
+
+  const handleToggleChange = (id) => {
+    setSettings((prevSettings) =>
+      prevSettings.map((setting) =>
+        setting.id === id
+          ? { ...setting, checked: !setting.checked }
+          : setting
+      )
+    );
+  };
 
 
 const conversations = [
@@ -74,15 +78,7 @@ const conversations = [
   },
 ];
     
-      const handleToggleChange = (id) => {
-        setSettings((prevSettings) =>
-          prevSettings.map((setting) =>
-            setting.id === id
-              ? { ...setting, checked: !setting.checked } 
-              : setting
-          )
-        );
-      };
+   
 
     const [activeTab, setActiveTab] = useState("App");
     const renderContent = () => {
@@ -233,14 +229,17 @@ const conversations = [
 <div className="flex space-x-6 pt-6">
     {/* Platform Settings */}
     <div className="w-full xl:w-1/3 bg-white rounded-lg">
-      <div className="p-2 ">
+      <div className="p-2">
         <h6 className="text-lg font-medium">Platform Settings</h6>
       </div>
       <div className="p-3">
-        <h6 className="uppercase text-gray-500 text-xs font-bold mb-4">Account</h6>
+        {/* Account Section */}
+        <h6 className="uppercase text-gray-500 text-xs font-bold mb-4">
+          Account
+        </h6>
         <ul className="space-y-6">
           {settings
-            .filter((setting) => setting.id.includes("email"))
+            .filter((setting) => setting.id === "email_send" || setting.id === "sms_send")
             .map((setting) => (
               <li key={setting.id} className="flex items-center">
                 <label
@@ -274,10 +273,13 @@ const conversations = [
             ))}
         </ul>
 
-        <h6 className="uppercase text-gray-500 text-xs font-bold mt-6 mb-4">Application</h6>
+        {/* Application Section */}
+        <h6 className="uppercase text-gray-500 text-xs font-bold mt-6 mb-4">
+          Application
+        </h6>
         <ul className="space-y-6">
           {settings
-            .filter((setting) => setting.id.includes("launches") || setting.id.includes("product") || setting.id.includes("newsletter")) // Update filter condition
+            .filter((setting) => setting.id === "alerts")
             .map((setting) => (
               <li key={setting.id} className="flex items-center">
                 <label
