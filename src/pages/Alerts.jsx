@@ -88,9 +88,28 @@ export default function Alerts () {
     }
   };
 
+  const handleBubbleEffect = (e) => {
+    const button = e.currentTarget;
+
+    const bubble = document.createElement("span");
+    const rect = button.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    bubble.style.left = `${x}px`;
+    bubble.style.top = `${y}px`;
+    bubble.className = "bubble";
+
+    button.appendChild(bubble);
+
+    bubble.addEventListener("animationend", () => {
+      bubble.remove();
+    });
+  };
+
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
-    {/* Sidebar */}
+   
     <SidebarModal />
 
       {/* Main content */}
@@ -137,7 +156,7 @@ export default function Alerts () {
       {/* Alerts Section */}
       <div className="card mt-2 bg-white shadow-lg rounded-lg">
       <div className="card-header bg-white px-6 py-4 bg-gray-100">
-        <h5 className="mb-0 text-2xl font-semibold">Alerts</h5>
+        <h5 className="mb-0 text-2xl font-semibold">Status history alerts</h5>
       </div>
       <div className="card-body px-6 py-4 space-y-4">
         {showBlueAlert && (
@@ -250,50 +269,61 @@ export default function Alerts () {
           </p>
         </div>
         <div className="card-body px-6 py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <button
-        onClick={() => handleShowToast("success")}
-        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
-        style={{
-          backgroundImage: buttonStyles.success.backgroundImage,
-          boxShadow: buttonStyles.success.shadow,
-        }}
-      >
-        Success
-      </button>
-      <button
-        onClick={() => handleShowToast("info")}
-        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
-        style={{
-          backgroundImage: buttonStyles.info.backgroundImage,
-          boxShadow: buttonStyles.info.shadow,
-        }}
-      >
-        Info
-      </button>
-      <button
-        onClick={() => handleShowToast("warning")}
-        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
-        style={{
-          backgroundImage: buttonStyles.warning.backgroundImage,
-          boxShadow: buttonStyles.warning.shadow,
-        }}
-      >
-        Warning
-      </button>
-      <button
-        onClick={() => handleShowToast("danger")}
-        className="font-medium text-white px-4 py-2 rounded-lg transition-shadow"
-        style={{
-          backgroundImage: buttonStyles.danger.backgroundImage,
-          boxShadow: buttonStyles.danger.shadow,
-        }}
-      >
-        Danger
-      </button>
-    </div>
-
-      </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <button
+      onClick={(e) => {
+        handleBubbleEffect(e);
+        handleShowToast("success");
+      }}
+      className="font-medium text-white px-4 py-2 rounded-lg transition-shadow relative overflow-hidden"
+      style={{
+        backgroundImage: buttonStyles.success.backgroundImage,
+        boxShadow: buttonStyles.success.shadow,
+      }}
+    >
+      Success
+    </button>
+    <button
+      onClick={(e) => {
+        handleBubbleEffect(e);
+        handleShowToast("info");
+      }}
+      className="font-medium text-white px-4 py-2 rounded-lg transition-shadow relative overflow-hidden"
+      style={{
+        backgroundImage: buttonStyles.info.backgroundImage,
+        boxShadow: buttonStyles.info.shadow,
+      }}
+    >
+      Info
+    </button>
+    <button
+      onClick={(e) => {
+        handleBubbleEffect(e);
+        handleShowToast("warning");
+      }}
+      className="font-medium text-white px-4 py-2 rounded-lg transition-shadow relative overflow-hidden"
+      style={{
+        backgroundImage: buttonStyles.warning.backgroundImage,
+        boxShadow: buttonStyles.warning.shadow,
+      }}
+    >
+      Warning
+    </button>
+    <button
+      onClick={(e) => {
+        handleBubbleEffect(e);
+        handleShowToast("danger");
+      }}
+      className="font-medium text-white px-4 py-2 rounded-lg transition-shadow relative overflow-hidden"
+      style={{
+        backgroundImage: buttonStyles.danger.backgroundImage,
+        boxShadow: buttonStyles.danger.shadow,
+      }}
+    >
+      Danger
+    </button>
+  </div>
+</div>
     </div>
 
             <div className="position-fixed bottom-3 end-1 z-50">

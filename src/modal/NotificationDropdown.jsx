@@ -89,7 +89,7 @@ const NotificationDropdown = () => {
       >
         <ul
           ref={dropdownRef}
-          className="absolute right-0 mt-5 w-64 bg-white border border-gray-200 rounded-lg shadow-lg py-3 px-2"
+          className="absolute right-0 mt-4 w-64 bg-white border border-gray-200 rounded-lg shadow-lg py-3 px-2"
         >
           {notifications.map((notification) => (
             <li key={notification.id} className="mb-2">

@@ -304,7 +304,7 @@ export default function Dashboard  () {
         </div>
         <div className="flex max-w-[100%] mx-auto mt-6 gap-6">
         <div className="w-[66%] min-h-[450px] bg-white border border-gray-200 rounded-lg p-0">
-        <div className="flex justify-between items-center px-5 py-5 pb-0">
+        <div className="flex justify-between items-center pl-5 py-5 pb-0">
         <h2 className="text-[18px] font-semibold">Websites</h2>
        
       </div>
@@ -327,7 +327,7 @@ export default function Dashboard  () {
           <tbody>
             {rows.map((row, index) => (
               <tr className="bg-white" key={index}>
-                <td className="px-4 py-3 border-t-2 border-gray-600">
+                <td className="px-4 py-3 border-t-2 border-gray-400">
                   <div className="flex items-center">
                     <img
                       src={row.companyImage}
@@ -341,7 +341,7 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 border-t-2 border-gray-600">
+                <td className="px-4 py-3 border-t-2 border-gray-400">
                   <div className="flex -space-x-2">
                     {row.members.map((member, memberIndex) => (
                       <img
@@ -354,7 +354,7 @@ export default function Dashboard  () {
                   </div>
                 </td>
               
-                <td className="px-4 py-3 border-t-2 border-gray-600">
+                <td className="px-4 py-3 border-t-2 border-gray-400">
                   <div className="w-3/4 mx-auto">
                     <div className="text-start text-xs font-bold text-gray-700 mb-1">
                       {row.completion}
@@ -367,7 +367,7 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="text-center px-4 py-3 border-t-2 border-gray-600 text-sm">
+                <td className="text-center px-4 py-3 border-t-2 border-gray-400 text-sm">
                   <div className="mt-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleEdit(index)}
