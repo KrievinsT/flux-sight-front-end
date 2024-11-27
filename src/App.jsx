@@ -13,8 +13,8 @@ import EditTable from './pages/EditTable';
 
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://prakse.proti.lv/api';
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
+axios.defaults.baseURL = 'https://prakse.proti.lv/api';
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 axios.defaults.withCredentials = true;
 
 function App() {

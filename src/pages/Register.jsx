@@ -157,7 +157,7 @@ export default function Register() {
   const handleGoogleSignIn = async () => {
     try {
       console.log('Initiating Google Sign-In...');
-      const response = await axios.get('http://127.0.0.1:8000/api/auth/google');
+      const response = await axios.get('/auth/google');
       const { url } = response.data;
       console.log('Google Sign-In URL:', url);
       window.location.href = url;
