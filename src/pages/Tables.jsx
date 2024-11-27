@@ -5,38 +5,37 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
-
+import ConfirmationModal from "../modal/ConfirmationModal";
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Tables () {
-
-  const contributors = [
+  const [contributors, setContributors] = useState([
     {
       id: 1,
       name: "John Michael",
       email: "email@example.com",
-      role: "Admin", 
+      role: "Admin",
       status: "Online",
       employed: "23/04/18",
-      avatar: "/images/p2.jpg", 
+      avatar: "/images/p2.jpg",
     },
     {
       id: 2,
       name: "Alexa Liras",
       email: "email@example.com",
-      role: "Editor",    
+      role: "Editor",
       status: "Offline",
       employed: "11/01/19",
-      avatar: "/images/p1.jpg", 
+      avatar: "/images/p1.jpg",
     },
     {
       id: 3,
       name: "Laurent Perrier",
       email: "email@example.com",
-      role: "Viewer", 
+      role: "Viewer",
       status: "Online",
       employed: "19/09/17",
-      avatar: "/images/p4.jpg", 
+      avatar: "/images/p4.jpg",
     },
     {
       id: 4,
@@ -45,10 +44,23 @@ export default function Tables () {
       role: "User",
       status: "Offline",
       employed: "11/11/20",
-      avatar: "/images/p4.jpg", 
+      avatar: "/images/p4.jpg",
     },
-  ];
+  ]);
 
+  const [selectedContributor, setSelectedContributor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRemoveClick = (contributor) => {
+    setSelectedContributor(contributor);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmRemove = () => {
+    setContributors(contributors.filter((c) => c.id !== selectedContributor.id));
+    setIsModalOpen(false);
+    setSelectedContributor(null);
+  };
 
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
@@ -67,7 +79,7 @@ export default function Tables () {
           
           <div className="flex items-center space-x-4">
           
-          <Link to="/dashboard/addcontributor">
+          <Link to="/tables/addcontributor">
                  <button
                  className="border-1 border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md" >
                  Add Contributor
@@ -184,9 +196,12 @@ export default function Tables () {
                         Edit
                       </button>
                     </Link>
-                    <button className="text-gray-500 pl-2 text-sm font-semibold hover:text-pink-600">
-                      Remove
-                    </button>
+                    <button
+                          onClick={() => handleRemoveClick(contributor)}
+                          className="text-gray-500 pl-2 text-sm font-semibold hover:text-pink-600"
+                        >
+                          Remove
+                        </button>
                   </td>
                 </tr>
               ))}
@@ -198,6 +213,12 @@ export default function Tables () {
     </div>
 
         </div>
+        <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmRemove}
+        contributorName={selectedContributor?.name}
+      />
       </div>
   
   );

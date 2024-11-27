@@ -1,22 +1,8 @@
 
 import React, { useState, useEffect } from "react";
-import { FaRegStar } from "react-icons/fa";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
-import { MdOutlineTableView } from "react-icons/md";
-import { RiBillLine } from "react-icons/ri";
-import { PiVirtualReality } from "react-icons/pi";
-import { MdInsertLink } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
-import { SlLogin } from "react-icons/sl";
-import { FaRegBell } from "react-icons/fa";
-import { IoCode } from "react-icons/io5";
-import { MdOutlineShoppingCart } from "react-icons/md";
-import { FaRegCreditCard } from "react-icons/fa";
-import { BsFillKeyFill } from "react-icons/bs";
-import { GiMoneyStack } from "react-icons/gi";
+
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
 import { SiInstatus } from "react-icons/si";
@@ -28,6 +14,7 @@ import WebsiteViewsCard from "../modal/WebsiteViewsCard";
 import DailySalesCard from "../modal/DailySalesCard";
 import TrafficByCountryCard from "../modal/TrafficByCountryCard";
 import SidebarModal from "../modal/Sidebar";
+import SettingsBar from '../modal/SettingsBar';
 
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -45,6 +32,7 @@ const currentPerformance = seoPerformance.find((perf) => perf.label === status);
 
 
 export default function Dashboard  () {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [rows, setRows] = useState([
     {
@@ -103,44 +91,6 @@ export default function Dashboard  () {
     setRows(updatedRows);
   };
 
-  const timelineItems = [
-    {
-      icon: <FaRegBell />,
-      color: "text-green-500",
-      title: "$2400, Design changes",
-      date: "22 DEC 7:20 PM",
-    },
-    {
-      icon: <IoCode />,
-      color: "text-red-500",
-      title: "New order #1832412",
-      date: "21 DEC 11 PM",
-    },
-    {
-      icon: <MdOutlineShoppingCart />,
-      color: "text-blue-500",
-      title: "Server payments for April",
-      date: "21 DEC 9:34 PM",
-    },
-    {
-      icon: <FaRegCreditCard />,
-      color: "text-yellow-500",
-      title: "New card added for order #4395133",
-      date: "20 DEC 2:20 AM",
-    },
-    {
-      icon: <BsFillKeyFill />,
-      color: "text-red-500",
-      title: "Unlock packages for development",
-      date: "18 DEC 4:54 AM",
-    },
-    {
-      icon: <GiMoneyStack />,
-      color: "text-gray-700",
-      title: "New order #9583120",
-      date: "17 DEC",
-    },
-  ];
   
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
@@ -177,9 +127,17 @@ export default function Dashboard  () {
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+               
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
+             
 
                  <NotificationDropdown />
                 
@@ -303,8 +261,8 @@ export default function Dashboard  () {
          
         </div>
         <div className="flex max-w-[100%] mx-auto mt-6 gap-6">
-        <div className="w-[66%] min-h-[450px] bg-white border border-gray-200 rounded-lg p-0">
-        <div className="flex justify-between items-center pl-5 py-5 pb-0">
+        <div className="w-full min-h-[450px] bg-white border border-gray-200 rounded-lg p-0">
+        <div className="flex justify-between items-center pl-5 py-4 pb-0">
         <h2 className="text-[18px] font-semibold">Websites</h2>
        
       </div>
@@ -327,7 +285,7 @@ export default function Dashboard  () {
           <tbody>
             {rows.map((row, index) => (
               <tr className="bg-white" key={index}>
-                <td className="px-4 py-3 border-t-2 border-gray-400">
+                <td className="px-4 py-3  border-b-2 border-gray-400">
                   <div className="flex items-center">
                     <img
                       src={row.companyImage}
@@ -341,7 +299,7 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 border-t-2 border-gray-400">
+                <td className="px-4 py-3 border-b-2 border-gray-400">
                   <div className="flex -space-x-2">
                     {row.members.map((member, memberIndex) => (
                       <img
@@ -354,7 +312,7 @@ export default function Dashboard  () {
                   </div>
                 </td>
               
-                <td className="px-4 py-3 border-t-2 border-gray-400">
+                <td className="px-4 py-3 border-b-2  border-gray-400">
                   <div className="w-3/4 mx-auto">
                     <div className="text-start text-xs font-bold text-gray-700 mb-1">
                       {row.completion}
@@ -367,7 +325,7 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="text-center px-4 py-3 border-t-2 border-gray-400 text-sm">
+                <td className="text-center px-4 py-3 border-b-2  border-gray-400 text-sm">
                   <div className="mt-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleEdit(index)}
@@ -398,34 +356,6 @@ export default function Dashboard  () {
 
 </div>
 
-<div className="w-[32%] bg-white border border-gray-200 rounded-lg p-4">
-      <h2 className="text-[18px] font-semibold">Orders overview</h2>
-      <div className="text-gray-600 mt-2">
-        <i className="fa fa-arrow-up text-green-500 mr-1" aria-hidden="true"></i>
-        <span className="font-bold text-gray-600">24%</span>
-        <span className="ml-1 text-gray-500">this month</span>
-      </div>
-
-      <div className="mt-8">
-        <div className="timeline space-y-4">
-          {timelineItems.map((item, index) => (
-            <div className="timeline-block flex items-start" key={index}>
-              <span
-                className={`timeline-step w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 ${item.color}`}
-              >
-                <span className="material-icons">{item.icon}</span>
-              </span>
-              <div className="timeline-content ml-4">
-                <h6 className="text-sm font-bold text-gray-800 mb-1">
-                  {item.title}
-                </h6>
-                <p className="font-medium text-gray-500 text-xs ">{item.date}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
         </div>
       </div>
     </div>
