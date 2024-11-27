@@ -60,7 +60,7 @@ export default function AuthCodeModal({ email, onClose }) {
     
                 console.log('Registration response:', registerResponse);
     
-                if (registerResponse.data.message === 'Registration successful') {
+                if (registerResponse.data.message === 'User registered successfully.') {
                     setSuccessMessage('Registration successful! Redirecting to dashboard...');
                     setErrorMessage('');
     
