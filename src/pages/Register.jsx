@@ -143,6 +143,42 @@ export default function Register() {
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      // Store the token (e.g., in local storage) and navigate to the dashboard
+      localStorage.setItem('auth_token', token);
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      console.log('Initiating Google Sign-In...');
+      const response = await axios.get('http://127.0.0.1:8000/api/auth/google');
+      const { url } = response.data;
+      console.log('Google Sign-In URL:', url);
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error with Google Sign-In:', error);
+    }
+  };
+
+  const checkForTokenAndRedirect = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      // Token is present, meaning authentication was successful
+      window.location.href = '/dashboard';
+    }
+  };
+
+  // Run this function after the page loads to check for the token
+  window.onload = checkForTokenAndRedirect;
+
   return (
     <div
       className="min-h-screen max-w-full bg-cover overflow-hidden"
@@ -175,7 +211,9 @@ export default function Register() {
                 Sign up
               </h2>
               <div className="flex justify-center mt-6 mb-3 space-x-4">
-                <button className="flex items-center bg-white text-gray-900 rounded-lg p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500">
+                <button
+                  className="flex items-center bg-white text-gray-900 rounded-lg p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500"
+                  onClick={handleGoogleSignIn}>
                   <img src="./images/google.png" alt="Google logo" className="w-6 h-6 mr-3" />
                   <span className="font-medium text-gray-700">Sign up with Google</span>
                 </button>
