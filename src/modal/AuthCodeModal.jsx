@@ -32,38 +32,50 @@ export default function AuthCodeModal({ email, onClose }) {
             const token = localStorage.getItem('twoFactorToken');
             console.log('Submitting 2FA code:', enteredCode);
             console.log('Using token:', token);
-    
+
             if (!token) {
                 throw new Error('Token not found in local storage.');
             }
-    
+
             const response = await axios.post('/2fa/verify', { two_factor_code: enteredCode, token }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             console.log('2FA verification response:', response);
-    
+
             if (response.data.message === '2FA verified successfully.') {
                 setSuccessMessage('2FA verification successful! Registering your account...');
-    
+
                 // Call the /register endpoint
                 const formData = JSON.parse(localStorage.getItem('register'));
                 console.log('Submitting registration data:', formData);
-    
+
                 const registerResponse = await axios.post('/register', formData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 });
-    
+
                 console.log('Registration response:', registerResponse);
-    
+
                 if (registerResponse.data.message === 'User registered successfully.') {
                     setSuccessMessage('Registration successful! Redirecting to dashboard...');
                     setErrorMessage('');
-    
+
+                    // Debug logs
+                    console.log('Token:', registerResponse.data.token);
+                    console.log('User:', registerResponse.data.user);
+
+                    // Store token and user in local storage using values from JSON response
+                    localStorage.setItem('token', registerResponse.data.token);
+                    localStorage.setItem('user', registerResponse.data.user);
+
+                    // Confirm that values are set
+                    console.log('Stored token:', localStorage.getItem('token'));
+                    console.log('Stored user:', localStorage.getItem('user'));
+
                     setTimeout(() => {
                         onClose();
                         navigate('/dashboard');
@@ -71,6 +83,8 @@ export default function AuthCodeModal({ email, onClose }) {
                 } else {
                     throw new Error(registerResponse.data.message);
                 }
+
+
             } else {
                 throw new Error(response.data.message);
             }
@@ -80,12 +94,12 @@ export default function AuthCodeModal({ email, onClose }) {
             setSuccessMessage('');
         }
     };
-    
+
 
     const handleClearCode = () => {
-        setCode(Array(6).fill('')); 
-        setErrorMessage(''); 
-        setSuccessMessage(''); 
+        setCode(Array(6).fill(''));
+        setErrorMessage('');
+        setSuccessMessage('');
     };
 
     return (
@@ -115,12 +129,12 @@ export default function AuthCodeModal({ email, onClose }) {
                     ))}
                 </div>
                 <div className="flex justify-center gap-2 mb-2 ">
-                <button
-                    onClick={handleClearCode}
-                    className="bg-gray-300 text-black py-1 px-4 mt-2 rounded-md font-medium hover:bg-gray-400 focus:outline-none"
-                >
-                    Clear
-                </button>
+                    <button
+                        onClick={handleClearCode}
+                        className="bg-gray-300 text-black py-1 px-4 mt-2 rounded-md font-medium hover:bg-gray-400 focus:outline-none"
+                    >
+                        Clear
+                    </button>
                 </div>
                 {errorMessage && <p className="text-red-500 mb-0">{errorMessage}</p>}
                 {successMessage && <p className=" text-sm font-mediumw-full mt-3 max-w-md bg-green-600 text-white rounded-lg shadow-lg p-4 text-center  transition-opacity opacity-100 animate-fadeIn">{successMessage}</p>}
