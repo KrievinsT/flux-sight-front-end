@@ -14,7 +14,7 @@ export default function EditTable() {
   const [user, setUser] = useState(null); 
 
   const handleSave = () => {
-    // Make API requests
+  
     console.log("Saved role:", selectedRole);
   };
 
@@ -92,7 +92,7 @@ export default function EditTable() {
           
           <div className="flex items-center space-x-4">
           
-          <Link to="/dashboard/addcontributor">
+          <Link to="/tables/addcontributor">
                  <button
                  className="border-1 border-pink-600  text-pink-600  p-[0.5rem] text-[14px] font-small rounded-md" >
                  Add Contributor

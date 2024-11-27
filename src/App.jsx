@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Alerts from './pages/Alerts';
 import Tables from './pages/Tables';
 import EditTable from './pages/EditTable';
+import AddContributor from './pages/AddContributor';
 
 import axios from 'axios';
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/tables" element={<Tables />} />
         <Route path="/tables/edittable" element={<EditTable />} />
+        <Route path="/tables/addcontributor" element={<AddContributor />} />
       </Routes>
     </Router>
   );
