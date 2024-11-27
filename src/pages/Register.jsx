@@ -171,13 +171,18 @@ export default function Register() {
     const token = urlParams.get('token');
 
     if (token) {
-      // Token is present, meaning authentication was successful
-      window.location.href = '/dashboard';
+        // Store the token in local storage
+        localStorage.setItem('auth_token', token);
+        // Redirect to your dashboard
+        window.location.href = '/dashboard';
+    } else {
+        console.error('No token found in the URL');
     }
-  };
+};
 
-  // Run this function after the page loads to check for the token
-  window.onload = checkForTokenAndRedirect;
+window.onload = checkForTokenAndRedirect;
+
+
 
   return (
     <div
