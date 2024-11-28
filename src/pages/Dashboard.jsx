@@ -138,7 +138,6 @@ export default function Dashboard  () {
         onClose={() => setIsSettingsOpen(false)} 
         />
              
-
                  <NotificationDropdown />
                 
                 <Link to="/register">
@@ -199,7 +198,7 @@ export default function Dashboard  () {
   
     <div className="flex justify-between items-center">
       <div>
-        <div className="text-gray-600 text-sm">SEO Performance</div>
+        <div className="text-gray-600 ">SEO Performance</div>
         <div className="text-xl font-bold ">{currentPerformance.label}</div>
       </div>
       <div

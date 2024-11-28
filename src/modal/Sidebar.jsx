@@ -1,13 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MdOutlineDashboard, MdOutlineTableView } from "react-icons/md";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 
 const SidebarModal = () => {
-  const location = useLocation(); // Get the current route path
+  const [sidebarColor, setSidebarColor] = useState("blue");
+  const [sidebarType, setSidebarType] = useState("White"); 
+  const location = useLocation();
 
-  // Map routes to corresponding active button states
+  
+  useEffect(() => {
+    const updateSidebarType = () => {
+      const savedType = localStorage.getItem("sidebarType");
+      if (savedType) {
+        setSidebarType(savedType); 
+      }
+    };
+
+    const updateColor = () => {
+      const savedColor = localStorage.getItem("sidebarColor");
+      if (savedColor) {
+        setSidebarColor(savedColor); 
+      }
+    };
+
+    updateSidebarType();
+    updateColor();
+
+
+    window.addEventListener("storage", () => {
+      updateSidebarType(); 
+      updateColor();
+    });
+
+    return () => {
+      window.removeEventListener("storage", () => {
+        updateSidebarType();
+        updateColor();
+      });
+    };
+  }, []); 
+
   const getActiveButton = () => {
     switch (location.pathname) {
       case "/dashboard":
@@ -23,22 +57,40 @@ const SidebarModal = () => {
     }
   };
 
-  const activeButton = getActiveButton(); // Determine which button is active
+  const activeButton = getActiveButton();
+
+  const activeButtonStyle = {
+    backgroundImage: activeButton ? `linear-gradient(195deg, ${sidebarColor}, #191919)` : "none",
+  };
+
+  const activeTextStyle = {
+    color: activeButton ? "white" : "#4b5563",
+  };
+
+  const sidebarBackgroundStyle = {
+    backgroundColor: sidebarType === "Dark" ? "#333" : sidebarType === "Transparent" ? "transparent" : "#fff",
+  };
+
 
   return (
+   
     <aside
-      className="w-[15rem] bg-white rounded-lg border border-gray-200 p-4 flex flex-col animate-slideInLeft"
-      style={{
-        position: "fixed",
-        top: "7px",
-        left: "7px",
-        height: "98vh",
-        overflowY: "auto",
-        zIndex: 1000,
-      }}
-    >
+    className="w-[15rem] rounded-lg border border-gray-200 p-4 flex flex-col animate-slideInLeft"
+    style={{
+      ...sidebarBackgroundStyle, 
+      position: "fixed",
+      top: "7px",
+      left: "7px",
+      height: "98vh",
+      overflowY: "auto",
+      zIndex: 1000,
+    }}
+  >
       <Link to="/dashboard">
-        <div className="flex items-center justify-between mb-4">
+        <div
+          className={`flex items-center justify-between mb-4 ${
+            sidebarType === "Dark" ? "text-white" : ""
+          }`}>
           <img
             src="/images/fluxsight.png"
             alt="fluxsight logo"
@@ -46,28 +98,22 @@ const SidebarModal = () => {
           />
         </div>
       </Link>
+
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-2 mb-4"></div>
       <nav className="flex flex-col flex-1 space-y-4">
         <ul className="space-y-2">
           <Link to="/dashboard">
             <li
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
-                activeButton === "dashboard"
-                  ? "text-white"
+                activeButton === "dashboard" || sidebarType === "Dark"
+                  ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
               }`}
-              style={{
-                backgroundImage:
-                  activeButton === "dashboard"
-                    ? "linear-gradient(195deg, #42424a, #191919)"
-                    : "none",
-              }}
+              style={activeButton === "dashboard" ? activeButtonStyle : {}}
             >
               <span
                 className="mr-2"
-                style={{
-                  color: activeButton === "dashboard" ? "white" : "#4b5563",
-                }}
+                style={activeButton === "dashboard" ? activeTextStyle : {}}
               >
                 <MdOutlineDashboard className="w-5 h-5" />
               </span>
@@ -77,22 +123,15 @@ const SidebarModal = () => {
           <Link to="/tables">
             <li
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
-                activeButton === "tables"
-                  ? "text-white"
+                activeButton === "tables" || sidebarType === "Dark"
+                  ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
               }`}
-              style={{
-                backgroundImage:
-                  activeButton === "tables"
-                    ? "linear-gradient(195deg, #42424a, #191919)"
-                    : "none",
-              }}
+              style={activeButton === "tables" ? activeButtonStyle : {}}
             >
               <span
                 className="mr-2"
-                style={{
-                  color: activeButton === "tables" ? "white" : "#4b5563",
-                }}
+                style={activeButton === "tables" ? activeTextStyle : {}}
               >
                 <MdOutlineTableView className="w-5 h-5" />
               </span>
@@ -102,22 +141,15 @@ const SidebarModal = () => {
           <Link to="/alerts">
             <li
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
-                activeButton === "notifications"
-                  ? "text-white"
+                activeButton === "notifications" || sidebarType === "Dark"
+                  ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
               }`}
-              style={{
-                backgroundImage:
-                  activeButton === "notifications"
-                    ? "linear-gradient(195deg, #42424a, #191919)"
-                    : "none",
-              }}
+              style={activeButton === "notifications" ? activeButtonStyle : {}}
             >
               <span
                 className="mr-2"
-                style={{
-                  color: activeButton === "notifications" ? "white" : "#4b5563",
-                }}
+                style={activeButton === "notifications" ? activeTextStyle : {}}
               >
                 <IoMdNotificationsOutline className="w-5 h-5" />
               </span>
@@ -125,29 +157,20 @@ const SidebarModal = () => {
             </li>
           </Link>
         </ul>
-        <div className="font-semibold text-[15px] text-gray-500 mt-8 pl-6">
-          ACCOUNT PAGES
-        </div>
+        <div className={`font-semibold text-[15px] mt-8 pl-6 ${sidebarType === "Dark" ? "text-white" : "text-gray-500" }`}> ACCOUNT PAGES</div>
         <ul className="space-y-2">
           <Link to="/profile">
             <li
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
-                activeButton === "profile"
-                  ? "text-white"
+                activeButton === "profile" || sidebarType === "Dark"
+                  ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
               }`}
-              style={{
-                backgroundImage:
-                  activeButton === "profile"
-                    ? "linear-gradient(195deg, #42424a, #191919)"
-                    : "none",
-              }}
+              style={activeButton === "profile" ? activeButtonStyle : {}}
             >
               <span
                 className="mr-2"
-                style={{
-                  color: activeButton === "profile" ? "white" : "#4b5563",
-                }}
+                style={activeButton === "profile" ? activeTextStyle : {}}
               >
                 <FaRegUser className="w-5 h-5" />
               </span>

@@ -12,6 +12,7 @@ import Tables from './pages/Tables';
 import EditTable from './pages/EditTable';
 import AddContributor from './pages/AddContributor';
 
+
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://prakse.proti.lv/api';
