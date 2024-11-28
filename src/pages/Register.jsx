@@ -54,7 +54,7 @@ export default function Register() {
   };
 
   const validateForm = () => {
-    if (name.trim().length < 3 || name.trim().length > 12) {
+    if (name.trim().length < 3) {
       setErrorMessage('Name must be between 3 and 12 characters.');
       setSuccessMessage('');
       return false;
