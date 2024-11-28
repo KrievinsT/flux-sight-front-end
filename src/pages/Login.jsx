@@ -77,7 +77,7 @@ export default function Login() {
 
       const preData = preResponse.data;
       setShowMessage(preData.message, false);
-      setUserEmail(email); // Ensure the userEmail state is set
+      setUserEmail(email);
 
       const generate2FAResponse = await axios.post('/2fa/generate', { login_data: formData }, {
         headers: {
@@ -94,8 +94,8 @@ export default function Login() {
       localStorage.setItem('twoFactorToken', generate2FAData.token);
       setShowMessage(generate2FAData.message, false);
 
-      setActionType('login'); // Set the action type to 'login'
-      setShowAuthModal(true); // Show the modal
+      setActionType('login');
+      setShowAuthModal(true);
 
     } catch (error) {
       console.error('Error in pre-login or 2FA flow:', error.response ? error.response.data : error.message);

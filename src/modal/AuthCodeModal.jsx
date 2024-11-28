@@ -77,6 +77,11 @@ export default function AuthCodeModal({ email, onClose, actionType }) {
 
                     localStorage.setItem('token', authResponse.data.token);
                     localStorage.setItem('user', authResponse.data.user);
+                    localStorage.setItem('id', authResponse.data.id);
+                    localStorage.removeItem('login');
+                    localStorage.removeItem('twoFactorToken');
+                    localStorage.removeItem('twoFactorCode');
+                    localStorage.removeItem('register');
 
                     setTimeout(() => {
                         onClose();
