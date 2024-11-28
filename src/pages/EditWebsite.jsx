@@ -116,7 +116,7 @@ export default function EditWebsite () {
               name: "Emily Johnson",
               email: "emily.johnson@example.com",
               phone: "555-123-4567",
-              role: "Moderator",
+              role: "Viewer",
               profileImage: "/images/p3.jpg",
             },
           ];
