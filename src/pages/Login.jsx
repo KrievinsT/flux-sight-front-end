@@ -15,9 +15,15 @@ export default function Login() {
   const [showMessage, setShowMessage] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [actionType, setActionType] = useState('');
+  const [save, setSave] = useState(false);
 
   const handleToggleChange = () => {
     setIsChecked(!isChecked);
+
+    if(!isChecked) {
+      setSave(true);
+    }
+
   }
 
   const validateForm = () => {
@@ -282,6 +288,7 @@ export default function Login() {
             onClose={() => setShowAuthModal(false)}
             onVerify={handleVerifyLogin}
             actionType={actionType}
+            save={save}
           />
         )}
       </main>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function AuthCodeModal({ email, onClose, actionType }) {
+export default function AuthCodeModal({ email, onClose, actionType, save }) {
     const [code, setCode] = useState(Array(6).fill(''));
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -74,10 +74,11 @@ export default function AuthCodeModal({ email, onClose, actionType }) {
                 if (authResponse.data.message.includes('successful')) {
                     setSuccessMessage(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} successful! Redirecting to dashboard...`);
                     setErrorMessage('');
-
-                    localStorage.setItem('token', authResponse.data.token);
-                    localStorage.setItem('user', authResponse.data.user);
-                    localStorage.setItem('id', authResponse.data.id);
+                    if (save === true) {
+                        localStorage.setItem('token', authResponse.data.token);
+                        localStorage.setItem('user', authResponse.data.user);
+                        localStorage.setItem('id', authResponse.data.id);
+                    }
                     localStorage.removeItem('login');
                     localStorage.removeItem('twoFactorToken');
                     localStorage.removeItem('twoFactorCode');
