@@ -23,6 +23,8 @@ export default function Register() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
 
+  const [actionType, setActionType] = useState('');
+
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -63,7 +65,6 @@ export default function Register() {
       setSuccessMessage('');
       return false;
     }
-
 
     if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
       setErrorMessage('Password must be at least 8 characters long, contain an uppercase letter, a number, and special character.');
@@ -116,9 +117,9 @@ export default function Register() {
 
         const preData = preResponse.data;
         setShowMessage(preData.message, false);
-        setUserEmail(email); // Ensure the userEmail state is set
+        setUserEmail(email);
 
-        const generate2FAResponse = await axios.post('/2fa/generate', { registration_data: { email } }, {
+        const generate2FAResponse = await axios.post('/2fa/generate', { registration_data: formData }, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -133,6 +134,7 @@ export default function Register() {
         localStorage.setItem('twoFactorToken', generate2FAData.token);
         setShowMessage(generate2FAData.message, false);
 
+        setActionType('register'); // Set the action type to 'register'
         setShowAuthModal(true); // Show the modal
 
       } catch (error) {
@@ -142,6 +144,7 @@ export default function Register() {
       }
     }
   };
+
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -171,18 +174,16 @@ export default function Register() {
     const token = urlParams.get('token');
 
     if (token) {
-        // Store the token in local storage
-        localStorage.setItem('auth_token', token);
-        // Redirect to your dashboard
-        window.location.href = '/dashboard';
+      // Store the token in local storage
+      localStorage.setItem('auth_token', token);
+      // Redirect to your dashboard
+      window.location.href = '/dashboard';
     } else {
-        console.error('No token found in the URL');
+      console.error('No token found in the URL');
     }
-};
+  };
 
-window.onload = checkForTokenAndRedirect;
-
-
+  window.onload = checkForTokenAndRedirect;
 
   return (
     <div
@@ -357,6 +358,7 @@ window.onload = checkForTokenAndRedirect;
           <AuthCodeModal
             email={userEmail}
             onClose={() => setShowAuthModal(false)}
+            actionType={actionType}
           />
         )}
       </main>
