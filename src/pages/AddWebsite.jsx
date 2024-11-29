@@ -105,6 +105,7 @@ export default function AddWebsite() {
 
         if (response.status === 201) {
           console.log("Form submitted successfully:", response.data);
+          // const response = await axios.post('/storage/store');
         } else {
           console.log("Unexpected response:", response.data);
         }
@@ -169,12 +170,12 @@ export default function AddWebsite() {
 
             <IoSettingsOutline
               className="w-5 h-5 cursor-pointer text-gray-600"
-              onClick={() => setIsSettingsOpen(true)} 
+              onClick={() => setIsSettingsOpen(true)}
             />
-          
+
             <SettingsBar
-               isOpen={isSettingsOpen} 
-              onClose={() => setIsSettingsOpen(false)} 
+              isOpen={isSettingsOpen}
+              onClose={() => setIsSettingsOpen(false)}
             />
 
             <NotificationDropdown />

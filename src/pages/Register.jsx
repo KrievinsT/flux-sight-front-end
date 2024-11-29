@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import AuthCodeModal from '../modal/AuthCodeModal';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 import '../index.css';
 
@@ -54,30 +55,39 @@ export default function Register() {
   };
 
   const validateForm = () => {
-    if (name.trim().length < 3) {
-      setErrorMessage('Name must be between 3 and 12 characters.');
+ 
+    const sanitizedName = DOMPurify.sanitize(name.trim());
+    const sanitizedEmail = DOMPurify.sanitize(email.trim());
+    const sanitizedPassword = DOMPurify.sanitize(password.trim());
+  
+
+    if (!/^[a-zA-Z\s]{3}$/.test(sanitizedName)) {
+      setErrorMessage('Name must be atleast 3 characters and only contain letters.');
       setSuccessMessage('');
       return false;
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
       setErrorMessage('Please enter a valid email address.');
       setSuccessMessage('');
       return false;
     }
-
-    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
-      setErrorMessage('Password must be at least 8 characters long, contain an uppercase letter, a number, and special character.');
+  
+    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(sanitizedPassword)) {
+      setErrorMessage(
+        'Password must be 8-20 characters long, contain an uppercase letter, a number, and a special character.'
+      );
       setSuccessMessage('');
       return false;
     }
-
+  
     if (!isChecked) {
       setErrorMessage('You must agree to the Terms and Conditions.');
       setSuccessMessage('');
       return false;
     }
 
+    setErrorMessage('');
     return true;
   };
 
@@ -226,7 +236,15 @@ export default function Register() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="px-0 pt-6 pb-0">
+            <form
+              onSubmit={handleSubmit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !dropdownOpen) {
+                  handleSubmit(e);
+                }
+              }}
+              className="px-0 pt-6 pb-0"
+            >
               <div className="mb-4">
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
@@ -248,11 +266,14 @@ export default function Register() {
                 />
               </div>
               <div className="mb-4 flex gap-4 items-center">
-                {/* Custom Dropdown */}
                 <div className="relative w-1/3">
                   <button
                     className="flex items-center justify-between w-full px-3 py-2 text-gray-700 bg-white border rounded shadow focus:outline-none hover:border-gray-400"
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setDropdownOpen(!dropdownOpen);
+                    }}
+                    type="button" // Prevent unintended form submission
                   >
                     <span className="flex items-center">
                       {selectedCountry?.flag && (
@@ -267,15 +288,18 @@ export default function Register() {
                     <span className="text-gray-600">&#9660;</span>
                   </button>
                   {dropdownOpen && countries?.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
+                    <div
+                      className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-60 overflow-y-auto"
+                      role="listbox"
+                    >
                       <ul>
-                        {/* Sort countries alphabetically by name */}
                         {countries
                           ?.sort((a, b) => a.name.localeCompare(b.name))
                           .map((country) => (
                             <li
                               key={country.code}
                               className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100"
+                              role="option"
                               onClick={() => {
                                 setCountryCode(country.code);
                                 setSelectedCountry(country);
@@ -307,7 +331,6 @@ export default function Register() {
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
-
               <div className="mb-4">
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
@@ -332,13 +355,12 @@ export default function Register() {
               <div className="mb-4">
                 <button
                   className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+                  style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
                   type="submit"
                 >
                   Sign up
                 </button>
               </div>
-
               {errorMessage && (
                 <div className="text-red-500 font-medium text-sm">{errorMessage}</div>
               )}
