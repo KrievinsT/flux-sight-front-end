@@ -26,41 +26,81 @@ const seoPerformance = [
   { label: 'Poor', color: 'red', icon: <FaTimesCircle />, description: 'Critical SEO issues detected.' },
 ];
 
-
 const status = 'Poor'; // Example status from backend
 const currentPerformance = seoPerformance.find((perf) => perf.label === status);
 
-
 export default function Dashboard  () {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const [contributors, setContributors] = useState([
+    {
+      id: 1,
+      name: "John Michael",
+      email: "email@example.com",
+      role: "Admin",
+      status: "Online",
+      avatar: "/images/p2.jpg",
+    },
+    {
+      id: 2,
+      name: "Alexa Liras",
+      email: "email@example.com",
+      role: "Editor",
+      status: "Offline",
+      avatar: "/images/p1.jpg",
+    },
+    {
+      id: 3,
+      name: "Laurent Perrier",
+      email: "email@example.com",
+      role: "Viewer",
+      status: "Online",
+      avatar: "/images/p4.jpg",
+    },
+    {
+      id: 4,
+      name: "Toms Ginters",
+      email: "email@example.com",
+      role: "User",
+      status: "Offline",
+      avatar: "/images/p4.jpg",
+    },
+  ]);
 
   const [rows, setRows] = useState([
     {
       companyName: "Material XD Version",
       companyImage: "./images/xd.jpg",
       members: [
-        "./images/p1.jpg",
-        "./images/p2.jpg",
-        "./images/p3.jpg",
-        "./images/p4.jpg",
+        contributors[0], 
+        contributors[1], 
+        contributors[2], 
+        contributors[3]
       ],
-      budget: "$14,000",
+      url: "https://material.com",
       completion: "60%",
       completionWidth: "60%",
     },
     {
       companyName: "Add Progress Track",
       companyImage: "./images/test2.jfif",
-      members: ["./images/p1.jpg", "./images/p2.jpg"],
-      budget: "$3,000",
+      members: [
+        contributors[0], 
+        contributors[1]
+      ],
+      url: "https://addprogresstrack.com",
       completion: "10%",
       completionWidth: "10%",
     },
     {
       companyName: "Fix Platform Errors",
       companyImage: "./images/test3.jpg",
-      members: ["./images/p4.jpg", "./images/p1.jpg"],
-      budget: "Not set",
+      members: [
+        contributors[2], 
+        contributors[0]
+      ],
+      url: "https://fixplatform.com",
       completion: "100%",
       completionWidth: "100%",
     },
@@ -71,7 +111,7 @@ export default function Dashboard  () {
       companyName: "New Company",
       companyImage: "./images/new.jpg",
       members: ["./images/p1.jpg"],
-      budget: "$5,000",
+      url: "https://heroicons.com",
       completion: "20%",
       completionWidth: "20%",
     };
@@ -79,10 +119,14 @@ export default function Dashboard  () {
   };
 
   const handleEdit = (index) => {
-    
-    const updatedRows = [...rows];
-    updatedRows[index].budget = "$10,000"; 
-    setRows(updatedRows);
+    const selectedRow = rows[index]; 
+    navigate('/dashboard/editwebsite', {
+      state: {
+        members: selectedRow.members,
+        websiteName: selectedRow.companyName,
+        url: selectedRow.url,
+      },
+    });
   };
 
   const handleDelete = (index) => {
@@ -284,7 +328,7 @@ export default function Dashboard  () {
           <tbody>
             {rows.map((row, index) => (
               <tr className="bg-white" key={index}>
-                <td className="px-4 py-3  border-b-2 border-gray-400">
+                <td className="px-4 py-3 border-b border-gray-300">
                   <div className="flex items-center">
                     <img
                       src={row.companyImage}
@@ -298,20 +342,20 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 border-b-2 border-gray-400">
+                <td className="px-4 py-3 border-b border-gray-300">
                   <div className="flex -space-x-2">
                     {row.members.map((member, memberIndex) => (
                       <img
-                        src={member}
-                        alt={`team${memberIndex + 1}`}
                         key={memberIndex}
+                        src={member.avatar}  
+                        alt={member.name}    
                         className="w-6 h-6 rounded-full border-2 border-white"
                       />
                     ))}
                   </div>
                 </td>
-              
-                <td className="px-4 py-3 border-b-2  border-gray-400">
+
+                <td className="px-4 py-3 border-b border-gray-300">
                   <div className="w-3/4 mx-auto">
                     <div className="text-start text-xs font-bold text-gray-700 mb-1">
                       {row.completion}
@@ -324,17 +368,16 @@ export default function Dashboard  () {
                     </div>
                   </div>
                 </td>
-                <td className="text-center px-4 py-3 border-b-2  border-gray-400 text-sm">
+                <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
                   <div className="mt-2 flex justify-center space-x-2">
                     <button
                       onClick={() => handleEdit(index)}
                       className="text-blue-500 hover:text-blue-700"
                       aria-label="Edit"
                     >
-                      <Link to="/dashboard/editwebsite">
                       <FaEdit className="w-5 h-5" />
-                      </Link>
                     </button>
+
                     <button
                       onClick={() => handleDelete(index)}
                       className="text-red-500 hover:text-red-700"

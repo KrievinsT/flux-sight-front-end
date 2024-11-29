@@ -1,140 +1,136 @@
 
 import React, { useState, useEffect } from "react";
-
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
-import { MdOutlineTableView } from "react-icons/md";
-import { RiBillLine } from "react-icons/ri";
-import { MdInsertLink } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
-import { SlLogin } from "react-icons/sl";
-
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
-import SettingsBar from '../modal/SettingsBar';
+import SettingsBar from "../modal/SettingsBar";
+import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { Link, useNavigate } from 'react-router-dom';
-
-export default function EditWebsite () {
-
+export default function EditWebsite() {
+  const location = useLocation();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-    const [formData, setFormData] = useState({
-        websiteName: "",
-        url: "",
-        memberName: "",
-        memberEmail: "",
-      });
-    
-      const [errors, setErrors] = useState({
-        websiteName: "",
-        url: "",
-        memberName: "",
-        memberEmail: "",
-      });
-    
-      const validateInput = (field, value) => {
-        let error = "";
-    
-        if (field === "websiteName" && value.trim().length < 3) {
-          error = "Website name must be at least 3 characters long.";
-        } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
-          error = "Enter a valid URL (e.g., https://example.com).";
-        } else if (field === "memberName" && value.trim().length < 3) {
-          error = "Member name must be at least 3 characters long.";
-        } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-          error = "Enter a valid email address.";
-        }
-    
-        setErrors((prev) => ({ ...prev, [field]: error }));
-      };
-    
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        validateInput(name, value);
-      };
-    
-      const handleSubmit = (e) => {
-        e.preventDefault();
-    
-       
-        const newErrors = {};
-        Object.keys(formData).forEach((field) => {
-          const value = formData[field];
-          let error = "";
-    
-          if (field === "websiteName" && value.trim().length < 3) {
-            error = "Website name must be at least 3 characters long.";
-          } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
-            error = "Enter a valid URL (e.g., https://example.com).";
-          } else if (field === "memberName" && value.trim().length < 3) {
-            error = "Member name must be at least 3 characters long.";
-          } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-            error = "Enter a valid email address.";
-          }
-    
-          if (error) {
-            newErrors[field] = error;
-          }
-        });
-    
-        setErrors(newErrors);
-    
-       
-        const hasErrors = Object.keys(newErrors).length > 0;
-    
-        if (!hasErrors) {
-          console.log("Form submitted successfully:", formData);
-        } else {
-          console.log("Please fix the errors before submitting.");
-        }
-      };
+  // Convert members into state variable with initial data from location.state
+  const { websiteName = "", url = "" } = location.state || {};
+  const [members, setMembers] = useState(location.state?.members || []);
 
-      const [users, setUsers] = useState([]);
+  const [formData, setFormData] = useState({
+    websiteName: websiteName,
+    url: url,
+    memberName: "",
+    memberEmail: "",
+  });
 
-      useEffect(() => {
-        const fetchUsers = async () => {
-          const mockUsers = [
-            {
-              id: 1,
-              name: "John Doe",
-              email: "john.doe@example.com",
-              phone: "123-456-7890",
-              role: "Admin",
-              profileImage: "/images/p4.jpg",
-            },
-            {
-              id: 2,
-              name: "Jane Smith",
-              email: "jane.smith@example.com",
-              phone: "098-765-4321",
-              role: "User",
-              profileImage: "/images/p2.jpg",
-            },
-            {
-              id: 3,
-              name: "Emily Johnson",
-              email: "emily.johnson@example.com",
-              phone: "555-123-4567",
-              role: "Viewer",
-              profileImage: "/images/p3.jpg",
-            },
-          ];
-          setUsers(mockUsers);
-        };
-    
-        fetchUsers();
-      }, []);
-    
-      
-      const handleSelectUser = (userId) => {
-        alert(`User with ID ${userId} selected`);
-      };
-  
-    
+  const removeMember = (index) => {
+    setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
+  };
+
+  const [errors, setErrors] = useState({
+    websiteName: "",
+    url: "",
+    memberName: "",
+    memberEmail: "",
+  });
+
+  const validateInput = (field, value) => {
+    let error = "";
+
+    if (field === "websiteName" && value.trim().length < 3) {
+      error = "Website name must be at least 3 characters long.";
+    } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
+      error = "Enter a valid URL (e.g., https://example.com).";
+    } else if (field === "memberName" && value.trim().length < 3) {
+      error = "Member name must be at least 3 characters long.";
+    } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
+      error = "Enter a valid email address.";
+    }
+
+    setErrors((prev) => ({ ...prev, [field]: error }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    validateInput(name, value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+    Object.keys(formData).forEach((field) => {
+      const value = formData[field];
+      let error = "";
+
+      if (field === "websiteName" && value.trim().length < 3) {
+        error = "Website name must be at least 3 characters long.";
+      } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
+        error = "Enter a valid URL (e.g., https://example.com).";
+      } else if (field === "memberName" && value.trim().length < 3) {
+        error = "Member name must be at least 3 characters long.";
+      } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
+        error = "Enter a valid email address.";
+      }
+
+      if (error) {
+        newErrors[field] = error;
+      }
+    });
+
+    setErrors(newErrors);
+
+    const hasErrors = Object.keys(newErrors).length > 0;
+
+    if (!hasErrors) {
+      console.log("Form submitted successfully:", formData);
+    } else {
+      console.log("Please fix the errors before submitting.");
+    }
+  };
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const mockUsers = [
+        {
+          id: 1,
+          name: "John Doe",
+          email: "john.doe@example.com",
+          phone: "123-456-7890",
+          role: "Admin",
+          profileImage: "/images/p4.jpg",
+        },
+        {
+          id: 2,
+          name: "Jane Smith",
+          email: "jane.smith@example.com",
+          phone: "098-765-4321",
+          role: "User",
+          profileImage: "/images/p2.jpg",
+        },
+        {
+          id: 3,
+          name: "Emily Johnson",
+          email: "emily.johnson@example.com",
+          phone: "555-123-4567",
+          role: "Viewer",
+          profileImage: "/images/p3.jpg",
+        },
+      ];
+      setUsers(mockUsers);
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleSelectUser = (userId) => {
+    alert(`User with ID ${userId} selected`);
+  };
+
+
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
     {/* Sidebar */}
@@ -261,6 +257,32 @@ export default function EditWebsite () {
                 </span>
             )}
             </div>
+
+          {/* Current website members */}
+
+          <div className="mb-4">
+      <label className="block text-sm font-semibold text-gray-700 mb-2">
+        Current Members
+      </label>
+      <ul className="list-disc pl-5 text-gray-700">
+        {members.map((member, index) => (
+          <li key={index} className="flex items-center mb-2">
+          <img src={member.avatar} alt={member.name} className="w-8 h-8 mr-3 rounded-lg" />
+            <div>
+              <span className="text-sm font-medium">{member.name}</span>
+              <span className="text-xs text-gray-500 ml-2">({member.role})</span>
+            </div>
+            <button
+              onClick={() => removeMember(index)}
+              className="ml-auto text-red-500 hover:text-red-700"
+            >
+              &#x2716;
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
             <div className="flex flex-wrap gap-4 mb-4">
             {/* Member Name */}
             <div className="flex-1">
@@ -268,7 +290,7 @@ export default function EditWebsite () {
                 htmlFor="memberName"
                 className="block text-sm font-semibold text-gray-700 mb-2"
                 >
-                 Edit Member
+                 Search Member
                 </label>
                 <input
                 type="text"
@@ -276,20 +298,21 @@ export default function EditWebsite () {
                 id="memberName"
                 value={formData.memberName}
                 onChange={handleChange}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline
+                className={`shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline
                     ${
                     errors.memberName
                         ? "border-red-500 focus:ring-2 focus:ring-red-400"
                         : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
                     }
                 `}
-                placeholder="Search member by name or email"
+                placeholder="Add member by name or email"
                 />
                 {errors.memberName && (
                 <span className="text-red-500 text-xs mt-2 inline-block">
                     {errors.memberName}
                 </span>
                 )}
+            </div>
             </div>
 
             <div className="flex-1">
@@ -320,18 +343,10 @@ export default function EditWebsite () {
                       </h6>
                     </div>
                   </div>
-                </td>
-
-                {/* User Email */}
+                </td>   
                 <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.email}</td>
-
-                {/* User Phone Number */}
                 <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.phone}</td>
-
-                {/* User Role */}
                 <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.role}</td>
-
-                {/* Action - Select Button */}
                 <td className="text-center px-6 py-4">
                   <button
                     onClick={() => handleSelectUser(user.id)}
@@ -346,8 +361,7 @@ export default function EditWebsite () {
         </table>
       </div>
     </div>
-            </div>
-
+           
           {/* Submit Button */}
           <div className="flex justify-center pt-6">
             <button
