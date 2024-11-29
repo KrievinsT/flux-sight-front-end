@@ -14,13 +14,17 @@ import { AiOutlineHome } from "react-icons/ai";
 import { IoMailOutline } from "react-icons/io5";
 import { LuSettings } from "react-icons/lu";
 
-
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
+import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile () {
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+
   const [settings, setSettings] = useState([
     {
       id: "email_send",
@@ -124,9 +128,16 @@ const conversations = [
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
+
                  <NotificationDropdown />
                 
                 <Link to="/register">

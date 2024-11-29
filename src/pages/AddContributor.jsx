@@ -6,11 +6,12 @@ import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import { FaUsers } from "react-icons/fa";
+import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function AddContributor () {
- 
+
     const [contributors, setContributors] = useState([
         { id: 1, name: "John Michael", email: "email@example.com", role: "Admin", status: "Online", avatar: "/images/p2.jpg" },
         { id: 2, name: "Alexa Liras", email: "email@example.com", role: "Editor", status: "Offline", avatar: "/images/p1.jpg" },
@@ -21,6 +22,7 @@ export default function AddContributor () {
       const [selectedContributor, setSelectedContributor] = useState(null);
       const [selectedRole, setSelectedRole] = useState('');
       const [originalRole, setOriginalRole] = useState('');
+      const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     
       const handleSelect = (id) => {
         if (selectedContributor === id) {
@@ -97,9 +99,15 @@ export default function AddContributor () {
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
 
                  <NotificationDropdown />
                 

@@ -7,8 +7,13 @@ import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import ConfirmationModal from "../modal/ConfirmationModal";
 import { Link, useNavigate } from 'react-router-dom';
+import SettingsBar from '../modal/SettingsBar';
 
 export default function Tables () {
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+
   const [contributors, setContributors] = useState([
     {
       id: 1,
@@ -98,9 +103,15 @@ export default function Tables () {
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
 
                  <NotificationDropdown />
                 
