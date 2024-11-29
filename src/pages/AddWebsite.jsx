@@ -10,10 +10,10 @@ import { MdInsertLink } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { SlLogin } from "react-icons/sl";
 import axios from "axios";
+import SettingsBar from '../modal/SettingsBar';
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
-import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -21,13 +21,14 @@ export default function AddWebsite() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const [users, setUsers] = useState([]);
+
   const [formData, setFormData] = useState({
     title: "",
     url: "",
     memberName: "",
     memberEmail: "",
   });
-  
 
   const [errors, setErrors] = useState({
     title: "",
@@ -325,5 +326,3 @@ export default function AddWebsite() {
 
   );
 };
-
-
