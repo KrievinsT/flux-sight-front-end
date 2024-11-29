@@ -166,7 +166,7 @@ const conversations = [
     <img src="./images/p2.jpg" alt="Description of the image" className="w-16 h-16 rounded-lg" />
     <div className="flex flex-col text-sm pl-6">
       <div className="text-2xl font-bold">Richard Davis</div>
-      <div className="text-sm text-gray-500">CEO / Co-Founder</div>
+      <div className="text-sm text-gray-500">User</div>
     </div>
   </div>
 

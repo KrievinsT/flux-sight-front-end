@@ -317,25 +317,25 @@ export default function EditWebsite() {
 
             <div className="flex-1">
       <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
-        <table className="min-w-full table-auto">
+        <table className="min-w-full border border-gray-200 table-auto">
                 <thead>
                 <tr className="bg-gray-200 text-gray-600 uppercase text-xs">
-                  <th className="px-4 py-2 text-left">Name</th>
-                  <th className="px-4 py-2 text-left">Email</th>
-                  <th className="px-4 py-2 text-left">Phone Number</th>
-                  <th className="px-4 py-2 text-left">Role</th>
-                  <th className="px-4 py-2 text-center">Action</th>
+                  <th className="px-4 py-1 text-left">Name</th>
+                  <th className="px-4 py-1 text-left">Email</th>
+                  <th className="px-4 py-1 text-left">Phone Number</th>
+                  <th className="px-4 py-1 text-left">Role</th>
+                  <th className="px-4 py-1 text-center">Action</th>
                 </tr>
               </thead>
           <tbody>
             {users.map((user) => (
               <tr className="border-t" key={user.id}>
-                <td className="px-6 py-4">
+                <td className="px-6 py-2">
                   <div className="flex items-center">
                     <img
                       src={user.profileImage}
                       alt={user.name}
-                      className="w-10 h-10 rounded-full mr-3"
+                      className="w-10 h-10 rounded-lg mr-3"
                     />
                     <div>
                       <h6 className="text-sm font-bold text-gray-800">
@@ -344,13 +344,13 @@ export default function EditWebsite() {
                     </div>
                   </div>
                 </td>   
-                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.email}</td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.phone}</td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.role}</td>
-                <td className="text-center px-6 py-4">
+                <td className="px-6 py-2 text-sm font-medium text-gray-600">{user.email}</td>
+                <td className="px-6 py-2 text-sm font-medium text-gray-600">{user.phone}</td>
+                <td className="px-6 py-2 text-sm font-medium text-gray-600">{user.role}</td>
+                <td className="text-center px-6 py-2">
                   <button
                     onClick={() => handleSelectUser(user.id)}
-                    className="px-2 py-1 bg-pink-500 text-white rounded-md hover:bg-pink-700"
+                    className="px-2 py-1 text-gray-500 text-sm font-semibold hover:text-blue-600"
                   >
                     Select
                   </button>
