@@ -17,6 +17,7 @@ import { IoMdMegaphone } from "react-icons/io";
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
+import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -30,6 +31,7 @@ export default function Alerts () {
     const [showGreenAlert, setShowGreenAlert] = useState(true);
     const [showRedAlert, setShowRedAlert] = useState(true);
     const [showYellowAlert, setShowYellowAlert] = useState(true);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const [toastType, setToastType] = useState("");
 
@@ -133,9 +135,15 @@ export default function Alerts () {
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
 
                  <NotificationDropdown />
                 

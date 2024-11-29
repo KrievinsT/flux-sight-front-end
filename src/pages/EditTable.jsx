@@ -5,6 +5,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
 import { Link } from 'react-router-dom';
+import SettingsBar from '../modal/SettingsBar';
 
 export default function EditTable() {
   const location = useLocation();
@@ -12,6 +13,7 @@ export default function EditTable() {
   const { userId } = location.state || {}; 
   const [selectedRole, setSelectedRole] = useState("");
   const [user, setUser] = useState(null); 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleSave = () => {
   
@@ -111,9 +113,15 @@ export default function EditTable() {
          Check Insights
         </button>
             
-                <Link to="/settings">
-                 <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600"/> 
-                 </Link>
+        <IoSettingsOutline
+          className="w-5 h-5 cursor-pointer text-gray-600"
+          onClick={() => setIsSettingsOpen(true)} 
+        />
+      
+        <SettingsBar
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        />
 
                  <NotificationDropdown />
                 

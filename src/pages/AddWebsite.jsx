@@ -13,12 +13,13 @@ import axios from "axios";
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
+import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function AddWebsite() {
 
-  const [users, setUsers] = useState([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -26,6 +27,7 @@ export default function AddWebsite() {
     memberName: "",
     memberEmail: "",
   });
+  
 
   const [errors, setErrors] = useState({
     title: "",
@@ -164,9 +166,15 @@ export default function AddWebsite() {
               Check Insights
             </button>
 
-            <Link to="/settings">
-              <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600" />
-            </Link>
+            <IoSettingsOutline
+              className="w-5 h-5 cursor-pointer text-gray-600"
+              onClick={() => setIsSettingsOpen(true)} 
+            />
+          
+            <SettingsBar
+               isOpen={isSettingsOpen} 
+              onClose={() => setIsSettingsOpen(false)} 
+            />
 
             <NotificationDropdown />
 

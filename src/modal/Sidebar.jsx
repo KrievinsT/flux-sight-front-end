@@ -43,17 +43,16 @@ const SidebarModal = () => {
   }, []); 
 
   const getActiveButton = () => {
-    switch (location.pathname) {
-      case "/dashboard":
-        return "dashboard";
-      case "/tables":
-        return "tables";
-      case "/alerts":
-        return "notifications";
-      case "/profile":
-        return "profile";
-      default:
-        return null;
+    if (location.pathname.startsWith("/dashboard")) {
+      return "dashboard";
+    } else if (location.pathname.startsWith("/tables")) {
+      return "tables";
+    } else if (location.pathname.startsWith("/alerts")) {
+      return "notifications";
+    } else if (location.pathname.startsWith("/profile")) {
+      return "profile";
+    } else {
+      return null;
     }
   };
 
