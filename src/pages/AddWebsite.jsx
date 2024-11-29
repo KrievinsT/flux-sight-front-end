@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -11,10 +10,10 @@ import { MdInsertLink } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { SlLogin } from "react-icons/sl";
 import axios from "axios";
+import SettingsBar from '../modal/SettingsBar';
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
-import SettingsBar from '../modal/SettingsBar';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -22,13 +21,14 @@ export default function AddWebsite() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const [users, setUsers] = useState([]);
+
   const [formData, setFormData] = useState({
     title: "",
     url: "",
     memberName: "",
     memberEmail: "",
   });
-  
 
   const [errors, setErrors] = useState({
     title: "",
@@ -72,7 +72,7 @@ export default function AddWebsite() {
         error = "Website name must be at least 3 characters long.";
       } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
         error = "Enter a valid URL (e.g., https://example.com).";
-      } 
+      }
       // else if (field === "memberName" && value.trim().length < 3) {
       //   error = "Member name must be at least 3 characters long.";
       // } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
@@ -91,7 +91,7 @@ export default function AddWebsite() {
 
     if (!hasErrors) {
 
-      
+
 
       // let testData = JSON.parse(formData);
       console.log("FormData", formData);
@@ -116,49 +116,23 @@ export default function AddWebsite() {
     }
   };
 
-  const [users, setUsers] = useState([]);
-
-  // Simulate fetching users from an API
   useEffect(() => {
     const fetchUsers = async () => {
-      const mockUsers = [
-        {
-          id: 1,
-          name: "John Doe",
-          email: "john.doe@example.com",
-          phone: "123-456-7890",
-          role: "Admin",
-          profileImage: "/images/p4.jpg",
-        },
-        {
-          id: 2,
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          phone: "098-765-4321",
-          role: "User",
-          profileImage: "/images/p2.jpg",
-        },
-        {
-          id: 3,
-          name: "Emily Johnson",
-          email: "emily.johnson@example.com",
-          phone: "555-123-4567",
-          role: "Moderator",
-          profileImage: "/images/p3.jpg",
-        },
-      ];
-      setUsers(mockUsers);
+      try {
+        const response = await axios.get('/users');
+        console.log("Fetched users:", response.data);
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
     };
 
     fetchUsers();
   }, []);
 
-
   const handleSelectUser = (userId) => {
     alert(`User with ID ${userId} selected`);
   };
-
-
 
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
@@ -286,7 +260,6 @@ export default function AddWebsite() {
                 )}
               </div>
               <div className="flex flex-wrap gap-4 mb-4">
-
                 <div className="flex-1">
                   <label
                     htmlFor="memberName"
@@ -302,55 +275,25 @@ export default function AddWebsite() {
                     placeholder="Search member by name or email"
                   />
                 </div>
-
-
                 <div className="flex-1">
-                  <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+                  <div className="overflow-x-auto bg-white rounded-lg shadow-lg mt-4">
                     <table className="min-w-full table-auto">
                       <thead>
                         <tr className="bg-gray-200 text-gray-600 uppercase text-xs">
                           <th className="px-4 py-2 text-left">Name</th>
                           <th className="px-4 py-2 text-left">Email</th>
                           <th className="px-4 py-2 text-left">Phone Number</th>
-                          <th className="px-4 py-2 text-left">Role</th>
                           <th className="px-4 py-2 text-center">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {users.map((user) => (
-                          <tr className="border-t" key={user.id}>
-                            <td className="px-6 py-4">
-                              <div className="flex items-center">
-                                <img
-                                  src={user.profileImage}
-                                  alt={user.name}
-                                  className="w-10 h-10 rounded-full mr-3"
-                                />
-                                <div>
-                                  <h6 className="text-sm font-bold text-gray-800">
-                                    {user.name}
-                                  </h6>
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* User Email */}
-                            <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.email}</td>
-
-                            {/* User Phone Number */}
-                            <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.phone}</td>
-
-                            {/* User Role */}
-                            <td className="px-6 py-4 text-sm font-medium text-gray-600">{user.role}</td>
-
-                            {/* Action - Select Button */}
-                            <td className="text-center px-6 py-4">
-                              <button
-                                onClick={() => handleSelectUser(user.id)}
-                                className="px-2 py-1 bg-pink-500 text-white rounded-md hover:bg-pink-700"
-                              >
-                                Select
-                              </button>
+                        {users.map(user => (
+                          <tr key={user.id}>
+                            <td className="px-4 py-2">{user.name}</td>
+                            <td className="px-4 py-2">{user.email}</td>
+                            <td className="px-4 py-2">{user.phone_number}</td>
+                            <td className="px-4 py-2 text-center">
+                              <button onClick={() => handleSelectUser(user.id)}>Select</button>
                             </td>
                           </tr>
                         ))}
@@ -358,8 +301,6 @@ export default function AddWebsite() {
                     </table>
                   </div>
                 </div>
-
-
               </div>
 
               {/* Submit Button */}
@@ -367,11 +308,11 @@ export default function AddWebsite() {
                 <button
                   type="submit"
                   className={`w-[60%] bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${Object.values(errors).some((err) => err)
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
-                  // disabled={Object.values(errors).some((err) => err)}
+                // disabled={Object.values(errors).some((err) => err)}
                 >
                   Submit
                 </button>
@@ -385,5 +326,3 @@ export default function AddWebsite() {
 
   );
 };
-
-
