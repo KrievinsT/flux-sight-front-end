@@ -61,8 +61,8 @@ export default function Register() {
     const sanitizedPassword = DOMPurify.sanitize(password.trim());
   
 
-    if (!/^[a-zA-Z\s]{3}$/.test(sanitizedName)) {
-      setErrorMessage('Name must be atleast 3 characters and only contain letters.');
+    if (!/^[a-zA-Z\s]{3,}$/.test(sanitizedName)) {
+      setErrorMessage('Name must be at least 3 characters long and only contain letters and spaces.');
       setSuccessMessage('');
       return false;
     }
