@@ -33,51 +33,10 @@ export default function Dashboard  () {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const [contributors, setContributors] = useState([
-    {
-      id: 1,
-      name: "John Michael",
-      email: "email@example.com",
-      role: "Admin",
-      status: "Online",
-      avatar: "/images/p2.jpg",
-    },
-    {
-      id: 2,
-      name: "Alexa Liras",
-      email: "email@example.com",
-      role: "Editor",
-      status: "Offline",
-      avatar: "/images/p1.jpg",
-    },
-    {
-      id: 3,
-      name: "Laurent Perrier",
-      email: "email@example.com",
-      role: "Viewer",
-      status: "Online",
-      avatar: "/images/p4.jpg",
-    },
-    {
-      id: 4,
-      name: "Toms Ginters",
-      email: "email@example.com",
-      role: "User",
-      status: "Offline",
-      avatar: "/images/p4.jpg",
-    },
-  ]);
-
   const [rows, setRows] = useState([
     {
       companyName: "Material XD Version",
       companyImage: "./images/xd.jpg",
-      members: [
-        contributors[0], 
-        contributors[1], 
-        contributors[2], 
-        contributors[3]
-      ],
       url: "https://material.com",
       completion: "60%",
       completionWidth: "60%",
@@ -85,10 +44,6 @@ export default function Dashboard  () {
     {
       companyName: "Add Progress Track",
       companyImage: "./images/test2.jfif",
-      members: [
-        contributors[0], 
-        contributors[1]
-      ],
       url: "https://addprogresstrack.com",
       completion: "10%",
       completionWidth: "10%",
@@ -96,10 +51,6 @@ export default function Dashboard  () {
     {
       companyName: "Fix Platform Errors",
       companyImage: "./images/test3.jpg",
-      members: [
-        contributors[2], 
-        contributors[0]
-      ],
       url: "https://fixplatform.com",
       completion: "100%",
       completionWidth: "100%",
@@ -315,84 +266,87 @@ export default function Dashboard  () {
   </div>
 
   <div className="card-body px-0 pb-1">
-      <div className="max-h-[340px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
-        <table className="min-w-full text-left table-auto border-separate border-spacing-y-0">
-          <thead className="bg-gray-100 sticky top-0 z-10">
-            <tr className="text-gray-500 text-xs font-bold uppercase">
-              <th className="py-2 pl-5">Companies</th>
-              <th className="py-2 pl-6">Members</th>
-              <th className="py-2 text-center">Completion</th>
-              <th className="py-2 text-center">CRUD</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, index) => (
-              <tr className="bg-white" key={index}>
-                <td className="px-4 py-3 border-b border-gray-300">
-                  <div className="flex items-center">
-                    <img
-                      src={row.companyImage}
-                      alt={row.companyName}
-                      className="w-8 h-8 mr-5 rounded-lg"
-                    />
-                    <div>
-                      <h6 className="text-sm font-semibold text-gray-800">
-                        {row.companyName}
-                      </h6>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 border-b border-gray-300">
-                  <div className="flex -space-x-2">
-                    {row.members.map((member, memberIndex) => (
-                      <img
-                        key={memberIndex}
-                        src={member.avatar}  
-                        alt={member.name}    
-                        className="w-6 h-6 rounded-full border-2 border-white"
-                      />
-                    ))}
-                  </div>
-                </td>
+  <div className="max-h-[340px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
+    <table className="w-full text-left table-auto border-separate border-spacing-y-0">
+      <thead className="bg-gray-100 sticky top-0 z-10">
+        <tr className="text-gray-500 text-xs font-bold uppercase">
+          <th className="py-2 pl-5">Companies</th>
+          <th className="py-2 text-center w-1/4">Performance</th>
+          <th className="py-2 text-center w-1/6">CRUD</th>
+          <th className="py-2 text-center w-1/6">Insight</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, index) => (
+          <tr className="bg-white" key={index}>
+          
+            <td className="px-4 py-3 border-b border-gray-300 w-1/2">
+              <div className="flex items-center">
+                <img
+                  src={row.companyImage}
+                  alt={row.companyName}
+                  className="w-8 h-8 mr-5 rounded-lg"
+                />
+                <div>
+                  <h6 className="text-sm font-semibold text-gray-800">
+                    {row.companyName}
+                  </h6>
+                </div>
+              </div>
+            </td>
 
-                <td className="px-4 py-3 border-b border-gray-300">
-                  <div className="w-3/4 mx-auto">
-                    <div className="text-start text-xs font-bold text-gray-700 mb-1">
-                      {row.completion}
-                    </div>
-                    <div className="relative h-2 bg-gray-200 rounded">
-                      <div
-                        className="absolute top-0 left-0 h-2 bg-blue-500 rounded"
-                        style={{ width: row.completionWidth }}
-                      ></div>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
-                  <div className="mt-2 flex justify-center space-x-2">
-                    <button
-                      onClick={() => handleEdit(index)}
-                      className="text-blue-500 hover:text-blue-700"
-                      aria-label="Edit"
-                    >
-                      <FaEdit className="w-5 h-5" />
-                    </button>
+            {/* Completion Column */}
+            <td className="px-4 py-3 border-b border-gray-300">
+              <div className="w-3/4 mx-auto">
+                <div className="text-start text-xs font-bold text-gray-700 mb-1">
+                  {row.completion}
+                </div>
+                <div className="relative h-2 bg-gray-200 rounded">
+                  <div
+                    className="absolute top-0 left-0 h-2 bg-blue-500 rounded"
+                    style={{ width: row.completionWidth }}
+                  ></div>
+                </div>
+              </div>
+            </td>
 
-                    <button
-                      onClick={() => handleDelete(index)}
-                      className="text-red-500 hover:text-red-700"
-                      aria-label="Delete"
-                    >
-                      <FaTrashAlt className="w-5 h-5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            {/* CRUD Column */}
+            <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+              <div className="mt-2 flex justify-center space-x-2">
+                <button
+                  onClick={() => handleEdit(index)}
+                  className="text-blue-500 hover:text-blue-700"
+                  aria-label="Edit"
+                >
+                  <FaEdit className="w-5 h-5" />
+                </button>
+
+                <button
+                  onClick={() => handleDelete(index)}
+                  className="text-red-500 hover:text-red-700"
+                  aria-label="Delete"
+                >
+                  <FaTrashAlt className="w-5 h-5" />
+                </button>
+              </div>
+            </td>
+
+            {/* Insight Column */}
+            <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+              <div className="mt-2 flex justify-center">
+              <button
+                 className="border-1 border-blue-600  text-blue-600  p-[0.5rem] text-[14px] whitespace-nowrap font-small rounded-md">
+                  Check Insights
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
 
 

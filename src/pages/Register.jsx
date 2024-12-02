@@ -9,6 +9,7 @@ import '../index.css';
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -55,51 +56,58 @@ export default function Register() {
   };
 
   const validateForm = () => {
- 
     const sanitizedName = DOMPurify.sanitize(name.trim());
     const sanitizedEmail = DOMPurify.sanitize(email.trim());
     const sanitizedPassword = DOMPurify.sanitize(password.trim());
-  
+    const sanitizedPhone = DOMPurify.sanitize(phone.trim());
+    const sanitizedUsername = DOMPurify.sanitize(username.trim());
 
     if (!/^[a-zA-Z\s]{3,}$/.test(sanitizedName)) {
-      setErrorMessage('Name must be at least 3 characters long and only contain letters and spaces.');
-      setSuccessMessage('');
+      setErrorMessage("Name must be at least 3 characters long and only contain letters and spaces.");
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
-      setErrorMessage('Please enter a valid email address.');
-      setSuccessMessage('');
-      return false;
-    }
-  
-    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(sanitizedPassword)) {
-      setErrorMessage(
-        'Password must be 8-20 characters long, contain an uppercase letter, a number, and a special character.'
-      );
-      setSuccessMessage('');
-      return false;
-    }
-  
-    if (!isChecked) {
-      setErrorMessage('You must agree to the Terms and Conditions.');
-      setSuccessMessage('');
+      setErrorMessage("Please enter a valid email address.");
       return false;
     }
 
-    setErrorMessage('');
+    if (!/^[a-zA-Z\s]{2,}$/.test(sanitizedUsername)) {
+      setErrorMessage("Username must be at least 2 characters long.");
+      return false;
+    }
+
+    if (!/^\d{7,15}$/.test(sanitizedPhone)) {
+      setErrorMessage("Phone number must contain only digits and be 7-15 characters long.");
+      return false;
+    }
+
+    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(sanitizedPassword)) {
+      setErrorMessage("Password must be 8-20 characters long, contain an uppercase letter, a number, and a special character.");
+      return false;
+    }
+
+    if (!isChecked) {
+      setErrorMessage("You must agree to the Terms and Conditions.");
+      return false;
+    }
+
+    setErrorMessage("");
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (validateForm()) {
+      const fullPhoneNumber = countryCode + phone;
+      console.log("Submitting form with phone number:", fullPhoneNumber);
+  
       try {
-        const formData = { name, email, password, phone };
+        const formData = { name, email, username, password, phone: fullPhoneNumber };
         localStorage.setItem('register', JSON.stringify(formData));
         console.log('Stored data for register:', formData);
-
+  
         let preResponse;
         try {
           preResponse = await axios.post('/pre-register', formData, {
@@ -116,37 +124,48 @@ export default function Register() {
                 'Content-Type': 'application/json',
               },
             });
-          } else {
-            throw error;
+          } else if (error.response && error.response.status === 400) {
+            // Handle validation errors from backend
+            const errorData = error.response.data;
+            if (errorData && errorData.errors) {
+              // Convert object of errors to an array if needed
+              const errorMessages = Array.isArray(errorData.errors) 
+                ? errorData.errors 
+                : Object.values(errorData.errors).flat(); // Flatten nested arrays
+          
+              setErrorMessage(errorMessages); // Store errors as an array
+              setSuccessMessage('');
+              return;
+            }
           }
         }
-
+  
         if (!preResponse || !preResponse.data) {
           throw new Error('Pre-registration response data is missing.');
         }
-
+  
         const preData = preResponse.data;
         setShowMessage(preData.message, false);
         setUserEmail(email);
-
+  
         const generate2FAResponse = await axios.post('/2fa/generate', { registration_data: formData }, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
+  
         if (!generate2FAResponse || !generate2FAResponse.data) {
           throw new Error('2FA generation response data is missing.');
         }
-
+  
         const generate2FAData = generate2FAResponse.data;
         localStorage.setItem('twoFactorCode', generate2FAData.twoFactorCode);
         localStorage.setItem('twoFactorToken', generate2FAData.token);
         setShowMessage(generate2FAData.message, false);
-
+  
         setActionType('register'); // Set the action type to 'register'
         setShowAuthModal(true); // Show the modal
-
+  
       } catch (error) {
         console.error('Error in pre-register or 2FA flow:', error.response ? error.response.data : error.message);
         setErrorMessage('An error occurred. Please try again later.');
@@ -250,7 +269,7 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
-                  placeholder="Name"
+                  placeholder="Enter Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -260,9 +279,19 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="email"
                   type="text"
-                  placeholder="Email"
+                  placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
+                  id="username"
+                  type="text"
+                  placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div className="mb-4 flex gap-4 items-center">
@@ -326,9 +355,9 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="phone"
                   type="tel"
-                  placeholder="Phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter phone"
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)} 
                 />
               </div>
               <div className="mb-4">
@@ -336,7 +365,7 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="password"
                   type="password"
-                  placeholder="Password"
+                  placeholder=" Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -361,9 +390,19 @@ export default function Register() {
                   Sign up
                 </button>
               </div>
+              {/* NORMAL VALDIATION */}
               {errorMessage && (
-                <div className="text-red-500 font-medium text-sm">{errorMessage}</div>
-              )}
+              <div className="text-red-500 font-medium text-sm">
+                {Array.isArray(errorMessage) ? (
+                  errorMessage.map((msg, index) => (
+                    <div key={index} className="mb-1">{msg}</div>
+                  ))
+                ) : (
+                  <div>{errorMessage}</div>
+                )}
+              </div>
+            )}
+              
               {successMessage && (
                 <div className="text-green-500 font-medium text-sm">{successMessage}</div>
               )}

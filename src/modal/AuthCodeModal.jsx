@@ -32,45 +32,45 @@ export default function AuthCodeModal({ email, onClose, actionType, save }) {
             const token = localStorage.getItem('twoFactorToken');
             console.log('Submitting 2FA code:', enteredCode);
             console.log('Using token:', token);
-
+    
             if (!token) {
                 throw new Error('Token not found in local storage.');
             }
-
+    
             const response = await axios.post('/2fa/verify', { two_factor_code: enteredCode, token }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-
+    
             console.log('2FA verification response:', response);
-
+    
             if (response.data.message === '2FA verified successfully.') {
                 setSuccessMessage('2FA verification successful! Processing your request...');
-
+    
                 const formData = JSON.parse(localStorage.getItem(actionType));
                 console.log(`Submitting ${actionType} data:`, formData);
-
+    
                 if (!formData) {
                     throw new Error(`No data found in local storage for action type: ${actionType}`);
                 }
-
+    
                 // Adjust formData for login endpoint if necessary
                 if (actionType === 'login' && formData.login) {
                     formData.email = formData.login;
                     delete formData.login;
                 }
-
+    
                 const endpoint = actionType === 'register' ? '/register' : '/login';
-
+    
                 const authResponse = await axios.post(endpoint, formData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 });
-
+    
                 console.log(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} response:`, authResponse);
-
+    
                 if (authResponse.data.message.includes('successful')) {
                     setSuccessMessage(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} successful! Redirecting to dashboard...`);
                     setErrorMessage('');
@@ -83,7 +83,16 @@ export default function AuthCodeModal({ email, onClose, actionType, save }) {
                     localStorage.removeItem('twoFactorToken');
                     localStorage.removeItem('twoFactorCode');
                     localStorage.removeItem('register');
-
+    
+                    if (actionType === 'register') {
+                        await axios.post(`/update-profile/${authResponse.data.username}`, {}, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+                        console.log('Profile data updated successfully');
+                    }
+    
                     setTimeout(() => {
                         onClose();
                         navigate('/dashboard');

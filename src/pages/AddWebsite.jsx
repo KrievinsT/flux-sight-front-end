@@ -26,6 +26,7 @@ export default function AddWebsite() {
   const [formData, setFormData] = useState({
     title: "",
     url: "",
+    username: "sik",
     memberName: "",
     memberEmail: "",
   });
@@ -91,10 +92,9 @@ export default function AddWebsite() {
 
     if (!hasErrors) {
 
-
-
       // let testData = JSON.parse(formData);
       console.log("FormData", formData);
+      
 
       try {
         const response = await axios.post('/web/store', formData, {

@@ -46,16 +46,16 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) {
       return;
     }
-
+  
     try {
       const formData = { login: email, password };
       localStorage.setItem('login', JSON.stringify(formData));
       console.log('Stored data for login:', formData);
-
+  
       let preResponse;
       try {
         preResponse = await axios.post('/pre-login', formData, {
@@ -72,43 +72,58 @@ export default function Login() {
               'Content-Type': 'application/json',
             },
           });
+        } else if (error.response && error.response.status === 401) {
+          setErrorMessage('Invalid email or password. Please try again.');
+          setSuccessMessage('');
+          return;
         } else {
           throw error;
         }
       }
-
+  
       if (!preResponse || !preResponse.data) {
         throw new Error('Pre-login response data is missing.');
       }
-
+  
       const preData = preResponse.data;
+      if (preData.error) {
+        setErrorMessage(preData.error); // Set error message from server response if available
+        setSuccessMessage('');
+        return;
+      }
+  
       setShowMessage(preData.message, false);
       setUserEmail(email);
-
+  
       const generate2FAResponse = await axios.post('/2fa/generate', { login_data: formData }, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!generate2FAResponse || !generate2FAResponse.data) {
         throw new Error('2FA generation response data is missing.');
       }
-
+  
       const generate2FAData = generate2FAResponse.data;
       localStorage.setItem('twoFactorCode', generate2FAData.twoFactorCode);
       localStorage.setItem('twoFactorToken', generate2FAData.token);
       setShowMessage(generate2FAData.message, false);
-
+  
       setActionType('login');
       setShowAuthModal(true);
-
+  
     } catch (error) {
-      console.error('Error in pre-login or 2FA flow:', error.response ? error.response.data : error.message);
-      setErrorMessage('An error occurred. Please try again later.');
+      if (error.response && error.response.status === 401) {
+        setErrorMessage('Invalid email or password. Please try again.');
+      } else {
+        console.error('Error in pre-login or 2FA flow:', error.response ? error.response.data : error.message);
+        setErrorMessage('An error occurred. Please try again later.');
+      }
       setSuccessMessage('');
     }
   };
+  
 
   const handleVerifyLogin = async (authCode) => {
     try {
