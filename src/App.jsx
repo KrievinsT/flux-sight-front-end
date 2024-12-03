@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register'; 
@@ -19,8 +19,28 @@ import axios from 'axios';
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 axios.defaults.withCredentials = true;
 
-
 function App() {
+
+  useEffect(() => {
+    const id = localStorage.getItem('id');
+    if(id){
+      sessionStorage.setItem('id', id);
+    }
+    const token = localStorage.getItem('token');
+    if(token){
+    sessionStorage.setItem('token', token);
+    }
+    const user = sessionStorage.getItem('user');
+    if(user){
+    sessionStorage.setItem('user', user);
+    }
+    const username = sessionStorage.getItem('username');
+    if(username){
+    sessionStorage.setItem('username', username);
+    }
+  }, []);
+
+
   return (
     <Router>
       <Routes>

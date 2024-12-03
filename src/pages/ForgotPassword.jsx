@@ -2,62 +2,61 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthCodeModal from '../modal/AuthCodeModal';
 import '../index.css';
+import axios from 'axios';
 
 export default function ForgotPassword() {
-    const [email, setEmail] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [isSubmitted, setIsSubmitted] = useState(false); 
-    const [code, setCode] = useState(['', '', '', '', '']); 
-    const [codeError, setCodeError] = useState('');
-    const [isCodeValid, setIsCodeValid] = useState(false); 
-    const [password, setPassword] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [confirmPasswordError, setConfirmPasswordError] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
-    const navigate = useNavigate();
-    const [showAuthModal, setShowAuthModal] = useState(true);
-    const [actionType, setActionType] = useState('reset');
-    const [userEmail, setUserEmail] = useState(''); 
-    
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [code, setCode] = useState(['', '', '', '', '']);
+  const [codeError, setCodeError] = useState('');
+  const [isCodeValid, setIsCodeValid] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(true);
+  const [actionType, setActionType] = useState('reset');
+  const [userEmail, setUserEmail] = useState('');
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email || !emailRegex.test(email)) {
-        setEmailError('Please enter a valid email address');
-        return;
-      }
-      setEmailError('');
-      setIsSubmitted(true);
-      setUserEmail(email); // Set the userEmail state here
-      setShowAuthModal(true);
-    };
+  
+  const [sentPassword, setSentPassword] = useState('');
 
-  const handleCodeChange = (e, index) => {
-    const newCode = [...code];
-    newCode[index] = e.target.value;
-    setCode(newCode);
-    setCodeError('');
-  };
-
-  const validateCode = () => {
-    if (code.some((digit) => digit === '')) {
-      setCodeError('Please enter the complete code');
-      return false;
-    }
-    setIsCodeValid(true); 
-    return true;
-  };
-
-  const handleCodeSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateCode()) {
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError('Please enter a valid email address');
       return;
     }
-    // Handle code submission logic here (e.g., verify code via API)
-    console.log('Code submitted:', code.join(''));
+
+    setEmailError('');
+
+    try {
+      // Send reset link email request
+      const response = await axios.post('/password/email', { email }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        setEmailError(''); 
+        setShowSuccessMessage(true); 
+        setIsSubmitted(true);
+        setUserEmail(email);  
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      if (error.response) {
+        const errorMessage = error.response.data.message || 'An error occurred.';
+        setEmailError(errorMessage);
+      } else {
+        setEmailError('Unable to connect to the server. Please try again later.');
+      }
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -67,35 +66,43 @@ export default function ForgotPassword() {
 
   const validatePassword = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+  
     if (!password || !passwordRegex.test(password)) {
       setPasswordError('Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character');
       return false;
     }
-    if (password !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match');
+  
+    // Check if the new password matches the password sent via email
+    if (password !== sentPassword) {
+      setPasswordError('Password does not match the one sent to your email.');
       return false;
     }
+  
     return true;
   };
 
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-    setConfirmPasswordError('');
-  };
-
-
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
+  
     if (!validatePassword()) {
       return;
     }
-    // Handle password reset submission (e.g., make API call)
+
     console.log('Password reset:', password);
-    setIsSuccess(true); 
-    setShowSuccessMessage(true); 
-     setTimeout(() => {
-      navigate('/login');
-     }, 4000); 
+    setIsSuccess(true);
+    setShowSuccessMessage(true);
+  
+    
+    axios.post('/password/reset', { email: userEmail, password })
+      .then(response => {
+        console.log('Password successfully reset');
+        setTimeout(() => {
+          navigate('/login');
+        }, 4000);
+      })
+      .catch(error => {
+        console.error('Error resetting password:', error);
+      });
   };
 
   const toggleForm = () => {
@@ -128,7 +135,10 @@ export default function ForgotPassword() {
     {/* Conditional form rendering */}
     {!isSubmitted ? (
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 relative">
-        <div className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
+        <div
+          className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
+          style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
+        >
           <h2 className="text-xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
             Forgot password?
           </h2>
@@ -147,29 +157,18 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-           
             {emailError && <div className="text-red-500 font-medium mt-2">{emailError}</div>}
           </div>
-
           <div className="mt-6">
             <button
               className="w-full mt-5 bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+              style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
               type="submit"
             >
               Reset password
             </button>
-            {showAuthModal && (
-                    <AuthCodeModal
-                      email={userEmail} 
-                      onClose={() => setShowAuthModal(false)}
-                      actionType={actionType}
-                    />
-                  )}
           </div>
         </form>
-
-        
         <div className="text-center text-sm font-medium text-gray-600 mt-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -179,30 +178,25 @@ export default function ForgotPassword() {
             stroke="currentColor"
             className="inline-block w-4 h-4 mr-2 mb-0.5"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
           <Link to="/login" className="text-gray-600 font-medium hover:text-gray-800">
             Back to log in
           </Link>
-          
-
         </div>
       </div>
-      
-      
-    ) : isCodeValid ? (
+    ) : (
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 relative">
-        
-        <div className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6" style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}>
+        <div
+          className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
+          style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
+        >
           <h2 className="text-xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
             Set new password
           </h2>
-          <div className="flex justify-center mt-6 mb-3 space-x-4">
-            Must be at least 8 characters long, contain an uppercase letter, a number, and special character.
+          <div className="flex flex-col justify-center items-center mt-6 mb-3 text-white font-medium">
+            <span>Your new password was sent to:</span>
+            <span className="font-bold text-white mt-1">{email}</span>
           </div>
         </div>
         <form onSubmit={handlePasswordSubmit} className="px-0 pt-6 pb-6">
@@ -211,30 +205,16 @@ export default function ForgotPassword() {
             <input
               type="password"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
-              placeholder="Enter new password"
+              placeholder="Enter sent password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-
-          <div className="mb-4">
-            <label className="text-gray-600 font-medium">Confirm Password</label>
-            <input
-              type="password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-            />
-          </div>
-
-          {passwordError && <div className="text-red-500 font-medium mt-2">{passwordError}</div>}
-          {confirmPasswordError && <div className="text-red-500 font-medium mt-2">{confirmPasswordError}</div>}
-
+         
           <div className="mt-6">
             <button
               className="w-full mt-5 bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
+              style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
               type="submit"
             >
               Set password
@@ -242,33 +222,12 @@ export default function ForgotPassword() {
           </div>
         </form>
         {showSuccessMessage && (
-          <div className="w-full max-w-md bg-green-600 text-white rounded-lg shadow-lg p-4 text-center transition-opacity opacity-100 animate-fadeIn">
-            <p className="text-sm font-medium">
-              Password reset successfully! Redirecting to login page...
-            </p>
+          <div className="bg-green-600 text-white rounded-lg shadow-lg p-4 text-center">
+            Password reset successfully! Redirecting to login...
           </div>
         )}
-        <div className="text-center text-sm font-medium text-gray-600 mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="inline-block w-4 h-4 mr-2 mb-0.5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
-          </svg>
-          <Link to="/login" className="text-gray-600 font-medium hover:text-gray-800">
-            Back to log in
-          </Link>
-        </div>
       </div>
-    ) : null}
+    )}
   </div>
 </main>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
@@ -283,75 +283,91 @@ export default function EditWebsite() {
               {/* Current website members */}
 
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Current Members
-                </label>
-                <ul className="list-disc pl-5 text-gray-700">
-                  {members.map((member, index) => (
-                    <li key={index} className="flex items-center mb-2">
-                      <img src={member.avatar} alt={member.name} className="w-8 h-8 mr-3 rounded-lg" />
-                      <div>
-                        <span className="text-sm font-medium">{member.name}</span>
-                        <span className="text-xs text-gray-500 ml-2">({member.role})</span>
-                      </div>
-                      <button
-                        onClick={() => removeMember(index)}
-                        className="ml-auto text-red-500 hover:text-red-700"
-                      >
-                        &#x2716;
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex flex-wrap gap-4 mb-4">
-                {/* Member Name */}
-                <div>
-                  <form onSubmit={handleSubmit}>
-                    {/* User Form for adding multiple users */}
-                    <form onSubmit={handleUserFormSubmit}>
-                      {users.map((user, index) => (
-                        <div key={index} className="flex flex-wrap gap-4 mb-4">
-                          <input
-                            type="text"
-                            name="name"
-                            value={user.name}
-                            onChange={(event) => handleInputChange(index, event)}
-                            placeholder="Name"
-                          />
-                          <input
-                            type="email"
-                            name="email"
-                            value={user.email}
-                            onChange={(event) => handleInputChange(index, event)}
-                            placeholder="Email"
-                          />
-                          <input
-                            type="text"
-                            name="phone_number"
-                            value={user.phone_number}
-                            onChange={(event) => handleInputChange(index, event)}
-                            placeholder="Phone Number"
-                          />
+                  <div className="flex justify-between items-center">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Current Members
+                    </label>
+                    <button
+                      type="button"
+                      onClick={addUser}
+                      className="border-1 border-blue-600 p-[0.5rem] rounded-md text-blue-500 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Add +
+                    </button>
+                  </div>
+                  <ul className="list-disc pl-5 text-gray-700">
+                    {members.map((member, index) => (
+                      <li key={index} className="flex items-center mb-2">
+                        <img
+                          src={member.avatar}
+                          alt={member.name}
+                          className="w-8 h-8 mr-3 rounded-lg"
+                        />
+                        <div>
+                          <span className="text-sm font-medium">{member.name}</span>
+                          <span className="text-xs text-gray-500 ml-2">({member.role})</span>
                         </div>
-                      ))}
-                      <button type="button" onClick={addUser} className="btn btn-primary">
-                        Add+
-                      </button>
+                        <button
+                          onClick={() => removeMember(index)}
+                          className="ml-auto text-red-500 hover:text-red-700"
+                        >
+                          &#x2716;
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+              <div className="flex flex-wrap gap-4 ">
+                {/* Member Name */}
+                
+                <form onSubmit={handleSubmit} className="w-full flex flex-col items-center space-y-6">
+                  <form onSubmit={handleUserFormSubmit} className="w-full">
+                    {users.map((user, index) => (
+                      <div key={index} className="flex flex-col md:flex-row gap-4 mb-4 w-full">
+                        <input
+                          type="text"
+                          name="name"
+                          value={user.name}
+                          onChange={(event) => handleInputChange(index, event)}
+                          placeholder="Enter name & surname"
+                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
+                        />
+                        <input
+                          type="email"
+                          name="email"
+                          value={user.email}
+                          onChange={(event) => handleInputChange(index, event)}
+                          placeholder="Enter email"
+                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
+                        />
+                        <input
+                          type="text"
+                          name="phone_number"
+                          value={user.phone_number}
+                          onChange={(event) => handleInputChange(index, event)}
+                          placeholder="Enter phone number"
+                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
+                        />
+                      </div>
+                    ))}
+
+                    <div className="w-full flex justify-center">
                       <button
                         type="submit"
-                        className={`w-[60%] bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${Object.values(errors).some((err) => err)
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
+                        className={`w-full md:w-1/2 bg-gray-900 hover:bg-gray-800 text-white mt-4 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${Object.values(errors).some((err) => err)
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
                           }`}
                         style={{ backgroundImage: 'linear-gradient(195deg, #313152, #010d21)' }}
                         disabled={Object.values(errors).some((err) => err)}
                       >
                         Save
                       </button>
-                    </form>
+                    </div>
                   </form>
+                </form>
+                <div>
                 </div>
               </div>
             </form>

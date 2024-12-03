@@ -23,10 +23,12 @@ export default function AddWebsite() {
 
   const [users, setUsers] = useState([]);
 
+  let username = localStorage.getItem('username');
+
   const [formData, setFormData] = useState({
     title: "",
     url: "",
-    username: "sik",
+    username: username,
     memberName: "",
     memberEmail: "",
   });

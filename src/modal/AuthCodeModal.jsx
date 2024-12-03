@@ -7,113 +7,128 @@ export default function AuthCodeModal({ email, onClose, actionType, save }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
-
+  
     const handleChange = (e, index) => {
-        const value = e.target.value;
-        if (/^[0-9]$/.test(value)) {
-            const newCode = [...code];
-            newCode[index] = value;
-            setCode(newCode);
-            if (index < 5) document.getElementById(`input-${index + 1}`).focus();
-        } else if (value === '') {
-            const newCode = [...code];
-            newCode[index] = '';
-            setCode(newCode);
-        }
+      const value = e.target.value;
+      if (/^[0-9]$/.test(value)) {
+        const newCode = [...code];
+        newCode[index] = value;
+        setCode(newCode);
+        if (index < 5) document.getElementById(`input-${index + 1}`).focus();
+      } else if (value === '') {
+        const newCode = [...code];
+        newCode[index] = '';
+        setCode(newCode);
+      }
     };
-
+  
     const handleSubmit = () => {
-        const enteredCode = code.join('');
-        handleAuthSubmit(enteredCode);
+      const enteredCode = code.join('');
+      handleAuthSubmit(enteredCode, save);
     };
-
-    const handleAuthSubmit = async (enteredCode) => {
-        try {
-            const token = localStorage.getItem('twoFactorToken');
-            console.log('Submitting 2FA code:', enteredCode);
-            console.log('Using token:', token);
-    
-            if (!token) {
-                throw new Error('Token not found in local storage.');
-            }
-    
-            const response = await axios.post('/2fa/verify', { two_factor_code: enteredCode, token }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            console.log('2FA verification response:', response);
-    
-            if (response.data.message === '2FA verified successfully.') {
-                setSuccessMessage('2FA verification successful! Processing your request...');
-    
-                const formData = JSON.parse(localStorage.getItem(actionType));
-                console.log(`Submitting ${actionType} data:`, formData);
-    
-                if (!formData) {
-                    throw new Error(`No data found in local storage for action type: ${actionType}`);
-                }
-    
-                // Adjust formData for login endpoint if necessary
-                if (actionType === 'login' && formData.login) {
-                    formData.email = formData.login;
-                    delete formData.login;
-                }
-    
-                const endpoint = actionType === 'register' ? '/register' : '/login';
-    
-                const authResponse = await axios.post(endpoint, formData, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-    
-                console.log(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} response:`, authResponse);
-    
-                if (authResponse.data.message.includes('successful')) {
-                    setSuccessMessage(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} successful! Redirecting to dashboard...`);
-                    setErrorMessage('');
-                    if (save === true) {
-                        localStorage.setItem('token', authResponse.data.token);
-                        localStorage.setItem('user', authResponse.data.user);
-                        localStorage.setItem('id', authResponse.data.id);
-                    }
-                    localStorage.removeItem('login');
-                    localStorage.removeItem('twoFactorToken');
-                    localStorage.removeItem('twoFactorCode');
-                    localStorage.removeItem('register');
-    
-                    if (actionType === 'register') {
-                        await axios.post(`/update-profile/${authResponse.data.username}`, {}, {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        });
-                        console.log('Profile data updated successfully');
-                    }
-    
-                    setTimeout(() => {
-                        onClose();
-                        navigate('/dashboard');
-                    }, 3000);
-                } else {
-                    throw new Error(authResponse.data.message);
-                }
-            } else {
-                throw new Error(response.data.message);
-            }
-        } catch (error) {
-            console.error('Error verifying 2FA code or processing request:', error.response ? error.response.data : error.message);
-            setErrorMessage(error.response ? error.response.data.message : error.message);
-            setSuccessMessage('');
+  
+    const handleAuthSubmit = async (enteredCode, save) => {
+      try {
+        const token = localStorage.getItem('twoFactorToken');
+        console.log('Submitting 2FA code:', enteredCode);
+        console.log('Using token:', token);
+  
+        if (!token) {
+          throw new Error('Token not found in local storage.');
         }
-    };
+  
+        const response = await axios.post('/2fa/verify', { two_factor_code: enteredCode, token }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        console.log('2FA verification response:', response);
+  
+        if (response.data.message === '2FA verified successfully.') {
+          setSuccessMessage('2FA verification successful! Processing your request...');
+  
+          const formData = JSON.parse(localStorage.getItem(actionType));
+          console.log(`Submitting ${actionType} data:`, formData);
+  
+          if (!formData) {
+            throw new Error(`No data found in local storage for action type: ${actionType}`);
+          }
+  
+          if (actionType === 'login' && formData.login) {
+            formData.email = formData.login;
+            delete formData.login;
+          }
+  
+          const endpoint = actionType === 'register' ? '/register' : '/login';
+  
+          const authResponse = await axios.post(endpoint, formData, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          console.log(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} response:`, authResponse);
+  
+          if (authResponse.data.message.includes('successful')) {
+            setSuccessMessage(`${actionType.charAt(0).toUpperCase() + actionType.slice(1)} successful! Redirecting to dashboard...`);
+            setErrorMessage('');
 
-    const handleClearCode = () => {
-        setCode(Array(6).fill(''));
-        setErrorMessage('');
+            if(save === true){
+                localStorage.setItem('token', authResponse.data.token);
+                localStorage.setItem('user', authResponse.data.user);
+                localStorage.setItem('id', authResponse.data.id);
+                localStorage.setItem('username', authResponse.data.username);
+                sessionStorage.setItem('token', authResponse.data.token);
+                sessionStorage.setItem('user', authResponse.data.user);
+                sessionStorage.setItem('id', authResponse.data.id);
+                sessionStorage.setItem('username', authResponse.data.username);
+            }else{
+                sessionStorage.setItem('token', authResponse.data.token);
+                sessionStorage.setItem('user', authResponse.data.user);
+                sessionStorage.setItem('id', authResponse.data.id);
+                sessionStorage.setItem('username', authResponse.data.username);
+                localStorage.removeItem('token', authResponse.data.token);
+                localStorage.removeItem('user', authResponse.data.user);
+                localStorage.removeItem('id', authResponse.data.id);
+                localStorage.removeItem('username', authResponse.data.username);
+            }
+  
+            localStorage.removeItem('login');
+            localStorage.removeItem('twoFactorToken');
+            localStorage.removeItem('twoFactorCode');
+            localStorage.removeItem('register');
+  
+            if (actionType === 'register') {
+              await axios.post(`/update-profile/${authResponse.data.username}`, {}, {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
+              console.log('Profile data updated successfully');
+            }
+  
+            setTimeout(() => {
+              onClose();
+              navigate('/dashboard');
+            }, 3000);
+          } else {
+            throw new Error(authResponse.data.message);
+          }
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error('Error verifying 2FA code or processing request:', error.response ? error.response.data : error.message);
+        setErrorMessage(error.response ? error.response.data.message : error.message);
         setSuccessMessage('');
+      }
+    };
+  
+    const handleClearCode = () => {
+      setCode(Array(6).fill(''));
+      setErrorMessage('');
+      setSuccessMessage('');
     };
 
     return (

@@ -28,6 +28,13 @@ export default function Register() {
   const [actionType, setActionType] = useState('');
 
   useEffect(() => {
+    const id = sessionStorage.getItem('id');
+    if (id) {
+      navigate(`/dashboard`);
+    }
+  });
+
+  useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
@@ -98,16 +105,16 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (validateForm()) {
       const fullPhoneNumber = countryCode + phone;
       console.log("Submitting form with phone number:", fullPhoneNumber);
-  
+
       try {
         const formData = { name, email, username, password, phone: fullPhoneNumber };
         localStorage.setItem('register', JSON.stringify(formData));
         console.log('Stored data for register:', formData);
-  
+
         let preResponse;
         try {
           preResponse = await axios.post('/pre-register', formData, {
@@ -125,47 +132,47 @@ export default function Register() {
               },
             });
           } else if (error.response && error.response.status === 400) {
-            // Handle validation errors from backend
+
             const errorData = error.response.data;
             if (errorData && errorData.errors) {
-              // Convert object of errors to an array if needed
-              const errorMessages = Array.isArray(errorData.errors) 
-                ? errorData.errors 
-                : Object.values(errorData.errors).flat(); // Flatten nested arrays
-          
+
+              const errorMessages = Array.isArray(errorData.errors)
+                ? errorData.errors
+                : Object.values(errorData.errors).flat();
+
               setErrorMessage(errorMessages); // Store errors as an array
               setSuccessMessage('');
               return;
             }
           }
         }
-  
+
         if (!preResponse || !preResponse.data) {
           throw new Error('Pre-registration response data is missing.');
         }
-  
+
         const preData = preResponse.data;
         setShowMessage(preData.message, false);
         setUserEmail(email);
-  
+
         const generate2FAResponse = await axios.post('/2fa/generate', { registration_data: formData }, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!generate2FAResponse || !generate2FAResponse.data) {
           throw new Error('2FA generation response data is missing.');
         }
-  
+
         const generate2FAData = generate2FAResponse.data;
         localStorage.setItem('twoFactorCode', generate2FAData.twoFactorCode);
         localStorage.setItem('twoFactorToken', generate2FAData.token);
         setShowMessage(generate2FAData.message, false);
-  
+
         setActionType('register'); // Set the action type to 'register'
         setShowAuthModal(true); // Show the modal
-  
+
       } catch (error) {
         console.error('Error in pre-register or 2FA flow:', error.response ? error.response.data : error.message);
         setErrorMessage('An error occurred. Please try again later.');
@@ -356,8 +363,8 @@ export default function Register() {
                   id="phone"
                   type="tel"
                   placeholder="Enter phone"
-                  value={phone} 
-                  onChange={(e) => setPhone(e.target.value)} 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
               <div className="mb-4">
@@ -392,17 +399,17 @@ export default function Register() {
               </div>
               {/* NORMAL VALDIATION */}
               {errorMessage && (
-              <div className="text-red-500 font-medium text-sm">
-                {Array.isArray(errorMessage) ? (
-                  errorMessage.map((msg, index) => (
-                    <div key={index} className="mb-1">{msg}</div>
-                  ))
-                ) : (
-                  <div>{errorMessage}</div>
-                )}
-              </div>
-            )}
-              
+                <div className="text-red-500 font-medium text-sm">
+                  {Array.isArray(errorMessage) ? (
+                    errorMessage.map((msg, index) => (
+                      <div key={index} className="mb-1">{msg}</div>
+                    ))
+                  ) : (
+                    <div>{errorMessage}</div>
+                  )}
+                </div>
+              )}
+
               {successMessage && (
                 <div className="text-green-500 font-medium text-sm">{successMessage}</div>
               )}
