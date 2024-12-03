@@ -358,18 +358,7 @@ const conversations = [
           <li>
             <strong className="text-gray-900 font-medium">Location:</strong> USA
           </li>
-          <li className="flex space-x-2">
-            <strong className="text-gray-900 font-medium">Social:</strong>
-            <a href="#" className="text-blue-600">
-              <i className="fab fa-facebook"></i>
-            </a>
-            <a href="#" className="text-blue-400">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#" className="text-pink-500">
-              <i className="fab fa-instagram"></i>
-            </a>
-          </li>
+          
         </ul>
       </div>
     </div>

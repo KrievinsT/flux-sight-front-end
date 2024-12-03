@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 
@@ -10,6 +10,7 @@ import { FaRankingStar } from "react-icons/fa6";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 import NotificationDropdown from "../modal/NotificationDropdown";
+import Logout from '../modal/Logout';
 import WebsiteViewsCard from "../modal/WebsiteViewsCard";
 import DailySalesCard from "../modal/DailySalesCard";
 import TrafficByCountryCard from "../modal/TrafficByCountryCard";
@@ -32,6 +33,14 @@ const currentPerformance = seoPerformance.find((perf) => perf.label === status);
 export default function Dashboard  () {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const navigate = useNavigate();
+  const insightsRef = useRef(null);
+
+  const scrollToInsights = () => {
+   
+    if (insightsRef.current) {
+      insightsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const [rows, setRows] = useState([
     {
@@ -115,16 +124,17 @@ export default function Dashboard  () {
               Add website
           </button>
                  </Link>
-        <button
-       
-          className="border-1 border-blue-600  text-blue-600  p-[0.5rem] text-[14px] font-small rounded-md"
-        >
-         Check Insights
-        </button>
+            
+                 <button
+        className="border-1 border-blue-600 text-blue-600 p-[0.5rem] text-[14px] font-small rounded-md"
+        onClick={scrollToInsights} 
+      >
+        Check Insights
+      </button>
             
                
         <IoSettingsOutline
-          className="w-5 h-5 cursor-pointer text-gray-600"
+          className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
           onClick={() => setIsSettingsOpen(true)} 
         />
       
@@ -135,9 +145,8 @@ export default function Dashboard  () {
              
                  <NotificationDropdown />
                 
-                <Link to="/register">
-                <FaRegUserCircle  className="w-5 h-5 cursor-pointer text-gray-600 " />
-                </Link>
+                 <Logout />
+
           </div>
         </header>
       <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Dashboard </div>
@@ -265,7 +274,7 @@ export default function Dashboard  () {
     <span className="ml-1 text-gray-500">this month</span>
   </div>
 
-  <div className="card-body px-0 pb-1">
+  <div ref={insightsRef} className="card-body px-0 pb-1">
   <div className="max-h-[340px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
     <table className="w-full text-left table-auto border-separate border-spacing-y-0">
       <thead className="bg-gray-100 sticky top-0 z-10">

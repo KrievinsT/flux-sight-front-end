@@ -140,7 +140,7 @@ export default function Register() {
                 ? errorData.errors
                 : Object.values(errorData.errors).flat();
 
-              setErrorMessage(errorMessages); // Store errors as an array
+              setErrorMessage(errorMessages); 
               setSuccessMessage('');
               return;
             }
@@ -187,7 +187,7 @@ export default function Register() {
     const token = params.get('token');
 
     if (token) {
-      // Store the token (e.g., in local storage) and navigate to the dashboard
+    
       localStorage.setItem('auth_token', token);
       navigate('/dashboard');
     }
@@ -232,9 +232,7 @@ export default function Register() {
       {/* Header */}
       <header className="flex justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
         <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
-        <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>
-        <img src="./images/profile.gif" alt="Profile icon" className="w-6 h-6 mr-1" />
-        <Link to="/profile" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Profile </Link>
+       <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Landing page</Link>
         <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1 " />
         <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Sign Up </Link>
         <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1" />

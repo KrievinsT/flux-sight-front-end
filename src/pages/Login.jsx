@@ -87,7 +87,7 @@ export default function Login() {
   
       const preData = preResponse.data;
       if (preData.error) {
-        setErrorMessage(preData.error); // Set error message from server response if available
+        setErrorMessage(preData.error); 
         setSuccessMessage('');
         return;
       }
@@ -187,9 +187,7 @@ export default function Login() {
       <header className="flex justify-center items-center bg-white bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
 
         <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
-        <Link to="/dashboard" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Dashboard </Link>
-        <img src="./images/profile.gif" alt="Profile icon" className="w-6 h-6 mr-1" />
-        <Link to="/profile" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Profile </Link>
+        <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Landing page</Link>
         <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1 " />
         <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Sign Up </Link>
         <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1" />

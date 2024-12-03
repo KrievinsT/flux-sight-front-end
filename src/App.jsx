@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import withAuth from './Auth';
 import Login from './pages/Login';
 import Register from './pages/Register'; 
 import ForgotPassword from './pages/ForgotPassword';
@@ -12,54 +13,34 @@ import Tables from './pages/Tables';
 import EditTable from './pages/EditTable';
 import AddContributor from './pages/AddContributor';
 
-
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://prakse.proti.lv/api';
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 axios.defaults.withCredentials = true;
 
-function App() {
+const App = () => (
+  <Routes>
+    <Route path="/" element={<Navigate to="/register" replace />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/forgotpassword" element={<ForgotPassword />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/dashboard/addwebsite" element={<AddWebsite />} />
+    <Route path="/dashboard/editwebsite" element={<EditWebsite />} />
+    <Route path="/profile" element={<Profile />} />
+    <Route path="/alerts" element={<Alerts />} />
+    <Route path="/tables" element={<Tables />} />
+    <Route path="/tables/edittable" element={<EditTable />} />
+    <Route path="/tables/addcontributor" element={<AddContributor />} />
+  </Routes>
+);
 
-  useEffect(() => {
-    const id = localStorage.getItem('id');
-    if(id){
-      sessionStorage.setItem('id', id);
-    }
-    const token = localStorage.getItem('token');
-    if(token){
-    sessionStorage.setItem('token', token);
-    }
-    const user = sessionStorage.getItem('user');
-    if(user){
-    sessionStorage.setItem('user', user);
-    }
-    const username = sessionStorage.getItem('username');
-    if(username){
-    sessionStorage.setItem('username', username);
-    }
-  }, []);
+const AppWrapper = withAuth(App);
 
-
+export default function Root() {
   return (
     <Router>
-      <Routes>
-        {/* Redirect from root to /register */}
-        <Route path="/" element={<Navigate to="/register" replace />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/addwebsite" element={<AddWebsite />} />
-        <Route path="/dashboard/editwebsite" element={<EditWebsite />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/alerts" element={<Alerts />} />
-        <Route path="/tables" element={<Tables />} />
-        <Route path="/tables/edittable" element={<EditTable />} />
-        <Route path="/tables/addcontributor" element={<AddContributor />} />
-      </Routes>
+      <AppWrapper />
     </Router>
   );
 }
-
-export default App;
