@@ -17,18 +17,51 @@ import { LuSettings } from "react-icons/lu";
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import SettingsBar from '../modal/SettingsBar';
+import Logout from '../modal/Logout';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile () {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
+  const [userData, setUserData] = useState({
+    id: null,
+    name: null,
+    username: null,
+    email: null,
+    phone: null,
+  });
+  useEffect(() => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const id = localStorage.getItem("id") || sessionStorage.getItem("id");
+    const user = localStorage.getItem("user") || sessionStorage.getItem("user");
+    const username = localStorage.getItem("username") || sessionStorage.getItem("username");
+    const email = localStorage.getItem("email") || sessionStorage.getItem("email");
+    const phone = localStorage.getItem("phone") || sessionStorage.getItem("phone");
+  
+    console.log("Retrieved Data:");
+    console.log("Token:", token);
+    console.log("ID:", id);
+    console.log("User:", user);
+    console.log("Username:", username);
+    console.log("Email:", email);
+    console.log("Phone:", phone);
+  
+    if (token && id) {
+      setUserData({
+        id: id || "N/A",
+        user: user || "Guest User",
+        username: username || "Unknown",
+        email: email && email !== "null" ? email : "Unknown",
+        phone: phone && phone !== "null" ? phone : "Unknown",
+      });
+    }
+  }, []);
 
   const [settings, setSettings] = useState([
     {
       id: "email_send",
-      label: "Send emails",
+      label: "Send email's",
       checked: true,
     },
     {
@@ -140,9 +173,7 @@ const conversations = [
 
                  <NotificationDropdown />
                 
-                <Link to="/register">
-                <FaRegUserCircle  className="w-5 h-5 cursor-pointer text-gray-600 " />
-                </Link>
+                 <Logout />
           </div>
         </header>
 
@@ -163,12 +194,20 @@ const conversations = [
   <div className="flex justify-between items-center">
   {/* Left Section */}
   <div className="flex items-center space-x-2">
-    <img src="./images/p2.jpg" alt="Description of the image" className="w-16 h-16 rounded-lg" />
-    <div className="flex flex-col text-sm pl-6">
-      <div className="text-2xl font-bold">Richard Davis</div>
-      <div className="text-sm text-gray-500">User</div>
-    </div>
-  </div>
+          <img
+            src="./images/p2.jpg"
+            alt="User avatar"
+            className="w-16 h-16 rounded-lg"
+          />
+         <div className="flex flex-col pl-6">
+          <div className="text-2xl font-bold">
+            {userData.user || "Guest User"}
+          </div>
+          <div className=" text-gray-500">
+            {userData.username ? `${userData.username}` : "No username available"}
+          </div>
+        </div>
+        </div>
 
 
   <div className="flex flex-col">
@@ -334,29 +373,18 @@ const conversations = [
         </button>
       </div>
       <div className="p-3">
-        <p className="text-sm text-gray-700 mb-4">
-          Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is
-          no. If two equally difficult paths, choose the one more painful in
-          the short term (pain avoidance is creating an illusion of equality).
-        </p>
-       
         <ul className="space-y-4">
           <li>
-            <strong className="text-gray-900 font-medium">Full Name:</strong> Alec M.
-            Thompson
+            <strong className="text-gray-900 font-medium">Full Name:</strong>  {userData.user || "Guest User"}
           </li>
           <li>
-            <strong className="text-gray-900 font-medium">Mobile:</strong> (44) 123 1234
-            123
+            <strong className="text-gray-900 font-medium">Mobile:</strong>  {userData.phone || "Unknown"}
           </li>
           <li>
             <strong className="text-gray-900 font-medium">Email:</strong>
-            <a href="mailto:example@example.com" className="pl-2 text-blue-500">
-              example@example.com
+            <a href={`mailto:${userData.email || "unknown@example.com"}`} className="pl-2 text-blue-500">
+              {userData.email || "Unknown"}
             </a>
-          </li>
-          <li>
-            <strong className="text-gray-900 font-medium">Location:</strong> USA
           </li>
           
         </ul>

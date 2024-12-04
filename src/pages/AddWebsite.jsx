@@ -14,6 +14,7 @@ import SettingsBar from '../modal/SettingsBar';
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
+import Logout from '../modal/Logout';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -23,7 +24,7 @@ export default function AddWebsite() {
 
   const [users, setUsers] = useState([]);
 
-  let username = localStorage.getItem('username');
+  let username = sessionStorage.getItem('username');
 
   const [formData, setFormData] = useState({
     title: "",
@@ -182,9 +183,7 @@ export default function AddWebsite() {
 
             <NotificationDropdown />
 
-            <Link to="/register">
-              <FaRegUserCircle className="w-5 h-5 cursor-pointer text-gray-600 " />
-            </Link>
+            <Logout />
           </div>
         </header>
 

@@ -8,6 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
+
+import Logout from '../modal/Logout';
+
 export default function EditWebsite() {
 
   const location = useLocation();
@@ -200,9 +203,7 @@ export default function EditWebsite() {
 
             <NotificationDropdown />
 
-            <Link to="/register">
-              <FaRegUserCircle className="w-5 h-5 cursor-pointer text-gray-600 " />
-            </Link>
+            <Logout />
           </div>
         </header>
         <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Edit website </div>

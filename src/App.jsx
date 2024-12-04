@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import withAuth from './Auth';
 import Login from './pages/Login';
-import Register from './pages/Register'; 
+import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import AddWebsite from './pages/AddWebsite';
@@ -12,6 +12,7 @@ import Alerts from './pages/Alerts';
 import Tables from './pages/Tables';
 import EditTable from './pages/EditTable';
 import AddContributor from './pages/AddContributor';
+import Forgot_password from './pages/Forgot_Pass';
 
 import axios from 'axios';
 
@@ -24,6 +25,7 @@ const App = () => (
     <Route path="/register" element={<Register />} />
     <Route path="/login" element={<Login />} />
     <Route path="/forgotpassword" element={<ForgotPassword />} />
+    <Route path="/forgot_password/:token" element={<Forgot_password />} />
     <Route path="/dashboard" element={<Dashboard />} />
     <Route path="/dashboard/addwebsite" element={<AddWebsite />} />
     <Route path="/dashboard/editwebsite" element={<EditWebsite />} />

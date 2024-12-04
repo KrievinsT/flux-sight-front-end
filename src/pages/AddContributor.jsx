@@ -6,6 +6,7 @@ import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import { FaUsers } from "react-icons/fa";
 import SettingsBar from '../modal/SettingsBar';
+import Logout from '../modal/Logout';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -110,9 +111,7 @@ export default function AddContributor() {
 
             <NotificationDropdown />
 
-            <Link to="/register">
-              <FaRegUserCircle className="w-5 h-5 cursor-pointer text-gray-600 " />
-            </Link>
+            <Logout />
           </div>
         </header>
 

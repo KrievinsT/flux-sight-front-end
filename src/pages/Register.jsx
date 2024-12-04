@@ -26,6 +26,7 @@ export default function Register() {
   const [selectedCountry, setSelectedCountry] = useState(null);
 
   const [actionType, setActionType] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const id = sessionStorage.getItem('id');
@@ -230,24 +231,57 @@ export default function Register() {
       }}
     >
       {/* Header */}
-      <header className="flex justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
-        <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1" />
-       <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Landing page</Link>
-        <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1 " />
-        <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Sign Up </Link>
-        <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1" />
-        <Link to="/login" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer ">Log In</Link>
+      <header className="flex justify-start block 441px:justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
+        <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1 hidden 441px:block" />
+       <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block ">Landing page</Link>
+        <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1  hidden 441px:block " />
+        <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block">Sign Up </Link>
+        <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1  hidden 441px:block" />
+        <Link to="/login" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block ">Log In</Link>
+   
+        <div className="flex block 441px:hidden items-center">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-700">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div className={`absolute top-[3.9rem] left-0 right-0 bg-white bg-opacity-90 rounded-b-xl z-50 pb-3 ${menuOpen ? 'block' : 'hidden '} `}>
+        <div className="flex flex-col sm:flex-row items-start space-y-3 space-x-2 block 441px:hidden ">
+          <div className="flex items-start space-x-2 pl-2">
+            <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6" />
+            <Link to="/landing" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+              Landing page
+            </Link>
+          </div>
+
+          <div className="flex items-start space-x-2">
+            <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6" />
+            <Link to="/register" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+              Sign Up
+            </Link>
+          </div>
+
+          <div className="flex items-start space-x-2">
+            <img src="./images/login.gif" alt="Login icon" className="w-6 h-6" />
+            <Link to="/login" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+              Log In
+            </Link>
+          </div>
+        </div>
+      </div>
       </header>
 
       {/* Main Content */}
-      <main className="mt-16 flex items-center justify-center">
+      <main className={`${menuOpen ? 'mt-[10rem]' : 'mt-16'} flex items-center justify-center transition-all duration-200`}>
         <div className="flex justify-center w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl p-6 mx-auto">
-          <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 relative">
+          <div className="w-full max-w-[40rem] bg-white rounded-lg shadow-lg p-6 relative">
             <div
               className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
               style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
             >
-              <h2 className="text-2xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
+              <h2 className="text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
                 Sign up
               </h2>
               <div className="flex justify-center mt-6 mb-3 space-x-4">
@@ -270,13 +304,20 @@ export default function Register() {
               className="px-0 pt-6 pb-0"
             >
               <div className="mb-4">
-                <input
+              <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
-                  placeholder="Enter Name"
+                  placeholder="Enter Name & Surname"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    const capitalizedValue = inputValue
+                      .replace(/\s+/g, ' ') 
+                      .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()); 
+
+                    setName(capitalizedValue);
+                  }}
                 />
               </div>
               <div className="mb-4">
@@ -284,30 +325,36 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="email"
                   type="text"
-                  placeholder="Enter email"
+                  placeholder="Enter Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-4">
-                <input
+              <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="username"
                   type="text"
-                  placeholder="Enter username"
+                  placeholder="Enter Username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    const inputValue = e.target.value.replace(/\s+/g, ''); 
+                    const capitalizedValue = inputValue.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()); 
+
+                    setUsername(capitalizedValue);
+                  }}
                 />
               </div>
-              <div className="mb-4 flex gap-4 items-center">
-                <div className="relative w-1/3">
+              <div className="mb-4 flex flex-col 441px:flex-row gap-4 items-center">
+                {/* Country Dropdown */}
+                <div className="relative w-full sm:w-[45%]">
                   <button
                     className="flex items-center justify-between w-full px-3 py-2 text-gray-700 bg-white border rounded shadow focus:outline-none hover:border-gray-400"
                     onClick={(e) => {
                       e.preventDefault();
                       setDropdownOpen(!dropdownOpen);
                     }}
-                    type="button" // Prevent unintended form submission
+                    type="button" 
                   >
                     <span className="flex items-center">
                       {selectedCountry?.flag && (
@@ -317,7 +364,7 @@ export default function Register() {
                           className="w-5 h-5 mr-2 rounded"
                         />
                       )}
-                      {selectedCountry?.code}
+                      {selectedCountry?.code || 'Select Country'}
                     </span>
                     <span className="text-gray-600">&#9660;</span>
                   </button>
@@ -356,11 +403,13 @@ export default function Register() {
                     </div>
                   )}
                 </div>
+
+                {/* Phone Input */}
                 <input
-                  className="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full sm:w-2/3 py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="phone"
                   type="tel"
-                  placeholder="Enter phone"
+                  placeholder="Enter Phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
@@ -370,20 +419,23 @@ export default function Register() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="password"
                   type="password"
-                  placeholder=" Password"
+                  placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="mb-4">
-                <label className="flex items-center">
+              <label className="flex items-center flex-wrap">
                   <input
                     type="checkbox"
                     className="mr-2"
                     checked={isChecked}
                     onChange={handleToggleChange}
                   />
-                  I agree to the Terms and Conditions
+                  I agree to the{' '}
+                  <span className="pl-1 font-bold text-black cursor-pointer whitespace-normal">
+                    Terms and Conditions
+                  </span>
                 </label>
               </div>
               <div className="mb-4">

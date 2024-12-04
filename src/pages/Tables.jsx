@@ -7,6 +7,7 @@ import SidebarModal from "../modal/Sidebar";
 import ConfirmationModal from "../modal/ConfirmationModal";
 import { Link, useNavigate } from 'react-router-dom';
 import SettingsBar from '../modal/SettingsBar';
+import Logout from '../modal/Logout';
 
 export default function Tables() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -60,9 +61,7 @@ export default function Tables() {
             <IoSettingsOutline className="w-5 h-5 cursor-pointer text-gray-600" onClick={() => setIsSettingsOpen(true)} />
             <SettingsBar isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
             <NotificationDropdown />
-            <Link to="/register">
-              <FaRegUserCircle className="w-5 h-5 cursor-pointer text-gray-600" />
-            </Link>
+            <Logout />
           </div>
         </header>
 
@@ -76,7 +75,6 @@ export default function Tables() {
                 <thead className="bg-gray-200">
                   <tr>
                     <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Author</th>
-                    <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">Status</th>
                     <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">Employed</th>
                     <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">Actions</th>
                   </tr>
@@ -92,11 +90,6 @@ export default function Tables() {
                           <h6 className="text-sm font-semibold">{contributor.name}</h6>
                           <p className="text-xs text-gray-500">{contributor.email}</p>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase text-white`} style={{ backgroundImage: contributor.status === "Online" ? "linear-gradient(195deg, #3fb906, #1a9e08)" : "linear-gradient(195deg, #757575, #424242)" }}>
-                          {contributor.status}
-                        </span>
                       </td>
                       <td className="px-4 py-3 text-center text-sm font-medium text-gray-600">{contributor.employed}</td>
                       <td className="px-4 py-3 text-center">

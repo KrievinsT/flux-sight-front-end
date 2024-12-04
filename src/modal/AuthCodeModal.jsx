@@ -79,19 +79,27 @@ export default function AuthCodeModal({ email, onClose, actionType, save }) {
                 localStorage.setItem('user', authResponse.data.user);
                 localStorage.setItem('id', authResponse.data.id);
                 localStorage.setItem('username', authResponse.data.username);
+                localStorage.setItem('email', authResponse.data.email);
+                localStorage.setItem('phone', authResponse.data.phone);
                 sessionStorage.setItem('token', authResponse.data.token);
                 sessionStorage.setItem('user', authResponse.data.user);
                 sessionStorage.setItem('id', authResponse.data.id);
                 sessionStorage.setItem('username', authResponse.data.username);
+                sessionStorage.setItem('email', authResponse.data.email);
+                sessionStorage.setItem('phone', authResponse.data.phone);
             }else{
                 sessionStorage.setItem('token', authResponse.data.token);
                 sessionStorage.setItem('user', authResponse.data.user);
                 sessionStorage.setItem('id', authResponse.data.id);
                 sessionStorage.setItem('username', authResponse.data.username);
+                sessionStorage.setItem('email', authResponse.data.email);
+                sessionStorage.setItem('phone', authResponse.data.phone);
                 localStorage.removeItem('token', authResponse.data.token);
                 localStorage.removeItem('user', authResponse.data.user);
                 localStorage.removeItem('id', authResponse.data.id);
                 localStorage.removeItem('username', authResponse.data.username);
+                localStorage.removeItem('email', authResponse.data.email);
+                localStorage.removeItem('phone', authResponse.data.phone);
             }
   
             localStorage.removeItem('login');

@@ -7,6 +7,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
 import { Link } from 'react-router-dom';
 import SettingsBar from '../modal/SettingsBar';
+import Logout from '../modal/Logout';
 
 export default function EditTable() {
   const location = useLocation();
@@ -124,9 +125,7 @@ export default function EditTable() {
 
             <NotificationDropdown />
 
-            <Link to="/register">
-              <FaRegUserCircle className="w-5 h-5 cursor-pointer text-gray-600" />
-            </Link>
+            <Logout />
           </div>
         </header>
 
