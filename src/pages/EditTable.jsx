@@ -36,7 +36,7 @@ export default function EditTable() {
   };
 
   useEffect(() => {
-    const username = localStorage.getItem('username');
+    const username = sessionStorage.getItem('username');
     console.log("Fetching contributors for username:", username);
     axios.get(`/users?username=${username}`)
       .then(response => {

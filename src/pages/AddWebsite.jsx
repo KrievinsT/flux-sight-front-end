@@ -97,7 +97,6 @@ export default function AddWebsite() {
 
       // let testData = JSON.parse(formData);
       console.log("FormData", formData);
-      
 
       try {
         const response = await axios.post('/web/store', formData, {

@@ -39,12 +39,12 @@ export default function Forgot_password() {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
 
     if (!password || !passwordRegex.test(password)) {
-      setPasswordError('Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character');
+      setPasswordError('Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character!');
       return false;
     }
 
     if (password !== passwordConfirmation) {
-      setPasswordError('Passwords do not match');
+      setPasswordError('Passwords do not match!');
       return false;
     }
 
@@ -136,7 +136,7 @@ export default function Forgot_password() {
                 className="bg-gray-900 text-white w-full text-center rounded-lg py-4 -mt-12 px-6"
                 style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
               >
-                <h2 className="text-xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
+                <h2 className="405px:text-3xl text-2xl  font-bold tracking-wide text-gray-100 drop-shadow-lg">
                   Reset Password
                 </h2>
                 <div className="flex justify-center mt-6 mb-3 space-x-4">
@@ -187,7 +187,7 @@ export default function Forgot_password() {
                 </h2>
                 <div className="flex flex-col justify-center items-center mt-6 mb-3 text-white font-medium">
                   <span>Your password has been reset.</span>
-                  <span className="font-bold text-white mt-1">{email}</span>
+                  
                 </div>
               </div>
               <div className="bg-green-600 text-white rounded-lg shadow-lg p-4 mt-6  text-center">

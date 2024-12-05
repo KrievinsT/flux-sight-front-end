@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -22,9 +21,6 @@ import Logout from '../modal/Logout';
 
 import { Link, useNavigate } from 'react-router-dom';
 
-
-
-
 export default function Alerts () {
 
     const [showBlueAlert, setShowBlueAlert] = useState(true);
@@ -35,6 +31,22 @@ export default function Alerts () {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const [toastType, setToastType] = useState("");
+
+    const [alertHistory, setAlertHistory] = useState([]);
+
+    // Fetch alerts from localStorage on component mount
+    useEffect(() => {
+      const storedAlerts = JSON.parse(localStorage.getItem("alertHistory")) || [];
+      setAlertHistory(storedAlerts);
+      console.log("Retrieved Alert History:", storedAlerts);
+    }, []);
+  
+    // Handle removing an alert
+    const handleRemoveAlert = (originalIndex) => {
+      const updatedAlerts = alertHistory.filter((_, i) => i !== originalIndex);
+      setAlertHistory(updatedAlerts);
+      localStorage.setItem("alertHistory", JSON.stringify(updatedAlerts));
+    };
 
   const handleShowToast = (type) => {
     setToastType(type);
@@ -156,98 +168,83 @@ export default function Alerts () {
       {/* Alerts Section */}
       <div className="card mt-2 bg-white shadow-lg rounded-lg">
       <div className="card-header bg-white px-6 py-4 bg-gray-100">
-        <h5 className="mb-0 text-2xl font-semibold">Status history alerts</h5>
+        <h5 className="mb-0 text-2xl font-semibold">Status History Alerts</h5>
       </div>
       <div className="card-body px-6 py-4 space-y-4">
-        {showBlueAlert && (
-          <div className="bg-blue-500 text-white px-4 py-3 rounded-lg relative">
-            <span className="text-sm">
-              A simple primary alert with{" "}
-              <a href="#" className="underline text-white">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </span>
-            <button
-              className="absolute top-2.5 right-2.5 text-2xl"
-              aria-label="Close"
-              onClick={() => handleCloseAlert("blue")}
-            >
-              &times;
-            </button>
-          </div>
-        )}
-        {showGrayAlert && (
-          <div className="bg-gray-500 text-white px-4 py-3 rounded-lg relative">
-            <span className="text-sm">
-              A simple secondary alert with{" "}
-              <a href="#" className="underline text-white">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </span>
-            <button
-              className="absolute top-2.5 right-2.5 text-2xl"
-              aria-label="Close"
-              onClick={() => handleCloseAlert("gray")}
-            >
-              &times;
-            </button>
-          </div>
-        )}
-        {showGreenAlert && (
-          <div className="bg-green-500 text-white px-4 py-3 rounded-lg relative">
-            <span className="text-sm">
-              A simple success alert with{" "}
-              <a href="#" className="underline text-white">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </span>
-            <button
-              className="absolute top-2.5 right-2.5 text-2xl"
-              aria-label="Close"
-              onClick={() => handleCloseAlert("green")}
-            >
-              &times;
-            </button>
-          </div>
-        )}
-        {showRedAlert && (
-          <div className="bg-red-500 text-white px-4 py-3 rounded-lg relative">
-            <span className="text-sm">
-              A simple danger alert with{" "}
-              <a href="#" className="underline text-white">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </span>
-            <button
-              className="absolute top-2.5 right-2.5 text-2xl"
-              aria-label="Close"
-              onClick={() => handleCloseAlert("red")}
-            >
-              &times;
-            </button>
-          </div>
-        )}
-        {showYellowAlert && (
-          <div className="bg-yellow-500 text-white px-4 py-3 rounded-lg relative">
-            <span className="text-sm">
-              A simple warning alert with{" "}
-              <a href="#" className="underline text-white">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </span>
-            <button
-              className="absolute top-2.5 right-2.5 text-2xl"
-              aria-label="Close"
-              onClick={() => handleCloseAlert("yellow")}
-            >
-              &times;
-            </button>
-          </div>
+        {alertHistory.length === 0 ? (
+          <p className="text-gray-500">No alerts to display.</p>
+        ) : (
+        
+          alertHistory
+            .slice()
+            .reverse()
+            .map((alert, index) => {
+             
+              const originalIndex = alertHistory.length - 1 - index;
+
+              return (
+                <div
+                key={originalIndex}
+                style={{
+                  backgroundImage:
+                    alert.type === "success"
+                      ? "linear-gradient(200deg, #34d399, #10b981)"
+                      : alert.type === "info"
+                      ? "linear-gradient(200deg, #60a5fa, #3b82f6)"
+                      : alert.type === "warning"
+                      ? "linear-gradient(200deg, #fcd34d, #f59e0b)"
+                      : "linear-gradient(200deg, #f87171, #ef4444)",
+                  boxShadow:
+                    alert.type === "success"
+                      ? "0 4px 6px rgba(34,197,94,0.5)"
+                      : alert.type === "info"
+                      ? "0 4px 6px rgba(59,130,246,0.5)"
+                      : alert.type === "warning"
+                      ? "0 4px 6px rgba(234,179,8,0.5)"
+                      : "0 4px 6px rgba(239,68,68,0.5)",
+                  transition: "box-shadow 0.3s ease",  
+                }}
+                className="relative px-4 py-3 rounded-lg text-white"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    alert.type === "success"
+                      ? "0 8px 10px rgba(34,197,94,0.7)"
+                      : alert.type === "info"
+                      ? "0 8px 10px rgba(59,130,246,0.7)"
+                      : alert.type === "warning"
+                      ? "0 8px 10px rgba(234,179,8,0.7)"
+                      : "0 8px 10px rgba(239,68,68,0.7)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    alert.type === "success"
+                      ? "0 4px 6px rgba(34,197,94,0.5)"
+                      : alert.type === "info"
+                      ? "0 4px 6px rgba(59,130,246,0.5)"
+                      : alert.type === "warning"
+                      ? "0 4px 6px rgba(234,179,8,0.5)"
+                      : "0 4px 6px rgba(239,68,68,0.5)";
+                }}
+              >
+                  <span className="text-sm">
+                    <strong className="font-bold text-[16px]  uppercase">
+                      {alert.title}:
+                    </strong>{" "}
+                    {alert.message}
+                  </span>
+                  <small className="block mt-1 font-medium text-[13px] text-white">
+                    {alert.timestamp}
+                  </small>
+                  <button
+                    className="absolute top-[1.2rem] right-2.5 text-3xl"
+                    aria-label="Close"
+                    onClick={() => handleRemoveAlert(originalIndex)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              );
+            })
         )}
       </div>
     </div>
@@ -320,7 +317,7 @@ export default function Alerts () {
         boxShadow: buttonStyles.danger.shadow,
       }}
     >
-      Danger
+     Error
     </button>
   </div>
 </div>
@@ -428,7 +425,7 @@ export default function Alerts () {
         >
             <div className="toast-header" style={{ backgroundImage: "linear-gradient(200deg, #f87171, #ef4444)" }}>
             <IoMdMegaphone className="material-symbols-rounded text-white me-2 h-4 w-4" />
-            <span className="me-auto text-white font-medium"> Danger</span>
+            <span className="me-auto text-white font-medium">Error</span>
             <small className="text-white font-medium">11 mins ago</small>
             <button
                 type="button"

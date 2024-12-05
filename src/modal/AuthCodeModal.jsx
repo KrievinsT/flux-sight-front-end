@@ -150,7 +150,14 @@ export default function AuthCodeModal({ email, onClose, actionType, save }) {
                 </div>
                 <h2 className="text-xl font-semibold mb-2">Authenticate Your Account</h2>
                 <p className="text-gray-600 mb-6">
-                    Protecting your tickets is our top priority. Please confirm your account by entering the authorization code sent to {email}.
+                    Protecting your tickets is our top priority. Please confirm your account by entering the authorization code sent to.<a
+                      href="https://mail.google.com/"  
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-gray-600 underline"
+                    >
+                      {email || "unknown@example.com"}
+                    </a>
                 </p>
                 <div className="flex justify-center gap-2 mb-2">
                     {code.map((digit, index) => (

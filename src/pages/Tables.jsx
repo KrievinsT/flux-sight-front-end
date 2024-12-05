@@ -16,7 +16,7 @@ export default function Tables() {
   const [contributors, setContributors] = useState([]);
 
   useEffect(() => {
-    const username = localStorage.getItem('username');
+    const username = sessionStorage.getItem('username');
 
     axios.get(`/users?username=${username}`)
       .then(response => {

@@ -29,10 +29,10 @@ const withAuth = (Component) => {
       const user = sessionStorage.getItem('user');
       const username = sessionStorage.getItem('username');
 
-      console.log('Location Pathname:', location.pathname);
-      console.log('Email Token:', emailToken);
-      console.log('Email:', email);
-      console.log('Session Storage:', { id, token, user, username });
+      // console.log('Location Pathname:', location.pathname);
+      // console.log('Email Token:', emailToken);
+      // console.log('Email:', email);
+      // console.log('Session Storage:', { id, token, user, username });
 
       if (location.pathname.startsWith('/forgot_password') && emailToken && email) {
         axios.post('/check-password-reset-token', { email, token: emailToken })

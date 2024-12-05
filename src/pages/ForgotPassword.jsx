@@ -226,10 +226,18 @@ export default function ForgotPassword() {
                 <h2 className="text-xl md:text-3xl font-bold tracking-wide text-gray-100 drop-shadow-lg">
                   Set new password
                 </h2>
+                {/* Opens mail when clicked */}
                 <div className="flex flex-col justify-center items-center mt-6 mb-3 text-white font-medium">
-                  <span>Your new password was sent to:</span>
-                  <span className="font-bold text-white mt-1">{email}</span>
-                </div>
+                    <span>Your new password was sent to:</span>
+                    <a
+                      href="https://mail.google.com/"  
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-white mt-1 underline"
+                    >
+                      {email || "unknown@example.com"}
+                    </a>
+                  </div>
               </div>
               
               {showSuccessMessage && (
