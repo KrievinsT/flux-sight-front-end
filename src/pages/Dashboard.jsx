@@ -29,7 +29,7 @@ const seoPerformance = [
   { label: 'Poor', color: 'red', icon: <FaTimesCircle />, description: 'Critical SEO issues detected.' },
 ];
 
-const status = 'Poor'; // Example status from backend
+const status = 'Poor'; 
 const currentPerformance = seoPerformance.find((perf) => perf.label === status);
 
 export default function Dashboard() {
@@ -37,10 +37,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const insightsRef = useRef(null);
   const [webs, setWebs] = useState([]);
-
+  const [records, setRecords] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [isValid, setIsValid] = useState(null); 
-  const [alert, setAlert] = useState({ type: "", message: "" }); 
+  const [isValid, setIsValid] = useState(null);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [userDetailsMessage, setUserDetailsMessages] = useState('');
 
   // Strict URL validation function
   const validateURL = (url) => {
@@ -50,19 +51,59 @@ export default function Dashboard() {
     return urlPattern.test(url);
   };
 
+  const checkUserDetails = async (id) => {
+    try {
+      const response = await axios.post('/notifications', { id });
+
+      if (response.data.messages) {
+        // Store each message with its own key in sessionStorage
+        response.data.messages.forEach((message, index) => {
+          sessionStorage.setItem(`userDetailsMessage${index}`, message);
+        });
+        setUserDetailsMessages(response.data.messages);
+      } else {
+        sessionStorage.setItem('userDetailsMessage', response.data.message);
+        setUserDetailsMessages([response.data.message]);
+      }
+    } catch (error) {
+      console.error('Error checking user details:', error.response ? error.response.data.message : error.message);
+    }
+  };
+
+  useEffect(() => {
+    // Retrieve user ID from sessionStorage
+    const userId = sessionStorage.getItem('id');
+
+    if (userId) {
+      checkUserDetails(userId);
+    } else {
+      console.error('User ID not found in sessionStorage');
+    }
+  }, []);
+
+  const userDetailsMessages = [];
+  for (let i = 0; ; i++) {
+    const message = sessionStorage.getItem(`userDetailsMessage${i}`);
+    if (message) {
+      userDetailsMessages.push(message);
+    } else {
+      break;
+    }
+  }
+
   const handleInputChange = (e) => {
     const value = e.target.value.trim();
     setInputValue(value);
 
     if (value.length === 0) {
-      setIsValid(null); 
+      setIsValid(null);
       setAlert({ type: "", message: "" });
     } else if (validateURL(value)) {
       setIsValid(true);
-      setAlert({ type: "info", message: "Valid website link!" }); 
+      setAlert({ type: "info", message: "Valid website link!" });
     } else {
       setIsValid(false);
-      setAlert({ type: "danger", message: "Invalid website link. Please enter a valid URL." }); 
+      setAlert({ type: "danger", message: "Invalid website link. Please enter a valid URL." });
     }
   };
 
@@ -70,7 +111,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => setAlert({ type: "", message: "" }), 3000);
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
   }, [alert]);
 
@@ -140,14 +181,33 @@ export default function Dashboard() {
     }
   };
 
-  const handleEdit = (index) => {
-    console.log(`Edit clicked for index: ${index}`);
-    // Add your edit logic here
+  const handleEdit = (element) => {
+    console.log(`Edit clicked for element: `, element);
+
+    // Serialize the array element
+    let serializedElement = JSON.stringify(element);
+
+    // Redirect with serialized element in query string
+    window.location.href = `/dashboard/editwebsite?data=${encodeURIComponent(serializedElement)}`;
   };
 
-  const handleDelete = (index) => {
-    console.log(`Delete clicked for index: ${index}`);
-    // Add your delete logic here
+  const handleDelete = async (id) => {
+    console.log(`Delete clicked for id: ${id}`);
+
+    try {
+      const response = await axios.delete(`/delete-record/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log(response.data.message);
+
+      // Update state to remove the deleted record
+      setWebs(prevWebs => prevWebs.filter(web => web.id !== id));
+    } catch (error) {
+      console.error('There was a problem with the deletion operation:', error);
+    }
   };
 
   const shortenUrl = (url) => {
@@ -180,7 +240,7 @@ export default function Dashboard() {
               onChange={handleInputChange}
               placeholder="Type website link here..."
               className={`border-2 border-gray-300 p-[0.5rem] text-sm rounded-lg focus:outline-none focus:border-pink-700
-          ${isValid === false ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-pink-700"}`}
+                ${isValid === false ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-pink-700"}`}
             />
 
             {/* Show Alerts based on validation */}
@@ -378,10 +438,10 @@ export default function Dashboard() {
                         </td>
                         <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
                           <div className="mt-2 flex justify-center space-x-2">
-                            <button onClick={() => handleEdit(index)} className="text-blue-500 hover:text-blue-700" aria-label="Edit">
+                            <button onClick={() => handleEdit(web)} className="text-blue-500 hover:text-blue-700" aria-label="Edit">
                               <FaEdit className="w-5 h-5" />
                             </button>
-                            <button onClick={() => handleDelete(index)} className="text-red-500 hover:text-red-700" aria-label="Delete">
+                            <button onClick={() => handleDelete(web.id)} className="text-red-500 hover:text-red-700" aria-label="Delete">
                               <FaTrashAlt className="w-5 h-5" />
                             </button>
                           </div>

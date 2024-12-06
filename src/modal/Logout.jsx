@@ -9,14 +9,21 @@ const Logout = () => {
   const dropdownRef = useRef(null);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('id');
-    localStorage.removeItem('name');
-    localStorage.removeItem('username');
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('id');
-    sessionStorage.removeItem('name');
-    sessionStorage.removeItem('username');
+    const keysToRemove = [
+      'token', 'id', 'name', 'username', 'user', 'auth_token',
+      'user_email', 'user_id', 'user_name', 'email', 'phone'
+    ];
+  
+    keysToRemove.forEach(key => {
+      if (localStorage.getItem(key) !== null) {
+        localStorage.removeItem(key);
+        console.log(`Removed ${key} from localStorage`);
+      }
+      if (sessionStorage.getItem(key) !== null) {
+        sessionStorage.removeItem(key);
+        console.log(`Removed ${key} from sessionStorage`);
+      }
+    });
     navigate('/login');
   };
 

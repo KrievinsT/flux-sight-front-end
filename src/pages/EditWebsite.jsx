@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../modal/NotificationDropdown";
@@ -21,15 +21,33 @@ export default function EditWebsite() {
   const [members, setMembers] = useState(location.state?.members || []);
 
   const [formData, setFormData] = useState({
-    websiteName: websiteName,
-    url: url,
-    memberName: "",
-    memberEmail: "",
+    title: '',
+    url: '',
+    username: '',
+    id: '', 
   });
 
   const removeMember = (index) => {
     setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
   };
+
+  useEffect(() => {
+    // Function to get query parameters
+    const getQueryParam = (param) => {
+      let urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    };
+
+    // Decode the JSON data from query string
+    const data = getQueryParam('data');
+    if (data) {
+      let decodedData = JSON.parse(decodeURIComponent(data));
+      setFormData(decodedData);
+      console.log('Decoded data:', decodedData);
+    } else {
+      console.error('No data found in query parameters');
+    }
+  }, []);
 
   const [errors, setErrors] = useState({
     websiteName: "",
@@ -38,62 +56,71 @@ export default function EditWebsite() {
     memberEmail: "",
   });
 
-  const validateInput = (field, value) => {
+  const validateInput = (name, value) => {
     let error = "";
 
-    if (field === "websiteName" && value.trim().length < 3) {
+    if (name === "websiteName" && value.trim().length < 3) {
       error = "Website name must be at least 3 characters long.";
-    } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
+    } else if (name === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
       error = "Enter a valid URL (e.g., https://example.com).";
-    } else if (field === "memberName" && value.trim().length < 3) {
-      error = "Member name must be at least 3 characters long.";
-    } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-      error = "Enter a valid email address.";
     }
 
-    setErrors((prev) => ({ ...prev, [field]: error }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    validateInput(name, value);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    console.log('Form Data:', formData);
     const newErrors = {};
     Object.keys(formData).forEach((field) => {
       const value = formData[field];
       let error = "";
-
-      if (field === "websiteName" && value.trim().length < 3) {
+  
+      if (field === "title" && value.trim().length < 3) {
         error = "Website name must be at least 3 characters long.";
       } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
         error = "Enter a valid URL (e.g., https://example.com).";
-      } else if (field === "memberName" && value.trim().length < 3) {
-        error = "Member name must be at least 3 characters long.";
-      } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-        error = "Enter a valid email address.";
       }
-
+  
       if (error) {
         newErrors[field] = error;
       }
     });
-
+  
     setErrors(newErrors);
-
+  
     const hasErrors = Object.keys(newErrors).length > 0;
-
+  
     if (!hasErrors) {
-      console.log("Form submitted successfully:", formData);
+      try {
+        const response = await axios.put(`/web/${formData.id}`, {
+          title: formData.title, // Ensure title is included here
+          url: formData.url,
+          username: formData.username, // Include username in the request body
+        });
+  
+        console.log("Update successful:", response.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     } else {
       console.log("Please fix the errors before submitting.");
     }
   };
-
+  
   const [users, setUsers] = useState([]);
 
   // useEffect(() => {
@@ -209,7 +236,6 @@ export default function EditWebsite() {
         <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Edit website </div>
         <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Edit you're website, to watch list. </div>
 
-
         <div className="flex justify-center items-center">
           <div className="w-full max-w-[60%] bg-white rounded-lg shadow-lg p-6">
 
@@ -225,24 +251,17 @@ export default function EditWebsite() {
             <form className="px-0 pt-7" onSubmit={handleSubmit} noValidate>
               {/* Website Name */}
               <div className="mb-4">
-                <label
-                  htmlFor="websiteName"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
+                <label htmlFor="websiteName" className="block text-sm font-semibold text-gray-700 mb-2">
                   Edit Website Name
                 </label>
                 <input
                   type="text"
-                  name="websiteName"
+                  name="title"
                   id="websiteName"
-                  value={formData.websiteName}
+                  value={formData.title}
                   onChange={handleChange}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline 
-                ${errors.websiteName
-                      ? "border-red-500 focus:ring-2 focus:ring-red-400"
-                      : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
-                    }
-                `}
+                    ${errors.websiteName ? "border-red-500 focus:ring-2 focus:ring-red-400" : "border border-gray-300 focus:ring-2 focus:ring-blue-400"}`}
                   placeholder="Enter website name"
                 />
                 {errors.websiteName && (
@@ -252,12 +271,8 @@ export default function EditWebsite() {
                 )}
               </div>
 
-              {/* URL Input */}
               <div className="mb-4">
-                <label
-                  htmlFor="url"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
+                <label htmlFor="url" className="block text-sm font-semibold text-gray-700 mb-2">
                   Edit Website URL
                 </label>
                 <input
@@ -267,11 +282,7 @@ export default function EditWebsite() {
                   value={formData.url}
                   onChange={handleChange}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline 
-                ${errors.url
-                      ? "border-red-500 focus:ring-2 focus:ring-red-400"
-                      : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
-                    }
-                `}
+                    ${errors.url ? "border-red-500 focus:ring-2 focus:ring-red-400" : "border border-gray-300 focus:ring-2 focus:ring-blue-400"}`}
                   placeholder="https://example.com"
                 />
                 {errors.url && (
@@ -281,102 +292,26 @@ export default function EditWebsite() {
                 )}
               </div>
 
-              {/* Current website members */}
-
-              <div className="mb-4">
-                  <div className="flex justify-between items-center">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Current Members
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addUser}
-                      className="border-1 border-blue-600 p-[0.5rem] rounded-md text-blue-500 hover:text-blue-700 text-sm font-medium"
-                    >
-                      Add +
-                    </button>
-                  </div>
-                  <ul className="list-disc pl-5 text-gray-700">
-                    {members.map((member, index) => (
-                      <li key={index} className="flex items-center mb-2">
-                        <img
-                          src={member.avatar}
-                          alt={member.name}
-                          className="w-8 h-8 mr-3 rounded-lg"
-                        />
-                        <div>
-                          <span className="text-sm font-medium">{member.name}</span>
-                          <span className="text-xs text-gray-500 ml-2">({member.role})</span>
-                        </div>
-                        <button
-                          onClick={() => removeMember(index)}
-                          className="ml-auto text-red-500 hover:text-red-700"
-                        >
-                          &#x2716;
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-              <div className="flex flex-wrap gap-4 ">
-                {/* Member Name */}
-                
-                <form onSubmit={handleSubmit} className="w-full flex flex-col items-center space-y-6">
-                  <form onSubmit={handleUserFormSubmit} className="w-full">
-                    {users.map((user, index) => (
-                      <div key={index} className="flex flex-col md:flex-row gap-4 mb-4 w-full">
-                        <input
-                          type="text"
-                          name="name"
-                          value={user.name}
-                          onChange={(event) => handleInputChange(index, event)}
-                          placeholder="Enter name & surname"
-                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
-                        />
-                        <input
-                          type="email"
-                          name="email"
-                          value={user.email}
-                          onChange={(event) => handleInputChange(index, event)}
-                          placeholder="Enter email"
-                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
-                        />
-                        <input
-                          type="text"
-                          name="phone_number"
-                          value={user.phone_number}
-                          onChange={(event) => handleInputChange(index, event)}
-                          placeholder="Enter phone number"
-                          className="border border-gray-300 rounded-md px-2 py-2 w-full focus:outline-none focus:ring-1 focus:ring-gray-600"
-                        />
-                      </div>
-                    ))}
-
-                    <div className="w-full flex justify-center">
-                      <button
-                        type="submit"
-                        className={`w-full md:w-1/2 bg-gray-900 hover:bg-gray-800 text-white mt-4 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${Object.values(errors).some((err) => err)
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
-                          }`}
-                        style={{ backgroundImage: 'linear-gradient(195deg, #313152, #010d21)' }}
-                        disabled={Object.values(errors).some((err) => err)}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </form>
-                </form>
-                <div>
-                </div>
+              <div className="w-full flex justify-center">
+                <button
+                  type="submit"
+                  className={`w-full md:w-1/2 bg-gray-900 hover:bg-gray-800 text-white mt-4 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${Object.values(errors).some((err) => err)
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  style={{ backgroundImage: 'linear-gradient(195deg, #313152, #010d21)' }}
+                  disabled={Object.values(errors).some((err) => err)}
+                >
+                  Save
+                </button>
               </div>
             </form>
+            <div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 

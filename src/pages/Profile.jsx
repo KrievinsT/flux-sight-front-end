@@ -19,22 +19,95 @@ import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import SettingsBar from '../modal/SettingsBar';
 import Logout from '../modal/Logout';
+import ShowAlerts from '../modal/ShowAlerts';
 
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
-export default function Profile() {
+import DOMPurify from "dompurify";
 
+
+export default function Profile() {
+  const [userDetailsMessages, setUserDetailsMessages] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [originalUserData, setOriginalUserData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState({
     id: null,
-    name: null,
+    user: null,
     username: null,
     email: null,
     phone: null,
   });
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [validateURL, setIsValidURL] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+   const [alert, setAlert] = useState({ type: "", message: "" });
+
+  const validateForm = () => {
+   
+    const sanitizedUser = DOMPurify.sanitize(userData?.user?.trim() || "");
+    const sanitizedUsername = DOMPurify.sanitize(userData?.username?.trim() || "");
+    const sanitizedEmail = DOMPurify.sanitize(userData?.email?.trim() || "");
+    const sanitizedPhone = DOMPurify.sanitize(userData?.phone?.trim() || "");
+  
+    
+    if (!/^[a-zA-Z\s]{3,}$/.test(sanitizedUser)) {
+      setErrorMessage("Name must be at least 3 characters long.");
+      return false;
+    }
+  
+  
+    if (!/^[a-zA-Z\s]{2,}$/.test(sanitizedUsername)) {
+      setErrorMessage("Username must be at least 2 characters long.");
+      return false;
+    }
+  
+   
+    if (!/^\d{7,15}$/.test(sanitizedPhone)) {
+      setErrorMessage("Phone number must contain only digits and be between 7 and 15 characters long.");
+      return false;
+    }
+  
+ 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
+      setErrorMessage("Please enter a valid email address.");
+      return false;
+    }
+  
+
+    setErrorMessage(""); 
+    return true;
+  };
+
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("https://restcountries.com/v3.1/all");
+        if (!response.ok) throw new Error("Failed to fetch country data.");
+        const data = await response.json();
+
+        const formattedCountries = data
+          .map((country) => ({
+            name: country.name.common,
+            code: country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : ""),
+            flag: country.flags.svg,
+          }))
+          .filter((country) => country.code);
+
+        setCountries(formattedCountries);
+        setSelectedCountry(formattedCountries[0]);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+    fetchCountries();
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     const id = localStorage.getItem("id") || sessionStorage.getItem("id");
@@ -42,7 +115,7 @@ export default function Profile() {
     const username = localStorage.getItem("username") || sessionStorage.getItem("username");
     const email = localStorage.getItem("email") || sessionStorage.getItem("email");
     const phone = localStorage.getItem("phone") || sessionStorage.getItem("phone");
-  
+
     console.log("Retrieved Data:");
     console.log("Token:", token);
     console.log("ID:", id);
@@ -50,7 +123,7 @@ export default function Profile() {
     console.log("Username:", username);
     console.log("Email:", email);
     console.log("Phone:", phone);
-  
+
     if (token && id) {
       const initialData = {
         id: id || "N/A",
@@ -60,7 +133,7 @@ export default function Profile() {
         phone: phone && phone !== "null" ? phone : "Unknown",
       };
       setUserData(initialData);
-      setOriginalUserData(initialData); // Set original data here
+      setOriginalUserData(initialData);
     }
   }, []);
 
@@ -92,15 +165,11 @@ export default function Profile() {
     );
   };
 
-  
-
   const [activeTab, setActiveTab] = useState("App");
   const renderContent = () => {
     switch (activeTab) {
       case "App":
         return <div>App Content</div>;
-      case "Messages":
-        return <div>Messages Content</div>;
       case "Settings":
         return <div>Settings Content</div>;
       default:
@@ -108,46 +177,75 @@ export default function Profile() {
     }
   };
 
-  const handleEditClick = () => {
+
+  const handleSettingsClick = () => {
+    setActiveTab("Settings");
     setEditMode(true);
   };
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserData(prevData => ({
+    setUserData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
+
+    
+    if (name === "user") {
+      const sanitizedValue = DOMPurify.sanitize(value.trim());
+      if (sanitizedValue.length === 0) {
+        setIsValidURL(null);
+        setAlert({ type: "", message: "" });
+      } else if (validateURL(sanitizedValue)) {
+        setIsValidURL(true);
+        setAlert({ type: "success", message: "Name updated suc" });
+      } else {
+        setIsValidURL(false);
+        setAlert({ type: "danger", message: "Name must be at least 3 characters long." });
+      }
+    }
   };
-  
+
+  const clearUserDetailsMessages = () => {
+    for (let i = 0; ; i++) {
+      if (sessionStorage.getItem(`userDetailsMessage${i}`)) {
+        sessionStorage.removeItem(`userDetailsMessage${i}`);
+      } else {
+        break;
+      }
+    }
+    sessionStorage.removeItem('userDetailsMessage');
+    setUserDetailsMessages([]);
+  };
+
   const updateUserData = async (updatedData, originalUsername) => {
     console.log('Sending update:', updatedData); // Debugging line
     try {
       const dataToSend = { ...updatedData, originalUsername };
       const response = await axios.put(`/users/${updatedData.id}`, dataToSend, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`,
+        },
       });
       console.log('Update successful:', response.data);
-  
+
       const user = response.data.user;
-  
+
       const newUserData = {
         id: user.id || "N/A",
         user: user.name || "Guest User",
         username: user.username || "Unknown",
         email: user.email && user.email !== "null" ? user.email : "Unknown",
-        phone: user.phone_number && user.phone_number !== "null" ? user.phone_number : "Unknown"
+        phone: user.phone_number && user.phone_number !== "null" ? user.phone_number : "Unknown",
       };
       setUserData(newUserData);
-  
+
       sessionStorage.setItem("id", newUserData.id);
       sessionStorage.setItem("user", newUserData.user);
       sessionStorage.setItem("username", newUserData.username);
       sessionStorage.setItem("email", newUserData.email);
       sessionStorage.setItem("phone", newUserData.phone);
-  
+
       if (localStorage.getItem("token")) {
         localStorage.setItem("id", newUserData.id);
         localStorage.setItem("user", newUserData.user);
@@ -155,23 +253,47 @@ export default function Profile() {
         localStorage.setItem("email", newUserData.email);
         localStorage.setItem("phone", newUserData.phone);
       }
+
+      // Clear messages on successful update
+      clearUserDetailsMessages();
+
     } catch (error) {
       console.error('Error updating user data:', error);
     }
   };
-  
+
   const handleSaveClick = () => {
+    // Validate form before saving
+    if (!validateForm()) {
+      console.log('Validation failed');
+      return; // Stop execution if validation fails
+    }
+  
     console.log('Original data:', originalUserData);
     console.log('Updated data:', userData);
-    if (JSON.stringify(userData) !== JSON.stringify(originalUserData)) {
-      console.log('Saving data:', userData);
-      updateUserData(userData, originalUserData.username); // Pass original username
-      setEditMode(false);
+  
+    // Prepare the updated data
+    const updatedData = {
+      ...userData,
+      phone: `${selectedCountry?.code || ""}${userData.phone || ""}`,
+    };
+  
+    // Only save if there are changes
+    if (JSON.stringify(updatedData) !== JSON.stringify(originalUserData)) {
+      console.log('Saving data:', updatedData);
+      updateUserData(updatedData, originalUserData.username)
+        .then(() => {
+          setEditMode(false);
+          setActiveTab("App");
+        })
+        .catch(error => {
+          console.error('Error saving data:', error);
+        });
     } else {
       console.log('No changes detected');
     }
   };
-  
+
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
       {/* Sidebar */}
@@ -252,7 +374,10 @@ export default function Profile() {
               <div className="flex flex-col">
                 <div className="flex bg-gray-100 p-2 rounded-lg">
                   <button
-                    onClick={() => setActiveTab("App")}
+                    onClick={() => {
+                      setActiveTab("App");
+                      setEditMode(false);
+                    }}
                     className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "App"
                       ? "bg-white shadow-md scale-105"
                       : "text-gray-500 scale-100"
@@ -262,19 +387,8 @@ export default function Profile() {
                     <span className="ml-1">App</span>
                   </button>
 
-                  {/* <button
-                    onClick={() => setActiveTab("Messages")}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "Messages"
-                      ? "bg-white shadow-md scale-105"
-                      : "text-gray-500 scale-100"
-                      } focus:outline-none`}
-                  >
-                    <IoMailOutline className="h-5 w-5" />
-                    <span className="ml-1">Messages</span>
-                  </button> */}
-
                   <button
-                    onClick={() => setActiveTab("Settings")}
+                    onClick={handleSettingsClick}
                     className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "Settings"
                       ? "bg-white shadow-md scale-105"
                       : "text-gray-500 scale-100"
@@ -396,84 +510,169 @@ export default function Profile() {
               <div className="w-full xl:w-1/3 bg-white rounded-lg">
                 <div className="p-2 flex justify-between items-center">
                   <h6 className="text-lg font-medium">Profile Information</h6>
+                  {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                   <button
                     className="text-gray-500 hover:text-gray-700"
                     title="Edit Profile"
-                    onClick={handleEditClick}
+                    onClick={handleSettingsClick}
                     style={{ display: 'block', visibility: 'visible' }}
                   >
-                    <i className="fas fa-user-edit"></i><FaRegEdit />
                   </button>
                 </div>
                 <div className="p-3">
-                  <ul className="space-y-4">
-                    <li>
-                      <strong className="text-gray-900 font-medium">Full Name:</strong>
+                  <ul className="space-y-3">
+                    <li className="flex items-center">
+                      <strong className="text-gray-900 font-medium w-1/3 ">Full Name:</strong>
                       {editMode ? (
                         <input
                           type="text"
                           name="user"
                           value={userData.user}
                           onChange={handleInputChange}
+                          className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+                focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+                transition-all duration-200"
                         />
                       ) : (
                         ` ${userData.user}`
                       )}
                     </li>
-                    <li>
-                      <strong className="text-gray-900 font-medium">Username:</strong>
+                    <li className="flex items-center">
+                      <strong className="text-gray-900 font-medium w-1/3">Username:</strong>
                       {editMode ? (
                         <input
                           type="text"
                           name="username"
                           value={userData.username}
                           onChange={handleInputChange}
+                          className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+                focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+                transition-all duration-200"
                         />
                       ) : (
                         ` ${userData.username}`
                       )}
                     </li>
-                    <li>
-                      <strong className="text-gray-900 font-medium">Mobile:</strong>
+                    <li className="flex items-center ">
+                      <strong className="text-gray-900 font-medium w-1/3">Mobile:</strong>
                       {editMode ? (
-                        <input
-                          type="text"
-                          name="phone"
-                          value={userData.phone}
-                          onChange={handleInputChange}
-                        />
+                        <div className="flex w-full items-center gap-3">
+                          {/* Dropdown for Country Code */}
+                          <div className="relative w-[70%] ">
+                            <button
+                              className="flex items-center justify-between w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+              focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+              transition-all duration-200 "
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setDropdownOpen(!dropdownOpen);
+                              }}
+                              type="button"
+                            >
+                              <span className="flex items-center">
+                                {selectedCountry?.flag && (
+                                  <img
+                                    src={selectedCountry.flag}
+                                    alt={selectedCountry.name}
+                                    className="w-5 h-5 mr-2 rounded"
+                                  />
+                                )}
+                                {selectedCountry?.code || "Code"}
+                              </span>
+                              <span className="text-gray-600">&#9660;</span>
+                            </button>
+                            {dropdownOpen && countries?.length > 0 && (
+                              <div
+                                className="absolute ml-2 z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-[9rem] overflow-y-auto"
+                                role="listbox"
+                              >
+                                <ul>
+                                  {countries
+                                    ?.sort((a, b) => a.name.localeCompare(b.name))
+                                    .map((country) => (
+                                      <li
+                                        key={country.code}
+                                        className="px-2 py-2 text-gray-700 cursor-pointer hover:bg-gray-100"
+                                        role="option"
+                                        onClick={() => {
+                                          setSelectedCountry(country);
+                                          setDropdownOpen(false);
+                                        }}
+                                      >
+                                        <span className="flex items-center">
+                                          {country?.flag && (
+                                            <img
+                                              src={country.flag}
+                                              alt={country.name}
+                                              className="w-5 h-5 mr-2 rounded"
+                                            />
+                                          )}
+                                          {country.name}
+                                        </span>
+                                      </li>
+                                    ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                          {/* Phone Input */}
+                          <input
+                            type="text"
+                            name="phone"
+                            onChange={handleInputChange}
+                            placeholder="Phone Number"
+                            className="w-2/3 ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+              focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+              transition-all duration-200"
+                          />
+                        </div>
                       ) : (
-                        ` ${userData.phone}`
+                        `${userData.phone}`
                       )}
                     </li>
-                    <li>
-                      <strong className="text-gray-900 font-medium">Email:</strong>
+                    <li className="flex items-center">
+                      <strong className="text-gray-900 font-medium w-1/3">Email:</strong>
                       {editMode ? (
                         <input
                           type="email"
                           name="email"
                           value={userData.email}
                           onChange={handleInputChange}
+                          className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+                focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+                transition-all duration-200"
                         />
                       ) : (
-                        <a href={`mailto:${userData.email}`} className="pl-2 text-blue-500">
-                          {userData.email}
+                        <a
+                          href="https://mail.google.com/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className=" text-blue-600 underline"
+                        >
+                          {userData.email || "unknown@example.com"}
                         </a>
                       )}
                     </li>
                   </ul>
                   {editMode && (
-                    <button
-                      className="mt-3 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded"
-                      onClick={handleSaveClick}
-                    >
-                      Save
-                    </button>
+                    <div className="flex items-center justify-center">
+                      <button
+                        className="text-white mt-3 shadow-lg shadow-black bg-gradient-to-r from-cyan-500 to-blue-500
+                        hover:bg-gradient-to-bl hover:shadow-xl hover:shadow-black
+                        focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 
+                        font-medium rounded-lg text-md px-4 py-2.5 text-center me-2 mb-2 
+                        transition-all duration-200"
+                        onClick={handleSaveClick}
+                      >
+                        Save
+                      </button>
+                    </div>
                   )}
                 </div>
+
               </div>
 
-              
+
             </div>
           </div>
         </div>

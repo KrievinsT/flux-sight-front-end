@@ -6,8 +6,6 @@ import { TbWorldSearch } from "react-icons/tb";
 import { FaClock } from "react-icons/fa";
 
 
-
-
 export default function ShowAlerts({ type, message }) {
   const [visible, setVisible] = useState(false);
   const isAlertSavedRef = useRef(false); 
@@ -60,7 +58,6 @@ export default function ShowAlerts({ type, message }) {
 
       localStorage.setItem("alertHistory", JSON.stringify(existingAlerts));
 
-      // Console log 
       console.log("New Alert Saved:", alertData);
       console.log("Updated Alert History:", existingAlerts);
 
