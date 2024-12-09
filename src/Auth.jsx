@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import Spinner from './Spinner';
 
 const withAuth = (Component) => {
   return () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isValidToken, setIsValidToken] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
       const updateSessionStorage = (key) => {
@@ -29,11 +31,6 @@ const withAuth = (Component) => {
       const user = sessionStorage.getItem('user');
       const username = sessionStorage.getItem('username');
 
-      // console.log('Location Pathname:', location.pathname);
-      // console.log('Email Token:', emailToken);
-      // console.log('Email:', email);
-      // console.log('Session Storage:', { id, token, user, username });
-
       if (location.pathname.startsWith('/forgot_password') && emailToken && email) {
         axios.post('/check-password-reset-token', { email, token: emailToken })
           .then(response => {
@@ -50,6 +47,9 @@ const withAuth = (Component) => {
             console.log('Error checking token', error);
             setIsValidToken(false);
             navigate('/login');
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
 
         return;
@@ -58,8 +58,15 @@ const withAuth = (Component) => {
       if (!(id && token && user) && !allowedPaths.includes(location.pathname)) {
         console.log('Redirecting to /login');
         navigate('/login');
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
     }, [navigate, location.pathname, location.search]);
+
+    if (isLoading) {
+      return <Spinner />;
+    }
 
     return <Component />;
   };

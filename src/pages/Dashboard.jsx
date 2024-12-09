@@ -43,7 +43,7 @@ export default function Dashboard() {
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [userDetailsMessage, setUserDetailsMessages] = useState('');
 
-  // Strict URL validation function
+
   const validateURL = (url) => {
     const urlPattern = new RegExp(
       /^(https?:\/\/(?:www\.)?|www\.)[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/g
@@ -100,7 +100,7 @@ export default function Dashboard() {
       setAlert({ type: "", message: "" });
     } else if (validateURL(value)) {
       setIsValid(true);
-      setAlert({ type: "info", message: "Valid website link!" });
+      setAlert({ type: "success", message: "Valid website link!" });
     } else {
       setIsValid(false);
       setAlert({ type: "danger", message: "Invalid website link. Please enter a valid URL." });
@@ -277,6 +277,8 @@ export default function Dashboard() {
 
           </div>
         </header>
+
+        
         <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Dashboard </div>
         <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Check the websites, speed, users and much more. </div>
         {/* Dashboard Cards */}
@@ -403,60 +405,123 @@ export default function Dashboard() {
             </div>
             <div ref={insightsRef} className="card-body px-0 pb-1">
               <div className="max-h-[340px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
-                <table className="w-full text-left table-auto border-separate border-spacing-y-0">
-                  <thead className="bg-gray-100 sticky top-0 z-10">
-                    <tr className="text-gray-500 text-xs font-bold uppercase">
-                      <th className="py-2 pl-5">Title</th>
-                      <th className="py-2 text-center w-1/4">URL</th>
-                      <th className="py-2 text-center w-1/6">SEO</th>
-                      <th className="py-2 text-center w-1/6">Page Speed</th>
-                      <th className="py-2 text-center w-1/6">Activity</th>
-                      <th className="py-2 text-center w-1/6">CRUD</th>
-                      <th className="py-2 text-center w-1/6">Insight</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {webs.map((web, index) => (
-                      <tr className="bg-white" key={index}>
-                        <td className="px-4 py-3 border-b border-gray-300">
+              <table className="w-full text-left table-auto border-separate border-spacing-y-0">
+                <thead className="bg-gray-100 sticky top-0 z-10">
+                  <tr className="text-gray-500 text-xs font-bold uppercase">
+                    <th className="py-2 pl-5">Title</th>
+                    <th className="py-2 text-center w-1/4">URL</th>
+                    <th className="py-2 text-center w-1/6">SEO</th>
+                    <th className="py-2 text-center w-1/6">Page Speed</th>
+                    <th className="py-2 text-center w-1/6">Activity</th>
+                    <th className="py-2 text-center w-1/6">CRUD</th>
+                    <th className="py-2 text-center w-1/6">Insight</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {webs.map((web, index) => (
+                    <tr className="bg-white" key={index}>
+                      <td className="px-4 py-3 border-b border-gray-300">
                           <div className="flex items-center">
-                            <img src={web.companyImage} alt={web.title} className="w-8 h-8 mr-5 rounded-lg" />
+                              <img
+                                src={`https://www.google.com/s2/favicons?sz=64&domain_url=${web.url}`}
+                                alt={`${web.title} favicon`}
+                                onError={(e) => (e.target.src = '/default-icon.png')}
+                                className="w-8 h-8 mr-5 rounded-lg"
+                              />
                             <div>
                               <h6 className="text-sm font-semibold text-gray-800">{web.title}</h6>
                             </div>
                           </div>
                         </td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300">
-                          <a href={web.url} target="_blank" rel="noopener noreferrer">
-                            {shortenUrl(web.url)}
-                          </a>
-                        </td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300">{web.seo}</td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300">{web.page_speed}</td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300">
-                          {web.is_active === 1 ? 'active' : 'down'}
-                        </td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
-                          <div className="mt-2 flex justify-center space-x-2">
-                            <button onClick={() => handleEdit(web)} className="text-blue-500 hover:text-blue-700" aria-label="Edit">
-                              <FaEdit className="w-5 h-5" />
-                            </button>
-                            <button onClick={() => handleDelete(web.id)} className="text-red-500 hover:text-red-700" aria-label="Delete">
-                              <FaTrashAlt className="w-5 h-5" />
-                            </button>
+                      <td className="text-center px-4 py-3 border-b border-gray-300">
+                        <a href={web.url} target="_blank" rel="noopener noreferrer">
+                          {shortenUrl(web.url)}
+                        </a>
+                      </td>
+                      <td className="text-center px-4 py-3 border-b border-gray-300">
+                        <div className="relative w-[5.5rem] h-[3.5rem] mx-auto">
+                          <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
+                            <path
+                              d="M2 30 A30 30 0 0 1 62 30"
+                              fill="none"
+                              stroke="#e5e5e5"
+                              strokeWidth="4"
+                            />
+                            <path
+                              d="M2 30 A30 30 0 0 1 62 30"
+                              fill="none"
+                              stroke="#3b82f6"
+                              strokeWidth="4"
+                              strokeDasharray={`${web.seo * 1.88}, 188`} // Adjust stroke length for progress
+                            />
+                          </svg>
+                          <span 
+                            className="absolute inset-0 flex items-end justify-center text-xs font-bold text-gray-800 pb-2">
+                            {web.seo}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="text-center px-4 py-3 border-b border-gray-300">
+                          <div className="relative w-[5.5rem] h-[3.5rem] mx-auto">
+                            <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
+                              <path
+                                d="M2 30 A30 30 0 0 1 62 30"
+                                fill="none"
+                                stroke="#e5e5e5"
+                                strokeWidth="4"
+                              />
+                              <path
+                                d="M2 30 A30 30 0 0 1 62 30"
+                                fill="none"
+                                stroke="#10b981"
+                                strokeWidth="4"
+                                strokeDasharray={`${web.page_speed * 1.88}, 188`} 
+                              />
+                            </svg>
+                            <span className="absolute inset-0 flex items-end justify-center text-xs font-bold text-gray-800 pb-2">
+                              {(web.page_speed / 1000).toFixed(5)}s
+                            </span>
                           </div>
                         </td>
-                        <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
-                          <div className="mt-2 flex justify-center">
-                            <button className="border-1 border-blue-600 text-blue-600 p-[0.5rem] text-[14px] whitespace-nowrap font-small rounded-md">
-                              Check Insights
-                            </button>
-                          </div>
+                        <td className="text-center px-4 py-3 border-b border-gray-300">
+                          <span
+                            className={`px-2 py-1 rounded-md text-white font-semibold transition-all duration-300 ease-in-out ${
+                              web.is_active === 1 ? 'bg-green-500' : 'bg-red-500'
+                            }`}
+                          >
+                            {web.is_active === 1 ? 'active' : 'down'}
+                          </span>
                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+                        <div className="mt-2 flex justify-center space-x-2">
+                          <button
+                            onClick={() => handleEdit(web)}
+                            className="text-blue-500 hover:text-blue-700"
+                            aria-label="Edit"
+                          >
+                            <FaEdit className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(web.id)}
+                            className="text-red-500 hover:text-red-700"
+                            aria-label="Delete"
+                          >
+                            <FaTrashAlt className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </td>
+                      <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+                        <div className="mt-2 flex justify-center">
+                          <button className="border-1 border-blue-600 text-blue-600 p-[0.5rem] text-[14px] whitespace-nowrap font-small rounded-md">
+                            Check Insights
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
               </div>
             </div>
           </div>

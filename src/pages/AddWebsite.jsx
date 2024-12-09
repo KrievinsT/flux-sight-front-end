@@ -12,6 +12,7 @@ import { SlLogin } from "react-icons/sl";
 import axios from "axios";
 import SettingsBar from '../modal/SettingsBar';
 
+
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import Logout from '../modal/Logout';
@@ -107,12 +108,11 @@ export default function AddWebsite() {
 
         if (response.status === 201) {
           console.log("Form submitted successfully:", response.data);
-          // const response = await axios.post('/storage/store');
         } else {
           console.log("Unexpected response:", response.data);
         }
       } catch (error) {
-        console.error("Error submitting form:", error.response ? error.response.data : error.message);
+        // console.error("Error submitting form:", error.response ? error.response.data : error.message);
       }
     } else {
       console.log("Please fix the errors before submitting.", formData);
@@ -186,11 +186,8 @@ export default function AddWebsite() {
           </div>
         </header>
 
-        <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Add website </div>
-        <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Add you're website, to watch list. </div>
 
-
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center mt-20 items-center">
           <div className="w-full max-w-[60%] bg-white rounded-lg shadow-lg p-6">
 
             <div
@@ -259,49 +256,6 @@ export default function AddWebsite() {
                     {errors.url}
                   </span>
                 )}
-              </div>
-              <div className="flex flex-wrap gap-4 mb-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="memberName"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Search member
-                  </label>
-                  <input
-                    type="text"
-                    name="memberName"
-                    id="memberName"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline border border-gray-300 focus:ring-2 focus:ring-blue-400"
-                    placeholder="Search member by name or email"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="overflow-x-auto bg-white rounded-lg shadow-lg mt-4">
-                    <table className="min-w-full table-auto">
-                      <thead>
-                        <tr className="bg-gray-200 text-gray-600 uppercase text-xs">
-                          <th className="px-4 py-2 text-left">Name</th>
-                          <th className="px-4 py-2 text-left">Email</th>
-                          <th className="px-4 py-2 text-left">Phone Number</th>
-                          <th className="px-4 py-2 text-center">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {users.map(user => (
-                          <tr key={user.id}>
-                            <td className="px-4 py-2">{user.name}</td>
-                            <td className="px-4 py-2">{user.email}</td>
-                            <td className="px-4 py-2">{user.phone_number}</td>
-                            <td className="px-4 py-2 text-center">
-                              <button onClick={() => handleSelectUser(user.id)}>Select</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
               </div>
 
               {/* Submit Button */}

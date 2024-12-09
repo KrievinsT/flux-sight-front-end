@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { IoCloseOutline } from "react-icons/io5";
 
-const SettingsBar = ({ isOpen, onClose }) => {
-  const [isNavbarFixed, setIsNavbarFixed] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [selectedSidenavType, setSelectedSidenavType] = useState("White");
-  const [color, setColor] = useState("blue"); 
 
-  const handleNavbarFixedToggle = () => setIsNavbarFixed(!isNavbarFixed);
-  const handleDarkModeToggle = () => setIsDarkMode(!isDarkMode);
+const SettingsBar = ({ isOpen, onClose }) => {
+ 
+  const [isNavbarFixed, setIsNavbarFixed] = useState(() => {
+    return JSON.parse(localStorage.getItem("navbarFixed")) || false;
+  });
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("isDarkMode")) || false;
+  });
+  const [selectedSidenavType, setSelectedSidenavType] = useState("White");
+  const [color, setColor] = useState("blue");
+
+  const handleNavbarFixedToggle = () => {
+    const newState = !isNavbarFixed;
+    setIsNavbarFixed(newState);
+  
+    localStorage.setItem("navbarFixed", JSON.stringify(newState));
+    console.log("Navbar Fixed set to:", newState);
+  };
+
+  const handleDarkModeToggle = () => {
+    const newState = !isDarkMode;
+    setIsDarkMode(newState);
+    // Save the updated value to localStorage
+    localStorage.setItem("isDarkMode", JSON.stringify(newState));
+    console.log("Dark Mode set to:", newState); 
+  };
 
   useEffect(() => {
     const savedColor = localStorage.getItem("sidebarColor");
@@ -19,23 +38,23 @@ const SettingsBar = ({ isOpen, onClose }) => {
 
   const handleColorChange = (newColor) => {
     setColor(newColor);
-    localStorage.setItem("sidebarColor", newColor); 
-    window.dispatchEvent(new Event("storage"));  
+    localStorage.setItem("sidebarColor", newColor);
+    window.dispatchEvent(new Event("storage"));
   };
 
   const handleSidenavTypeChange = (type) => {
     setSelectedSidenavType(type);
     localStorage.setItem("sidebarType", type);
-    window.dispatchEvent(new Event("storage"));  
+    window.dispatchEvent(new Event("storage"));
   };
 
-  
   useEffect(() => {
     const savedType = localStorage.getItem("sidebarType");
     if (savedType) {
       setSelectedSidenavType(savedType);
     }
   }, []);
+
 
   return (
     <div

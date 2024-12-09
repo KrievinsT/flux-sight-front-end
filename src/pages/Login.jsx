@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthCodeModal from '../modal/AuthCodeModal';
+import SpinnerLoad from '../SpinnerLoad';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ export default function Login() {
   const [isChecked, setIsChecked] = useState(false);
   const [actionType, setActionType] = useState('');
   const [save, setSave] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -53,6 +55,8 @@ export default function Login() {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const formData = { login: email, password };
       localStorage.setItem('login', JSON.stringify(formData));
@@ -77,6 +81,7 @@ export default function Login() {
         } else if (error.response && error.response.status === 401) {
           setErrorMessage('Invalid email or password. Please try again.');
           setSuccessMessage('');
+          setIsLoading(false);
           return;
         } else {
           throw error;
@@ -91,6 +96,7 @@ export default function Login() {
       if (preData.error) {
         setErrorMessage(preData.error);
         setSuccessMessage('');
+        setIsLoading(false);
         return;
       }
 
@@ -114,6 +120,7 @@ export default function Login() {
 
       setActionType('login');
       setShowAuthModal(true);
+      setIsLoading(false);
 
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -122,10 +129,10 @@ export default function Login() {
         console.error('Error in pre-login or 2FA flow:', error.response ? error.response.data : error.message);
         setErrorMessage('An error occurred. Please try again later.');
       }
+      setIsLoading(false);
       setSuccessMessage('');
     }
   };
-
 
   const handleVerifyLogin = async (authCode) => {
     try {
@@ -255,8 +262,9 @@ export default function Login() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="px-0 pt-6 pb-6 ">
+            <form onSubmit={handleSubmit} className="px-0 pt-6 pb-6">
               <div className="mb-4">
+                <label htmlFor="email" className="sr-only">Email</label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="email"
@@ -264,9 +272,11 @@ export default function Login() {
                   placeholder="Enter Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-4">
+                <label htmlFor="password" className="sr-only">Password</label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="password"
@@ -274,11 +284,12 @@ export default function Login() {
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
               <div className="flex items-center justify-start">
-                <span className=" cursor-pointer text-sm text-gray-700 hover:text-gray-800 mb-3 font-medium">
-                  <Link to="/forgotpassword">Forgot your password? </Link>
+                <span className="cursor-pointer text-sm text-gray-700 hover:text-gray-800 mb-3 font-medium">
+                  <Link to="/forgotpassword">Forgot your password?</Link>
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -291,27 +302,27 @@ export default function Login() {
                   />
                   <div className="relative">
                     <div
-                      className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${isChecked ? 'bg-gray-700' : 'bg-gray-400'
-                        }`}
+                      className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${isChecked ? 'bg-gray-700' : 'bg-gray-400'}`}
                     />
                     <div
-                      className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${isChecked ? 'transform translate-x-5' : ''
-                        }`}
+                      className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${isChecked ? 'transform translate-x-5' : ''}`}
                     />
                   </div>
-                  <span className="ml-3 text-sm text-gray-700 font-medium">
-                    Remember me
-                  </span>
+                  <span className="ml-3 text-sm text-gray-700 font-medium">Remember me</span>
                 </label>
               </div>
-
               <div className="mt-6">
                 <button
                   className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
                   type="submit"
+                  disabled={isLoading}
                 >
-                  Log in
+                  {isLoading ? (
+                    <SpinnerLoad size="h-5 w-5" />
+                  ) : (
+                    'Log in'
+                  )}
                 </button>
               </div>
             </form>

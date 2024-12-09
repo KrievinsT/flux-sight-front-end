@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthCodeModal from '../modal/AuthCodeModal';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
+import SpinnerLoad from '../SpinnerLoad';
 
 import '../index.css';
 
@@ -27,6 +28,7 @@ export default function Register() {
 
   const [actionType, setActionType] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const id = sessionStorage.getItem('id');
@@ -110,6 +112,7 @@ export default function Register() {
     if (validateForm()) {
       const fullPhoneNumber = countryCode + phone;
       console.log("Submitting form with phone number:", fullPhoneNumber);
+      setIsLoading(true);
 
       try {
         const formData = { name, email, username, password, phone: fullPhoneNumber };
@@ -132,6 +135,7 @@ export default function Register() {
                 'Content-Type': 'application/json',
               },
             });
+            setIsLoading(false);
           } else if (error.response && error.response.status === 400) {
 
             const errorData = error.response.data;
@@ -141,7 +145,8 @@ export default function Register() {
                 ? errorData.errors
                 : Object.values(errorData.errors).flat();
 
-              setErrorMessage(errorMessages); 
+              setErrorMessage(errorMessages);
+              setIsLoading(false);
               setSuccessMessage('');
               return;
             }
@@ -150,6 +155,7 @@ export default function Register() {
 
         if (!preResponse || !preResponse.data) {
           throw new Error('Pre-registration response data is missing.');
+          setIsLoading(false);
         }
 
         const preData = preResponse.data;
@@ -164,6 +170,7 @@ export default function Register() {
 
         if (!generate2FAResponse || !generate2FAResponse.data) {
           throw new Error('2FA generation response data is missing.');
+          setIsLoading(false);
         }
 
         const generate2FAData = generate2FAResponse.data;
@@ -171,13 +178,14 @@ export default function Register() {
         localStorage.setItem('twoFactorToken', generate2FAData.token);
         setShowMessage(generate2FAData.message, false);
 
-        setActionType('register'); // Set the action type to 'register'
-        setShowAuthModal(true); // Show the modal
+        setActionType('register');
+        setShowAuthModal(true);
 
       } catch (error) {
         console.error('Error in pre-register or 2FA flow:', error.response ? error.response.data : error.message);
         setErrorMessage('An error occurred. Please try again later.');
         setSuccessMessage('');
+        setIsLoading(false);
       }
     }
   };
@@ -188,7 +196,7 @@ export default function Register() {
     const token = params.get('token');
 
     if (token) {
-    
+
       localStorage.setItem('auth_token', token);
       navigate('/dashboard');
     }
@@ -233,44 +241,44 @@ export default function Register() {
       {/* Header */}
       <header className="flex justify-start block 441px:justify-center items-center bg-white  bg-opacity-90 shadow-md rounded-xl w-[80%] px-3 py-4 sticky top-9 inset-x-0 mx-auto z-50">
         <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6 mr-1 hidden 441px:block" />
-       <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block ">Landing page</Link>
+        <Link to="/landing" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block ">Landing page</Link>
         <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6 mr-1  hidden 441px:block " />
         <Link to="/register" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block">Sign Up </Link>
         <img src="./images/login.gif" alt="Login icon" className="w-6 h-6 mr-1  hidden 441px:block" />
         <Link to="/login" className="mr-3 text-gray-700 hover:text-gray-800 font-medium cursor-pointer  hidden 441px:block ">Log In</Link>
-   
+
         <div className="flex block 441px:hidden items-center">
-        <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-700">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-700">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
 
-      <div className={`absolute top-[3.9rem] left-0 right-0 bg-white bg-opacity-90 rounded-b-xl z-50 pb-3 ${menuOpen ? 'block' : 'hidden '} `}>
-        <div className="flex flex-col sm:flex-row items-start space-y-3 space-x-2 block 441px:hidden ">
-          <div className="flex items-start space-x-2 pl-2">
-            <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6" />
-            <Link to="/landing" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
-              Landing page
-            </Link>
-          </div>
+        <div className={`absolute top-[3.9rem] left-0 right-0 bg-white bg-opacity-90 rounded-b-xl z-50 pb-3 ${menuOpen ? 'block' : 'hidden '} `}>
+          <div className="flex flex-col sm:flex-row items-start space-y-3 space-x-2 block 441px:hidden ">
+            <div className="flex items-start space-x-2 pl-2">
+              <img src="./images/dashboard.gif" alt="Dashboard icon" className="w-6 h-6" />
+              <Link to="/landing" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+                Landing page
+              </Link>
+            </div>
 
-          <div className="flex items-start space-x-2">
-            <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6" />
-            <Link to="/register" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
-              Sign Up
-            </Link>
-          </div>
+            <div className="flex items-start space-x-2">
+              <img src="./images/sign-up.gif" alt="Signup icon" className="w-6 h-6" />
+              <Link to="/register" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+                Sign Up
+              </Link>
+            </div>
 
-          <div className="flex items-start space-x-2">
-            <img src="./images/login.gif" alt="Login icon" className="w-6 h-6" />
-            <Link to="/login" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
-              Log In
-            </Link>
+            <div className="flex items-start space-x-2">
+              <img src="./images/login.gif" alt="Login icon" className="w-6 h-6" />
+              <Link to="/login" className="text-gray-700 hover:text-gray-800 font-medium cursor-pointer">
+                Log In
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
       </header>
 
       {/* Main Content */}
@@ -304,7 +312,7 @@ export default function Register() {
               className="px-0 pt-6 pb-0"
             >
               <div className="mb-4">
-              <input
+                <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
@@ -313,8 +321,8 @@ export default function Register() {
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     const capitalizedValue = inputValue
-                      .replace(/\s+/g, ' ') 
-                      .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()); 
+                      .replace(/\s+/g, ' ')
+                      .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
 
                     setName(capitalizedValue);
                   }}
@@ -331,15 +339,15 @@ export default function Register() {
                 />
               </div>
               <div className="mb-4">
-              <input
+                <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline"
                   id="username"
                   type="text"
                   placeholder="Enter Username"
                   value={username}
                   onChange={(e) => {
-                    const inputValue = e.target.value.replace(/\s+/g, ''); 
-                    const capitalizedValue = inputValue.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()); 
+                    const inputValue = e.target.value.replace(/\s+/g, '');
+                    const capitalizedValue = inputValue.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
 
                     setUsername(capitalizedValue);
                   }}
@@ -354,7 +362,7 @@ export default function Register() {
                       e.preventDefault();
                       setDropdownOpen(!dropdownOpen);
                     }}
-                    type="button" 
+                    type="button"
                   >
                     <span className="flex items-center">
                       {selectedCountry?.flag && (
@@ -425,7 +433,7 @@ export default function Register() {
                 />
               </div>
               <div className="mb-4">
-              <label className="flex items-center flex-wrap">
+                <label className="flex items-center flex-wrap">
                   <input
                     type="checkbox"
                     className="mr-2"
@@ -440,13 +448,19 @@ export default function Register() {
               </div>
               <div className="mb-4">
                 <button
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  style={{ backgroundImage: "linear-gradient(195deg, #42424a, #191919)" }}
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
+                  style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
                   type="submit"
+                  disabled={isLoading}
                 >
-                  Sign up
+                  {isLoading ? (
+                    <SpinnerLoad />
+                  ) : (
+                    'Sign Up'
+                  )}
                 </button>
               </div>
+
               {/* NORMAL VALDIATION */}
               {errorMessage && (
                 <div className="text-red-500 font-medium text-sm">

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -26,6 +26,18 @@ import axios from "axios";
 
 import DOMPurify from "dompurify";
 
+const useDebouncedCallback = (callback, delay) => {
+  const timer = useRef(null);
+
+  return (...args) => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+    timer.current = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+};
 
 export default function Profile() {
   const [userDetailsMessages, setUserDetailsMessages] = useState([]);
@@ -43,43 +55,57 @@ export default function Profile() {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [validateURL, setIsValidURL] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-   const [alert, setAlert] = useState({ type: "", message: "" });
+  const [isValid, setIsValid] = useState(null);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [settings, setSettings] = useState([
+    {
+      id: "email_send",
+      label: "Send email's",
+      checked: false,
+    },
+    {
+      id: "sms_send",
+      label: "Send sms",
+      checked: false,
+    },
+    {
+      id: "alerts_send",
+      label: "Disable/Enable alerts",
+      checked: true,
+    },
+  ]);
+  
+  const updateNotificationState = useRef(null);
+  
 
   const validateForm = () => {
-   
-    const sanitizedUser = DOMPurify.sanitize(userData?.user?.trim() || "");
-    const sanitizedUsername = DOMPurify.sanitize(userData?.username?.trim() || "");
-    const sanitizedEmail = DOMPurify.sanitize(userData?.email?.trim() || "");
-    const sanitizedPhone = DOMPurify.sanitize(userData?.phone?.trim() || "");
-  
-    
-    if (!/^[a-zA-Z\s]{3,}$/.test(sanitizedUser)) {
-      setErrorMessage("Name must be at least 3 characters long.");
-      return false;
-    }
-  
-  
-    if (!/^[a-zA-Z\s]{2,}$/.test(sanitizedUsername)) {
-      setErrorMessage("Username must be at least 2 characters long.");
-      return false;
-    }
-  
-   
-    if (!/^\d{7,15}$/.test(sanitizedPhone)) {
-      setErrorMessage("Phone number must contain only digits and be between 7 and 15 characters long.");
-      return false;
-    }
-  
- 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
-      setErrorMessage("Please enter a valid email address.");
-      return false;
-    }
-  
+    const sanitizedUser = DOMPurify.sanitize(userData.user.trim());
+    const sanitizedUsername = DOMPurify.sanitize(userData.username.trim());
+    const sanitizedPhone = DOMPurify.sanitize(userData.phone.trim());
+    const sanitizedEmail = DOMPurify.sanitize(userData.email.trim());
 
-    setErrorMessage(""); 
+    if (!/^[a-zA-Z\s]{3,}$/.test(sanitizedUser)) {
+      setAlert({ type: "danger", message: "Name must be at least 3 characters long." });
+      return false;
+    }
+    if (!/^[a-zA-Z\s]{2,}$/.test(sanitizedUsername)) {
+      setAlert({ type: "danger", message: "Username must be at least 2 characters long." });
+      return false;
+    }
+    if (!/^\d{7,15}$/.test(sanitizedPhone)) {
+      setAlert({
+        type: "danger",
+        message: "Phone number must contain only digits and be between 7 and 15 characters long.",
+      });
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
+      setAlert({ type: "danger", message: "Please enter a valid email address." });
+      return false;
+    }
+
+    setAlert({ type: "success", message: "Profile updated successfully!" });
     return true;
   };
 
@@ -137,33 +163,88 @@ export default function Profile() {
     }
   }, []);
 
-  const [settings, setSettings] = useState([
-    {
-      id: "email_send",
-      label: "Send email's",
-      checked: true,
-    },
-    {
-      id: "sms_send",
-      label: "Send sms",
-      checked: false,
-    },
-    {
-      id: "alerts",
-      label: "Disable/Enable alerts",
-      checked: true,
-    },
-  ]);
-
   const handleToggleChange = (id) => {
+    console.log(`Toggling setting with id: ${id}`);
     setSettings((prevSettings) =>
       prevSettings.map((setting) =>
-        setting.id === id
-          ? { ...setting, checked: !setting.checked }
-          : setting
+        setting.id === id ? { ...setting, checked: !setting.checked } : setting
       )
     );
+
+    const updatedSetting = settings.find((setting) => setting.id === id);
+    console.log(`Updated setting state:`, updatedSetting);
+    debounceUpdateNotificationState(id, !updatedSetting.checked);
   };
+
+  const updateNotificationStateFn = async (id, newState) => {
+    const userId = sessionStorage.getItem('id'); // Retrieve user ID from session storage
+    console.log(`User ID from sessionStorage: ${userId}`);
+
+    if (!userId) {
+      console.error('User ID not found in session storage');
+      return;
+    }
+
+    const body = {
+      user_id: userId,
+      sendSMS: id === 'sms_send' ? newState : settings.find(setting => setting.id === 'sms_send').checked,
+      sendEmail: id === 'email_send' ? newState : settings.find(setting => setting.id === 'email_send').checked,
+      sendAlerts: id === 'alerts_send' ? newState : settings.find(setting => setting.id === 'alerts_send').checked, // New field added
+    };
+
+    console.log(`Sending request to update notification state with body:`, body);
+
+    try {
+      const response = await axios.put('/user/notifications', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('API response:', response.data);
+    } catch (error) {
+      console.error('Error updating notification state', error);
+    }
+  };
+
+  // Create debounced version of updateNotificationState
+  const debounceUpdateNotificationState = useDebouncedCallback((...args) => {
+    if (updateNotificationState.current) {
+      updateNotificationState.current(...args);
+    }
+  }, 300);
+
+  useEffect(() => {
+
+    updateNotificationState.current = updateNotificationStateFn;
+
+    const fetchSettings = async () => {
+      const userId = sessionStorage.getItem('id');
+      if (!userId) {
+        console.error('User ID not found in session storage');
+        return;
+      }
+
+      try {
+        const response = await axios.get('/user/notifications', {
+          params: { user_id: userId },
+        });
+        const { sendSMS, sendEmail, sendAlerts } = response.data; // Include sendAlerts
+        setSettings((prevSettings) =>
+          prevSettings.map((setting) => {
+            if (setting.id === 'sms_send') return { ...setting, checked: sendSMS };
+            if (setting.id === 'email_send') return { ...setting, checked: sendEmail };
+            if (setting.id === 'alerts_send') return { ...setting, checked: sendAlerts }; // Ensure sendAlerts is handled
+            return setting;
+          })
+        );
+      } catch (error) {
+        console.error('Error fetching notification settings', error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
 
   const [activeTab, setActiveTab] = useState("App");
   const renderContent = () => {
@@ -177,7 +258,6 @@ export default function Profile() {
     }
   };
 
-
   const handleSettingsClick = () => {
     setActiveTab("Settings");
     setEditMode(true);
@@ -189,21 +269,6 @@ export default function Profile() {
       ...prevData,
       [name]: value,
     }));
-
-    
-    if (name === "user") {
-      const sanitizedValue = DOMPurify.sanitize(value.trim());
-      if (sanitizedValue.length === 0) {
-        setIsValidURL(null);
-        setAlert({ type: "", message: "" });
-      } else if (validateURL(sanitizedValue)) {
-        setIsValidURL(true);
-        setAlert({ type: "success", message: "Name updated suc" });
-      } else {
-        setIsValidURL(false);
-        setAlert({ type: "danger", message: "Name must be at least 3 characters long." });
-      }
-    }
   };
 
   const clearUserDetailsMessages = () => {
@@ -254,7 +319,6 @@ export default function Profile() {
         localStorage.setItem("phone", newUserData.phone);
       }
 
-      // Clear messages on successful update
       clearUserDetailsMessages();
 
     } catch (error) {
@@ -262,37 +326,48 @@ export default function Profile() {
     }
   };
 
+
   const handleSaveClick = () => {
-    // Validate form before saving
+
     if (!validateForm()) {
-      console.log('Validation failed');
-      return; // Stop execution if validation fails
+      return;
     }
-  
+
     console.log('Original data:', originalUserData);
     console.log('Updated data:', userData);
-  
-    // Prepare the updated data
+
     const updatedData = {
       ...userData,
       phone: `${selectedCountry?.code || ""}${userData.phone || ""}`,
     };
-  
+
     // Only save if there are changes
     if (JSON.stringify(updatedData) !== JSON.stringify(originalUserData)) {
       console.log('Saving data:', updatedData);
+
       updateUserData(updatedData, originalUserData.username)
         .then(() => {
           setEditMode(false);
           setActiveTab("App");
+          setAlert({ type: "success", message: "Profile updated successfully!" });
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error saving data:', error);
+          setAlert({ type: "danger", message: "An error occurred while saving your data. Please try again." });
         });
     } else {
       console.log('No changes detected');
+      setAlert({ type: "info", message: "No changes detected. Please make updates before saving." });
     }
   };
+
+
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => setAlert({ type: "", message: "" }), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
 
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
@@ -450,12 +525,10 @@ export default function Profile() {
                             />
                             <div className="relative">
                               <div
-                                className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${setting.checked ? "bg-gray-600" : "bg-gray-400"
-                                  }`}
+                                className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${setting.checked ? "bg-gray-600" : "bg-gray-400"}`}
                               />
                               <div
-                                className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""
-                                  }`}
+                                className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""}`}
                               />
                             </div>
                             <span className="ml-3 text-sm text-gray-700 font-medium">
@@ -472,7 +545,7 @@ export default function Profile() {
                   </h6>
                   <ul className="space-y-6">
                     {settings
-                      .filter((setting) => setting.id === "alerts")
+                      .filter((setting) => setting.id === "alerts_send")
                       .map((setting) => (
                         <li key={setting.id} className="flex items-center">
                           <label
@@ -488,12 +561,10 @@ export default function Profile() {
                             />
                             <div className="relative">
                               <div
-                                className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${setting.checked ? "bg-gray-600" : "bg-gray-400"
-                                  }`}
+                                className={`w-10 h-5 rounded-full transition-colors duration-300 ease-in-out ${setting.checked ? "bg-gray-600" : "bg-gray-400"}`}
                               />
                               <div
-                                className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""
-                                  }`}
+                                className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""}`}
                               />
                             </div>
                             <span className="ml-3 text-sm text-gray-700 font-medium">
@@ -520,6 +591,7 @@ export default function Profile() {
                   </button>
                 </div>
                 <div className="p-3">
+                  {alert.message && <ShowAlerts type={alert.type} message={alert.message} />}
                   <ul className="space-y-3">
                     <li className="flex items-center">
                       <strong className="text-gray-900 font-medium w-1/3 ">Full Name:</strong>
@@ -528,10 +600,17 @@ export default function Profile() {
                           type="text"
                           name="user"
                           value={userData.user}
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            const formattedValue = e.target.value
+                              .toLowerCase()
+                              .replace(/(^\w|\s\w)/g, (match) => match.toUpperCase());
+                            handleInputChange({
+                              target: { name: "user", value: formattedValue },
+                            });
+                          }}
                           className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
-                transition-all duration-200"
+                              focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+                              transition-all duration-200"
                         />
                       ) : (
                         ` ${userData.user}`
@@ -544,10 +623,17 @@ export default function Profile() {
                           type="text"
                           name="username"
                           value={userData.username}
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            const formattedValue = e.target.value
+                              .replace(/\s+/g, "")
+                              .replace(/^\w/, (match) => match.toUpperCase());
+                            handleInputChange({
+                              target: { name: "username", value: formattedValue },
+                            });
+                          }}
                           className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
-                transition-all duration-200"
+                              focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
+                              transition-all duration-200"
                         />
                       ) : (
                         ` ${userData.username}`
