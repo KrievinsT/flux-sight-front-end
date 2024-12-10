@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
-import { FaRegUserCircle } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
-import { MdOutlineTableView } from "react-icons/md";
-import { RiBillLine } from "react-icons/ri";
-import { MdInsertLink } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
-import { SlLogin } from "react-icons/sl";
 import axios from "axios";
 import SettingsBar from '../modal/SettingsBar';
-
 
 import NotificationDropdown from "../modal/NotificationDropdown";
 import SidebarModal from "../modal/Sidebar";
 import Logout from '../modal/Logout';
+import SpinnerLoad from "../SpinnerLoad";
 
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function AddWebsite() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   let username = sessionStorage.getItem('username');
 
@@ -42,31 +34,42 @@ export default function AddWebsite() {
     memberEmail: "",
   });
 
-  const validateInput = (field, value) => {
+  const validateInput = (name, value) => {
     let error = "";
 
-    if (field === "title" && value.trim().length < 3) {
+    if (name === "title" && value.trim().length < 3) {
       error = "Website name must be at least 3 characters long.";
-    } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
+    } else if (name === "title" && /<[^>]*>/g.test(value)) {
+      error = "The title field contains HTML tags, which are not allowed.";
+    } else if (name === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
       error = "Enter a valid URL (e.g., https://example.com).";
+    } else if (name === "url" && /<[^>]*>/g.test(value)) {
+      error = "The URL field contains HTML tags, which are not allowed.";
     }
-    // else if (field === "memberName" && value.trim().length < 3) {
-    //   error = "Member name must be at least 3 characters long.";
-    // } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-    //   error = "Enter a valid email address.";
-    // }
 
-    setErrors((prev) => ({ ...prev, [field]: error }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     validateInput(name, value);
+
+    const updatedErrors = {};
+    Object.keys({ ...formData, [name]: value }).forEach((field) => {
+      validateInput(field, formData[field]);
+    });
+
+    setErrors(updatedErrors);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const newErrors = {};
     Object.keys(formData).forEach((field) => {
@@ -75,14 +78,13 @@ export default function AddWebsite() {
 
       if (field === "title" && value.trim().length < 3) {
         error = "Website name must be at least 3 characters long.";
+      } else if (field === "title" && /<[^>]*>/g.test(value)) {
+        error = "The title field contains HTML tags, which are not allowed.";
       } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
         error = "Enter a valid URL (e.g., https://example.com).";
+      } else if (field === "url" && /<[^>]*>/g.test(value)) {
+        error = "The URL field contains HTML tags, which are not allowed.";
       }
-      // else if (field === "memberName" && value.trim().length < 3) {
-      //   error = "Member name must be at least 3 characters long.";
-      // } else if (field === "memberEmail" && !/^\S+@\S+\.\S+$/.test(value)) {
-      //   error = "Enter a valid email address.";
-      // }
 
       if (error) {
         newErrors[field] = error;
@@ -91,14 +93,9 @@ export default function AddWebsite() {
 
     setErrors(newErrors);
 
-
     const hasErrors = Object.keys(newErrors).length > 0;
 
     if (!hasErrors) {
-
-      // let testData = JSON.parse(formData);
-      console.log("FormData", formData);
-
       try {
         const response = await axios.post('/web/store', formData, {
           headers: {
@@ -108,15 +105,22 @@ export default function AddWebsite() {
 
         if (response.status === 201) {
           console.log("Form submitted successfully:", response.data);
+          navigate('/dashboard'); // Redirect on success
         } else {
           console.log("Unexpected response:", response.data);
         }
       } catch (error) {
-        // console.error("Error submitting form:", error.response ? error.response.data : error.message);
+        console.error("Error submitting form:", error.response ? error.response.data : error.message);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          submit: "Error submitting form: " + (error.response ? error.response.data.message : error.message)
+        }));
       }
     } else {
       console.log("Please fix the errors before submitting.", formData);
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -215,11 +219,11 @@ export default function AddWebsite() {
                   value={formData.title}
                   onChange={handleChange}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline 
-                ${errors.title
+                    ${errors.title
                       ? "border-red-500 focus:ring-2 focus:ring-red-400"
                       : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
                     }
-                `}
+                  `}
                   placeholder="Enter website name"
                 />
                 {errors.title && (
@@ -244,11 +248,11 @@ export default function AddWebsite() {
                   value={formData.url}
                   onChange={handleChange}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline 
-                ${errors.url
+                    ${errors.url
                       ? "border-red-500 focus:ring-2 focus:ring-red-400"
                       : "border border-gray-300 focus:ring-2 focus:ring-blue-400"
                     }
-                `}
+                  `}
                   placeholder="e.g., https://example.com"
                 />
                 {errors.url && (
@@ -267,11 +271,16 @@ export default function AddWebsite() {
                     : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   style={{ backgroundImage: 'linear-gradient(195deg, #42424a, #191919)' }}
-                // disabled={Object.values(errors).some((err) => err)}
+                  disabled={Object.values(errors).some((err) => err) || isLoading}
                 >
-                  Submit
+                  {isLoading ? (
+                    <SpinnerLoad size="h-5 w-5" />
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </div>
+
             </form>
           </div>
         </div>

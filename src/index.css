@@ -24,16 +24,6 @@
   }
 }
 
-header.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: white;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
 
 .animate-slideInLeft {
   animation: slideInLeft 0.3s ease-in-out forwards;
@@ -93,6 +83,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(243 244 246);
+  
 }
 
 code {

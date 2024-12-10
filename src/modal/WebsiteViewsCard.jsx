@@ -1,30 +1,20 @@
 import React, { useEffect, useRef } from "react";
-import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-} from "chart.js";
-
+import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip } from "chart.js";
 import { LuClock } from "react-icons/lu";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
-const WebsiteViewsCard = () => {
+const WebsiteViewsCard = ({ darkMode }) => {
   const chartRef = useRef(null);
-  const chartInstanceRef = useRef(null); 
+  const chartInstanceRef = useRef(null);
 
   useEffect(() => {
     const ctx = chartRef.current.getContext("2d");
 
-    
     if (chartInstanceRef.current) {
       chartInstanceRef.current.destroy();
     }
 
-    
     chartInstanceRef.current = new Chart(ctx, {
       type: "bar",
       data: {
@@ -32,7 +22,7 @@ const WebsiteViewsCard = () => {
         datasets: [
           {
             label: "Views",
-            data: [5674, 5372 , 7539, 5247, 2134, 7808, 3405],
+            data: [5674, 5372, 7539, 5247, 2134, 7808, 3405],
             backgroundColor: "#4F46E5",
             borderRadius: 4,
             borderSkipped: false,
@@ -53,16 +43,16 @@ const WebsiteViewsCard = () => {
               display: false,
             },
             ticks: {
-              color: "#9CA3AF",
+              color: darkMode ? "#D1D5DB" : "#9CA3AF",
             },
           },
           y: {
             grid: {
-              color: "#E5E7EB",
+              color: darkMode ? "#4B5563" : "#E5E7EB",
               drawBorder: false,
             },
             ticks: {
-              color: "#9CA3AF",
+              color: darkMode ? "#D1D5DB" : "#9CA3AF",
               stepSize: 50,
             },
           },
@@ -71,24 +61,29 @@ const WebsiteViewsCard = () => {
     });
 
     return () => {
- 
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
       }
     };
-  }, []);
+  }, [darkMode]);
 
   return (
-    <div className="bg-white  border border-gray-200  rounded-lg p-4 ">
-      <h6 className="text-lg font-semibold">Website Views</h6>
-      <p className="text-sm text-gray-500">Last Campaign Performance</p>
+    <div
+      className={`rounded-lg p-4 ${
+        darkMode
+          ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+          : "bg-white border-2 border-gray-200 border-opacity-100 shadow-sm"
+      }`}
+    >
+      <h6 className={`text-lg font-semibold ${darkMode ? "text-[#fff]" : ""}`}>Website Views</h6>
+      <p className={`text-sm  ${darkMode ? "text-gray-300" : "text-gray-500"}`}>Last Campaign Performance</p>
       <div className="mt-4 h-40">
         <canvas id="chart-bars" ref={chartRef}></canvas>
       </div>
-      <hr className="border-t my-4" />
+      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4 "></div>
       <div className="flex items-center text-sm text-gray-500">
-      <LuClock lassName="w-4 h-4 "  />
-        <p className="mb-0 pl-2">Campaign sent 2 days ago</p>
+        <LuClock className={`w-4 h-4 ${darkMode ? "text-gray-300" : ""}`} />
+        <p className={`pl-2 ${darkMode ? "text-gray-300" : ""}`}>Campaign sent 2 days ago</p>
       </div>
     </div>
   );

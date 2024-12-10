@@ -3,7 +3,7 @@ import { FaRegUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { CSSTransition } from "react-transition-group";
 
-const Logout = () => {
+const Logout = ({ darkMode }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -40,7 +40,7 @@ const Logout = () => {
   return (
     <div className="relative" ref={dropdownRef}>
       <FaRegUserCircle
-        className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+        className={`w-5 h-5 cursor-pointer ${darkMode ? "text-gray-300 hover:text-[#fff]" : " text-gray-600 hover:text-gray-800"}`}
         onClick={() => setDropdownOpen((prev) => !prev)}
       />
 

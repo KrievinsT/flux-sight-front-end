@@ -4,7 +4,7 @@ import { MdOutlineDashboard, MdOutlineTableView } from "react-icons/md";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa";
 
-const SidebarModal = () => {
+const SidebarModal = ({ darkMode }) => {
   const [sidebarColor, setSidebarColor] = useState("blue");
   const [sidebarType, setSidebarType] = useState("White"); 
   const location = useLocation();
@@ -67,14 +67,17 @@ const SidebarModal = () => {
   };
 
   const sidebarBackgroundStyle = {
-    backgroundColor: sidebarType === "Dark" ? "#333" : sidebarType === "Transparent" ? "transparent" : "#fff",
+    backgroundColor: sidebarType === "Dark" ? "#1D1D1D" : sidebarType === "Transparent" ? "transparent" : "#fff",
   };
 
 
   return (
    
     <aside
-    className="w-[15rem] rounded-lg border border-gray-200 p-4 flex flex-col animate-slideInLeft"
+    className={`w-[15rem] rounded-lg  p-4 flex flex-col animate-slideInLeft ${darkMode
+              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+              : "border-1 border-gray-200 border-opacity-100 shadow-sm"
+              }`}
     style={{
       ...sidebarBackgroundStyle, 
       position: "fixed",
@@ -103,11 +106,11 @@ const SidebarModal = () => {
         <ul className="space-y-2">
           <Link to="/dashboard">
             <li
-              className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
+              className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer  ${
                 activeButton === "dashboard" || sidebarType === "Dark"
                   ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
-              }`}
+              } `}
               style={activeButton === "dashboard" ? activeButtonStyle : {}}
             >
               <span
@@ -125,7 +128,7 @@ const SidebarModal = () => {
                 activeButton === "tables" || sidebarType === "Dark"
                   ? "text-white" 
                   : "text-gray-700 hover:bg-gray-200"
-              }`}
+              } `}
               style={activeButton === "tables" ? activeButtonStyle : {}}
             >
               <span

@@ -2,32 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { IoCloseOutline } from "react-icons/io5";
 
 
-const SettingsBar = ({ isOpen, onClose }) => {
+const SettingsBar = ({ isOpen, onClose, setNavbarFixed, setDarkMode  }) => {
  
-  const [isNavbarFixed, setIsNavbarFixed] = useState(() => {
-    return JSON.parse(localStorage.getItem("navbarFixed")) || false;
-  });
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return JSON.parse(localStorage.getItem("isDarkMode")) || false;
-  });
   const [selectedSidenavType, setSelectedSidenavType] = useState("White");
   const [color, setColor] = useState("blue");
 
+
+  const [isNavbarFixed, setIsNavbarFixed] = useState(() => {
+    return JSON.parse(localStorage.getItem('navbarFixed')) || false;
+  });
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return JSON.parse(localStorage.getItem('darkMode')) || false;
+  });
+
   const handleNavbarFixedToggle = () => {
     const newState = !isNavbarFixed;
-    setIsNavbarFixed(newState);
-  
-    localStorage.setItem("navbarFixed", JSON.stringify(newState));
-    console.log("Navbar Fixed set to:", newState);
+    setIsNavbarFixed(newState);  // Update the local state immediately
+    setNavbarFixed(newState);    // Update the state in the parent (Dashboard)
+    localStorage.setItem('navbarFixed', JSON.stringify(newState)); // Update localStorage
   };
 
   const handleDarkModeToggle = () => {
     const newState = !isDarkMode;
     setIsDarkMode(newState);
-    // Save the updated value to localStorage
-    localStorage.setItem("isDarkMode", JSON.stringify(newState));
-    console.log("Dark Mode set to:", newState); 
+    setDarkMode(newState);
+    localStorage.setItem('darkMode', JSON.stringify(newState));
   };
+
 
   useEffect(() => {
     const savedColor = localStorage.getItem("sidebarColor");

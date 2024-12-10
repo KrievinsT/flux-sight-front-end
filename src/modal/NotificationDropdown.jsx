@@ -3,7 +3,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaClock } from "react-icons/fa";
 import { CSSTransition } from "react-transition-group";
 
-const NotificationDropdown = () => {
+const NotificationDropdown = ({ darkMode }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -60,7 +60,7 @@ const NotificationDropdown = () => {
         className="cursor-pointer text-gray-600 relative"
         onClick={toggleDropdown}
       >
-        <IoMdNotificationsOutline className="w-5 h-5 text-gray-600 hover:text-gray-800" />
+        <IoMdNotificationsOutline className={`w-5 h-5 cursor-pointer ${darkMode ? "text-gray-300 hover:text-[#fff]" : " text-gray-600 hover:text-gray-800"}`} />
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 flex items-center justify-center w-3 h-3 text-[10px] font-semibold text-white bg-red-500 rounded-full">
             {unreadCount}

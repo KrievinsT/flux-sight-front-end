@@ -7,7 +7,7 @@ import SettingsBar from "../modal/SettingsBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
-
+import { Navigate } from "react-router-dom";
 
 import Logout from '../modal/Logout';
 
@@ -19,14 +19,9 @@ export default function EditWebsite() {
   // Convert members into state variable with initial data from location.state
   const { websiteName = "", url = "" } = location.state || {};
   const [members, setMembers] = useState(location.state?.members || []);
-
-  const [formData, setFormData] = useState({
-    title: '',
-    url: '',
-    username: '',
-    id: '', 
-  });
-
+  const [formData, setFormData] = useState({ title: "", url: "", username: "", id: "" });
+  const [errors, setErrors] = useState({ websiteName: "" });
+  // const navigate=useNavigate();
   const removeMember = (index) => {
     setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
   };
@@ -49,13 +44,6 @@ export default function EditWebsite() {
     }
   }, []);
 
-  const [errors, setErrors] = useState({
-    websiteName: "",
-    url: "",
-    memberName: "",
-    memberEmail: "",
-  });
-
   const validateInput = (name, value) => {
     let error = "";
 
@@ -70,40 +58,47 @@ export default function EditWebsite() {
       [name]: error,
     }));
   };
-  
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // Re-validate the specific input field
+    validateInput(e.target.name, e.target.value);
+
+    // Re-run validation on the entire form to update errors state
+    const updatedErrors = {};
+    Object.keys(formData).forEach((field) => {
+        validateInput(field, formData[field]);
+    });
+    
+    setErrors(updatedErrors);
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     console.log('Form Data:', formData);
     const newErrors = {};
     Object.keys(formData).forEach((field) => {
       const value = formData[field];
       let error = "";
-  
+
       if (field === "title" && value.trim().length < 3) {
         error = "Website name must be at least 3 characters long.";
       } else if (field === "url" && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value)) {
         error = "Enter a valid URL (e.g., https://example.com).";
       }
-  
+
       if (error) {
         newErrors[field] = error;
       }
     });
-  
+
     setErrors(newErrors);
-  
+
     const hasErrors = Object.keys(newErrors).length > 0;
-  
+
     if (!hasErrors) {
       try {
         const response = await axios.put(`/web/${formData.id}`, {
@@ -111,78 +106,22 @@ export default function EditWebsite() {
           url: formData.url,
           username: formData.username, // Include username in the request body
         });
-  
+
         console.log("Update successful:", response.data);
+        setErrors({});
+        // navigate('/dashboard');
       } catch (error) {
         console.error("Error:", error);
+
+        if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.title) {
+          setErrors({ ...errors, websiteName: error.response.data.errors.title[0] });
+        } else {
+          setErrors({ ...errors, websiteName: "An unexpected error occurred" });
+        }
       }
     } else {
-      console.log("Please fix the errors before submitting.");
+      setErrors({ ...errors, websiteName: "Please correct the errors above." });
     }
-  };
-  
-  const [users, setUsers] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     const mockUsers = [
-  //       {
-  //         id: 1,
-  //         name: "John Doe",
-  //         email: "john.doe@example.com",
-  //         phone: "123-456-7890",
-  //         role: "Admin",
-  //         profileImage: "/images/p4.jpg",
-  //       },
-  //       {
-  //         id: 2,
-  //         name: "Jane Smith",
-  //         email: "jane.smith@example.com",
-  //         phone: "098-765-4321",
-  //         role: "User",
-  //         profileImage: "/images/p2.jpg",
-  //       },
-  //       {
-  //         id: 3,
-  //         name: "Emily Johnson",
-  //         email: "emily.johnson@example.com",
-  //         phone: "555-123-4567",
-  //         role: "Viewer",
-  //         profileImage: "/images/p3.jpg",
-  //       },
-  //     ];
-  //     setUsers(mockUsers);
-  //   };
-
-  //   fetchUsers();
-  // }, []);
-
-  const handleSelectUser = (userId) => {
-    alert(`User with ID ${userId} selected`);
-  };
-
-  const addUser = () => {
-    setUsers([...users, { name: '', email: '', phone_number: '' }]);
-  };
-
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedUsers = users.map((user, i) =>
-      i === index ? { ...user, [name]: value } : user
-    );
-    setUsers(updatedUsers);
-  };
-
-  const handleUserFormSubmit = async (event) => {
-    event.preventDefault();
-    // try {
-    //   const response = await axios.post('http://localhost:8000/api/users', users);
-    //   console.log(response.data);
-    //   // Handle successful response
-    // } catch (error) {
-    //   console.error('There was an error submitting the form!', error);
-    //   // Handle error response
-    // }
   };
 
   return (
@@ -233,8 +172,6 @@ export default function EditWebsite() {
             <Logout />
           </div>
         </header>
-        <div className="mb-0 pl-3  text-[1.7rem] text-gray-900 font-bold">Edit website </div>
-        <div className="mb-8 pl-3 text-[1.2rem] text-gray-600 ">Edit you're website, to watch list. </div>
 
         <div className="flex justify-center items-center">
           <div className="w-full max-w-[60%] bg-white rounded-lg shadow-lg p-6">
@@ -261,7 +198,7 @@ export default function EditWebsite() {
                   value={formData.title}
                   onChange={handleChange}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-[1.5] focus:outline-none focus:shadow-outline 
-                    ${errors.websiteName ? "border-red-500 focus:ring-2 focus:ring-red-400" : "border border-gray-300 focus:ring-2 focus:ring-blue-400"}`}
+                  ${errors.websiteName ? "border-red-500 focus:ring-2 focus:ring-red-400" : "border border-gray-300 focus:ring-2 focus:ring-blue-400"}`}
                   placeholder="Enter website name"
                 />
                 {errors.websiteName && (
