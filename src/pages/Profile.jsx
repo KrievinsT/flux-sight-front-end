@@ -75,9 +75,9 @@ export default function Profile() {
       checked: true,
     },
   ]);
-  
+
   const updateNotificationState = useRef(null);
-  
+
 
   const validateForm = () => {
     const sanitizedUser = DOMPurify.sanitize(userData.user.trim());
@@ -369,19 +369,47 @@ export default function Profile() {
     }
   }, [alert]);
 
-  return (
-    <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
-      {/* Sidebar */}
+  const [navbarFixed, setNavbarFixed] = useState(() => {
+    return JSON.parse(localStorage.getItem('navbarFixed')) || false;
+  });
 
-      <SidebarModal />
+  const [darkMode, setDarkMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("darkMode")) || false;
+  });
+
+
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode
+      ? "rgb(23,23,23)"
+      : "rgb(243,244,246)";
+  }, [darkMode]);
+
+  useEffect(() => {
+    const storedNavbarFixed = JSON.parse(localStorage.getItem('navbarFixed'));
+    setNavbarFixed(storedNavbarFixed);  // Sync with localStorage on component load
+    const storedDarkMode = JSON.parse(localStorage.getItem('darkMode'));
+    setDarkMode(storedDarkMode);
+  }, []);
+
+  return (
+    <div className="min-h-screen ml-[15rem] flex p-2">
+      <SidebarModal darkMode={darkMode} />
 
       {/* Main content */}
-      <div className="flex-1 pl-6 pr-4 overflow-y-auto">
-        <header className="flex items-center justify-between mb-8">
-          <div className=" pl-3 flex items-center text-[16px] font-small text-gray-600">
+      <div className={`flex-1 pl-4 pr-2 overflow-y-auto ${navbarFixed ? "mt-[5.7%]" : ""}`}>
+        <header
+          className={`flex items-center justify-between mb-8  ${navbarFixed
+            ? `fixed top-0 ml-[15rem] rounded-lg p-2 left-4 right-0 z-50 shadow-md ${darkMode
+              ? "bg-gradient-to-br from-[#323a54] to-[#1a2035]"
+              : "bg-white text-black"
+            }`
+            : ""
+            }`}
+        >
+          <div className={`pl-3 flex items-center text-[16px] font-small ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
             Pages /
             <Link to="/profile">
-              <h1 className="text-[16px] cursor-pointer font-small text-black ml-1" >Profile</h1>
+              <h1 className={`text-[16px] cursor-pointer font-small ml-1 ${darkMode ? "text-[#fff]" : "text-black"}`} >Profile</h1>
             </Link>
           </div>
 
@@ -400,17 +428,23 @@ export default function Profile() {
             </button>
 
             <IoSettingsOutline
-              className="w-5 h-5 cursor-pointer text-gray-600"
+              className={`w-5 h-5 cursor-pointer ${darkMode ? "text-gray-300 hover:text-[#fff]" : " text-gray-600 hover:text-gray-800"}`}
               onClick={() => setIsSettingsOpen(true)}
             />
-
             <SettingsBar
               isOpen={isSettingsOpen}
               onClose={() => setIsSettingsOpen(false)}
+              setNavbarFixed={setNavbarFixed}
+              navbarFixed={navbarFixed}
+              setDarkMode={setDarkMode}
+              darkMode={darkMode}
             />
-            <NotificationDropdown />
+            <NotificationDropdown
+              darkMode={darkMode}
+            />
 
-            <Logout />
+            <Logout darkMode={darkMode} />
+
           </div>
         </header>
 
@@ -426,7 +460,10 @@ export default function Profile() {
             }}
           ></div>
 
-          <div className="w-full max-w-[98%]  bg-white overflow-hidden rounded-lg shadow-lg p-6 -mt-[80px]" >
+          <div className={`w-full max-w-[98%] overflow-hidden rounded-lg p-6 -mt-[80px] ${darkMode
+            ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+            : "bg-white border-1 border-gray-200 border-opacity-100 shadow-lg"
+            }`}>
 
             <div className="flex justify-between items-center">
               {/* Left Section */}
@@ -437,41 +474,56 @@ export default function Profile() {
                   className="w-16 h-16 rounded-lg"
                 />
                 <div className="flex flex-col pl-6">
-                  <div className="text-2xl font-bold">
+                  <div className={`text-2xl font-bold ${darkMode ? "text-[#fff]" : ""}`}>
                     {userData.user || "Guest User"}
                   </div>
-                  <div className=" text-gray-500">
+                  <div className={`${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                     {userData.username ? `${userData.username}` : "No username available"}
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <div className="flex bg-gray-100 p-2 rounded-lg">
-                  <button
-                    onClick={() => {
-                      setActiveTab("App");
-                      setEditMode(false);
-                    }}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "App"
-                      ? "bg-white shadow-md scale-105"
-                      : "text-gray-500 scale-100"
-                      } focus:outline-none`}
-                  >
-                    <AiOutlineHome className="h-5 w-5" />
-                    <span className="ml-1">App</span>
-                  </button>
+                <div className={`flex p-2 rounded-lg ${darkMode
+                  ? "bg-gradient-to-br from-[#323a54] to-[#1a2035]"
+                  : "bg-gray-100"
+                  }`}>
+                 <button
+                      onClick={() => {
+                        setActiveTab("App");
+                        setEditMode(false);
+                      }}
+                      className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "App"
+                        ? `bg-white shadow-md scale-105 ${darkMode ? "text-black" : "text-gray-800"}`
+                        : `${darkMode ? "text-[#fff]" : "text-gray-500"} scale-100`
+                        } focus:outline-none`}
+                    >
+                      <AiOutlineHome
+                        className={`h-5 w-5 ${activeTab === "App" && darkMode ? "text-black" : darkMode ? "text-[#fff]" : ""}`}
+                      />
+                      <span
+                        className={`ml-1 ${activeTab === "App" && darkMode ? "text-black" : darkMode ? "text-[#fff]" : ""}`}
+                      >
+                        App
+                      </span>
+                    </button>
 
-                  <button
-                    onClick={handleSettingsClick}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "Settings"
-                      ? "bg-white shadow-md scale-105"
-                      : "text-gray-500 scale-100"
-                      } focus:outline-none`}
-                  >
-                    <LuSettings className="h-5 w-5" />
-                    <span className="ml-1">Settings</span>
-                  </button>
+                    <button
+                      onClick={handleSettingsClick}
+                      className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-transform duration-300 ease-in-out ${activeTab === "Settings"
+                        ? `bg-white shadow-md scale-105 ${darkMode ? "text-black" : "text-gray-800"}`
+                        : `${darkMode ? "text-[#fff]" : "text-gray-500"} scale-100`
+                        } focus:outline-none`}
+                    >
+                      <LuSettings
+                        className={`h-5 w-5 ${activeTab === "Settings" && darkMode ? "text-black" : darkMode ? "text-[#fff]" : ""}`}
+                      />
+                      <span
+                        className={`ml-1 ${activeTab === "Settings" && darkMode ? "text-black" : darkMode ? "text-[#fff]" : ""}`}
+                      >
+                        Settings
+                      </span>
+                    </button>
                 </div>
 
                 <div className="relative w-full overflow-hidden mt-4">
@@ -498,13 +550,16 @@ export default function Profile() {
 
             <div className="flex space-x-6 pt-6">
               {/* Platform Settings */}
-              <div className="w-full xl:w-1/3 bg-white rounded-lg">
+              <div className={`w-full xl:w-1/3 rounded-lg ${darkMode
+                ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+                : "bg-white border-1 border-gray-200 border-opacity-100 shadow-lg"
+                }`}>
                 <div className="p-2">
-                  <h6 className="text-lg font-medium">Platform Settings</h6>
+                  <h6 className={`text-lg font-medium ${darkMode ? "text-[#fff]" : ""}`}>Platform Settings</h6>
                 </div>
                 <div className="p-3">
                   {/* Account Section */}
-                  <h6 className="uppercase text-gray-500 text-xs font-bold mb-4">
+                  <h6 className={`uppercase  text-xs font-bold mb-4 ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                     Account
                   </h6>
                   <ul className="space-y-6">
@@ -531,7 +586,7 @@ export default function Profile() {
                                 className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""}`}
                               />
                             </div>
-                            <span className="ml-3 text-sm text-gray-700 font-medium">
+                            <span className={`ml-3 text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-700"}`}>
                               {setting.label}
                             </span>
                           </label>
@@ -540,7 +595,7 @@ export default function Profile() {
                   </ul>
 
                   {/* Application Section */}
-                  <h6 className="uppercase text-gray-500 text-xs font-bold mt-6 mb-4">
+                  <h6 className={`uppercase text-xs font-bold mt-6 mb-4 ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                     Application
                   </h6>
                   <ul className="space-y-6">
@@ -567,7 +622,7 @@ export default function Profile() {
                                 className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${setting.checked ? "transform translate-x-5" : ""}`}
                               />
                             </div>
-                            <span className="ml-3 text-sm text-gray-700 font-medium">
+                            <span className={`ml-3 text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-700"}`}>
                               {setting.label}
                             </span>
                           </label>
@@ -578,9 +633,12 @@ export default function Profile() {
               </div>
 
               {/* Profile Information */}
-              <div className="w-full xl:w-1/3 bg-white rounded-lg">
+              <div className={`w-full xl:w-1/3 rounded-lg ${darkMode
+                ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+                : "bg-white border-1 border-gray-200 border-opacity-100 shadow-lg"
+                }`}>
                 <div className="p-2 flex justify-between items-center">
-                  <h6 className="text-lg font-medium">Profile Information</h6>
+                  <h6 className={`text-lg font-medium ${darkMode ? "text-[#fff]" : ""}`}>Profile Information</h6>
                   {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                   <button
                     className="text-gray-500 hover:text-gray-700"
@@ -594,7 +652,7 @@ export default function Profile() {
                   {alert.message && <ShowAlerts type={alert.type} message={alert.message} />}
                   <ul className="space-y-3">
                     <li className="flex items-center">
-                      <strong className="text-gray-900 font-medium w-1/3 ">Full Name:</strong>
+                      <strong className={`font-medium w-1/3 ${darkMode ? "text-[#fff]" : "text-gray-900"}`}>Full Name:</strong>
                       {editMode ? (
                         <input
                           type="text"
@@ -610,14 +668,17 @@ export default function Profile() {
                           }}
                           className="w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
                               focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
-                              transition-all duration-200"
+                              transition-all duration-200 "
                         />
                       ) : (
-                        ` ${userData.user}`
+                        <span
+                          className={`${darkMode ? "text-gray-300" : "text-gray-900"}`}>
+                          {userData.user}
+                        </span>
                       )}
                     </li>
                     <li className="flex items-center">
-                      <strong className="text-gray-900 font-medium w-1/3">Username:</strong>
+                      <strong className={`font-medium w-1/3 ${darkMode ? "text-[#fff]" : "text-gray-900"}`}>Username:</strong>
                       {editMode ? (
                         <input
                           type="text"
@@ -636,17 +697,20 @@ export default function Profile() {
                               transition-all duration-200"
                         />
                       ) : (
-                        ` ${userData.username}`
+                        <span
+                          className={`${darkMode ? "text-gray-300" : "text-gray-900"}`}>
+                          {userData.username}
+                        </span>
                       )}
                     </li>
                     <li className="flex items-center ">
-                      <strong className="text-gray-900 font-medium w-1/3">Mobile:</strong>
+                      <strong className={`font-medium w-1/3 ${darkMode ? "text-[#fff]" : "text-gray-900"}`}>Mobile:</strong>
                       {editMode ? (
                         <div className="flex w-full items-center gap-3">
                           {/* Dropdown for Country Code */}
                           <div className="relative w-[70%] ">
                             <button
-                              className="flex items-center justify-between w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
+                              className="flex items-center bg-white justify-between w-full ml-2 p-1 pl-3 border-2 border-gray-300 rounded-lg focus:outline-none 
               focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
               transition-all duration-200 "
                               onClick={(e) => {
@@ -713,11 +777,14 @@ export default function Profile() {
                           />
                         </div>
                       ) : (
-                        `${userData.phone}`
+                        <span
+                          className={`${darkMode ? "text-gray-300" : "text-gray-900"}`}>
+                          {userData.phone}
+                        </span>
                       )}
                     </li>
                     <li className="flex items-center">
-                      <strong className="text-gray-900 font-medium w-1/3">Email:</strong>
+                      <strong className={`font-medium w-1/3 ${darkMode ? "text-[#fff]" : "text-gray-900"}`}>Email:</strong>
                       {editMode ? (
                         <input
                           type="email"
@@ -746,7 +813,7 @@ export default function Profile() {
                         className="text-white mt-3 shadow-lg shadow-black bg-gradient-to-r from-cyan-500 to-blue-500
                         hover:bg-gradient-to-bl hover:shadow-xl hover:shadow-black
                         focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 
-                        font-medium rounded-lg text-md px-4 py-2.5 text-center me-2 mb-2 
+                        font-medium rounded-lg text-md px-3 py-2 text-center me-2  
                         transition-all duration-200"
                         onClick={handleSaveClick}
                       >

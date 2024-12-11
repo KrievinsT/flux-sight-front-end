@@ -80,6 +80,8 @@ export default function EditTable() {
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
+  
+
   return (
     <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
       <SidebarModal />
@@ -143,7 +145,7 @@ export default function EditTable() {
                 backgroundImage: "linear-gradient(195deg, #42424a, #191919)",
               }}
             >
-              <h2 className="text-2xl font-bold tracking-wide text-gray-100">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-wide text-gray-100">
                 Edit Role
               </h2>
             </div>

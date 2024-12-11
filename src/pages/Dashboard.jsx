@@ -165,7 +165,6 @@ export default function Dashboard() {
 
   const fetchWebs = async () => {
     try {
-
       const username = sessionStorage.getItem("username");
 
       if (!username) {
@@ -186,6 +185,22 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error fetching webs:", error.message);
     }
+  };
+
+  const calculateProgress = (loadTime) => {
+    if (isNaN(loadTime) || loadTime < 0) return 0;
+  
+    // Mapping page speed to progress percentage
+    if (loadTime <= 1) return 100;  
+    if (loadTime <= 2) return 90;  
+    if (loadTime <= 3) return 80; 
+    if (loadTime <= 4) return 70;   
+    if (loadTime <= 5) return 60;   
+    if (loadTime <= 6) return 50;   
+    if (loadTime <= 7) return 40;   
+    if (loadTime <= 8) return 30;   
+    if (loadTime <= 9) return 20;   
+    return 10;  // For > 9 seconds
   };
 
   const handleEdit = (element) => {
@@ -261,14 +276,22 @@ export default function Dashboard() {
       {/* Main content */}
       <div className={`flex-1 pl-4 pr-2 overflow-y-auto ${navbarFixed ? "mt-[5.7%]" : ""}`}>
 
-        <header
-          className={`flex items-center justify-between mb-8 ${navbarFixed ? "fixed top-0 ml-[15rem] rounded-lg p-2 left-4 right-0 z-50 bg-white shadow-md" : ""
-            }`}
+      <header
+          className={`flex items-center justify-between mb-8  ${
+            navbarFixed
+              ? `fixed top-0 ml-[15rem] rounded-lg p-2 left-4 right-0 z-50 shadow-md ${
+                  darkMode
+                    ? "bg-gradient-to-br from-[#323a54] to-[#1a2035]"
+                    : "bg-white text-black"
+                }`
+              : ""
+          }`}
         >
           <div className={`pl-3 flex items-center text-[16px] font-small ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
             Pages /
             <Link to="/dashboard">
-              <h1 className={`text-[16px] cursor-pointer font-small ml-1 ${darkMode ? "text-[#fff]" : "text-black"}`} >Dashboard</h1>
+              <h1 className={`text-[16px] cursor-pointer font-small ml-1 ${darkMode 
+                ? "text-[#fff]" : "text-black"}`} >Dashboard</h1>
             </Link>
           </div>
 
@@ -310,10 +333,10 @@ export default function Dashboard() {
             <SettingsBar
               isOpen={isSettingsOpen}
               onClose={() => setIsSettingsOpen(false)}
-              setNavbarFixed={setNavbarFixed} // Pass setNavbarFixed
-              navbarFixed={navbarFixed} // Pass navbarFixed state
-              setDarkMode={setDarkMode} // Pass setDarkMode
-              darkMode={darkMode} // Pass darkMode state
+              setNavbarFixed={setNavbarFixed} 
+              navbarFixed={navbarFixed} 
+              setDarkMode={setDarkMode} 
+              darkMode={darkMode} 
             />
 
 
@@ -487,7 +510,7 @@ export default function Dashboard() {
                     : "bg-gray-100"
                     }`}>
                     <tr className={`text-xs font-bold uppercase  ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
-                      <th className="py-2 pl-5">Title</th>
+                      <th className="py-2 text-end ">Title</th>
                       <th className="py-2 text-center w-1/4">URL</th>
                       <th className="py-2 text-center w-1/6">SEO</th>
                       <th className="py-2 text-center w-1/6">Page Speed</th>
@@ -497,114 +520,116 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {webs.length > 0 ? (
-                      webs.map((web, index) => (
-                        <tr className={` ${darkMode ? "bg-[#1D1D1D]" : "bg-white"}`} key={index}>
-                          <td className="px-4 py-3 border-b border-gray-300">
-                            <div className="flex items-center">
-                              <img
-                                src={`https://www.google.com/s2/favicons?sz=64&domain_url=${web.url}`}
-                                alt={`${web.title} favicon`}
-                                onError={(e) => (e.target.src = "/default-icon.png")}
-                                className="w-8 h-8 mr-5 rounded-lg"
-                              />
-                              <div>
-                                <h6 className={`text-sm font-semibold ${darkMode ? "text-[#fff]" : "text-gray-800"}`}>
-                                  {web.title}
-                                </h6>
-                              </div>
-                            </div>
-                          </td>
-                          <td className={`text-center px-4 py-3 border-b border-gray-300 ${darkMode ? "text-[#fff]" : "text-gray-800"}`}>
-                            <a href={web.url} target="_blank" rel="noopener noreferrer">
-                              {shortenUrl(web.url)}
-                            </a>
-                          </td>
-                          <td className="text-center px-4 py-3 border-b border-gray-300">
-                            <div className="relative w-[6rem] h-[3.5rem] mx-auto">
-                              <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
-                                <path
-                                  d="M2 30 A30 30 0 0 1 62 30"
-                                  fill="none"
-                                  stroke="#e5e5e5"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  d="M2 30 A30 30 0 0 1 62 30"
-                                  fill="none"
-                                  stroke="#3b82f6"
-                                  strokeWidth="4"
-                                  strokeDasharray={`${web.seo * 1.88}, 188`}
-                                />
-                              </svg>
-                              <span className="absolute inset-0 flex items-end justify-center text-xs font-bold text-green-600 pb-2">
-                                Coming soon!
-                              </span>
-                            </div>
-                          </td>
-                          <td className="text-center px-4 py-3 border-b border-gray-300">
-                            <div className="relative w-[6rem] h-[3.5rem] mx-auto">
-                              <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
-                                <path
-                                  d="M2 30 A30 30 0 0 1 62 30"
-                                  fill="none"
-                                  stroke="#e5e5e5"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  d="M2 30 A30 30 0 0 1 62 30"
-                                  fill="none"
-                                  stroke="#10b981"
-                                  strokeWidth="4"
-                                  strokeDasharray={`${web.page_speed * 1.88}, 188`}
-                                />
-                              </svg>
-                              <span className={`absolute inset-0 flex items-end justify-center text-xs font-bold pb-2
-                                ${darkMode ? "text-[#fff]" : "text-gray-800"}`}>
-                                {web.data.desktop["bootup-time"].displayValue}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="text-center px-4 py-3 border-b border-gray-300">
-                            <span
-                              className={`px-2 py-1 rounded-md text-white font-semibold transition-all duration-300 ease-in-out ${web.is_active === 1 ? "bg-green-500" : "bg-red-500"}`}>
-                              {web.is_active === 1 ? "active" : "down"}
-                            </span>
-                          </td>
-                          <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
-                            <div className="mt-2 flex justify-center space-x-2">
-                              <button
-                                onClick={() => handleEdit(web)}
-                                className="text-blue-500 hover:text-blue-700"
-                                aria-label="Edit"
-                              >
-                                <FaEdit className="w-5 h-5" />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(web.id)}
-                                className="text-red-500 hover:text-red-700"
-                                aria-label="Delete"
-                              >
-                                <FaTrashAlt className="w-5 h-5" />
-                              </button>
-                            </div>
-                          </td>
-                          <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
-                            <div className="mt-2 flex justify-center">
-                              <button className="border-1 border-blue-600 text-blue-600 p-[0.5rem] text-[14px] whitespace-nowrap font-small rounded-md">
-                                Check Insights
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="8" className="text-center py-4 text-gray-500">
-                          No entries found.
-                        </td>
-                      </tr>
-                    )}
+                  {webs.length > 0 ? (
+        webs.map((web, index) => (
+          <tr className={`${darkMode ? "bg-[#1D1D1D]" : "bg-white"}`} key={index}>
+            <td className="px-4 py-3 border-b border-gray-300">
+              <div className="flex items-center">
+                <img
+                  src={`https://www.google.com/s2/favicons?sz=64&domain_url=${web.url}`}
+                  alt={`${web.title} favicon`}
+                  onError={(e) => (e.target.src = "/default-icon.png")}
+                  className="w-8 h-8 mr-5 rounded-lg"
+                />
+                <div>
+                  <h6 className={`text-sm font-semibold ${darkMode ? "text-[#fff]" : "text-gray-800"}`}>
+                    {web.title}
+                  </h6>
+                </div>
+              </div>
+            </td>
+            <td className={`text-center px-4 py-3 border-b border-gray-300 ${darkMode ? "text-[#fff]" : "text-gray-800"}`}>
+              <a href={web.url} target="_blank" rel="noopener noreferrer">
+                {shortenUrl(web.url)}
+              </a>
+            </td>
+            <td className="text-center px-4 py-3 border-b border-gray-300">
+              <div className="relative w-[6rem] h-[3.5rem] mx-auto">
+                <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
+                  <path
+                    d="M2 30 A30 30 0 0 1 62 30"
+                    fill="none"
+                    stroke="#e5e5e5"
+                    strokeWidth="4"
+                  />
+                  <path
+                    d="M2 30 A30 30 0 0 1 62 30"
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="4"
+                    strokeDasharray={`${web.seo * 1.88}, 188`}
+                  />
+                </svg>
+                <span className="absolute inset-0 flex items-end justify-center text-xs font-bold text-green-600 pb-2">
+                  Coming soon!
+                </span>
+              </div>
+            </td>
+            <td className="text-center px-4 py-3 border-b border-gray-300">
+              <div className="relative w-[6rem] h-[3.5rem] mx-auto">
+                <svg width="64" height="32" viewBox="0 0 64 32" className="w-full h-full">
+                  <path
+                    d="M2 30 A30 30 0 0 1 62 30"
+                    fill="none"
+                    stroke="#e5e5e5"
+                    strokeWidth="4"
+                  />
+                  <path
+                    d="M2 30 A30 30 0 0 1 62 30"
+                    fill="none"
+                    stroke="#10b981" // Green color for the progress
+                    strokeWidth="4"
+                    strokeDasharray={`${calculateProgress(parseFloat(web.data.desktop["bootup-time"].displayValue)) * 1}`} 
+                  />
+                </svg>
+                <span
+                  className={`absolute inset-0 flex items-end justify-center text-xs font-bold pb-2 ${darkMode ? "text-[#fff]" : "text-gray-800"}`}
+                >
+                  {web.data.desktop["bootup-time"].displayValue} 
+                </span>
+              </div>
+            </td>
+            <td className="text-center px-4 py-3 border-b border-gray-300">
+              <span
+                className={`px-2 py-1 rounded-md text-white font-semibold transition-all duration-300 ease-in-out ${web.is_active === true ? "bg-green-500" : "bg-red-500"}`}
+              >
+                {web.is_active === true ? "active" : "down"}
+              </span>
+            </td>
+            <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+              <div className="mt-2 flex justify-center space-x-2">
+                <button
+                  onClick={() => handleEdit(web)}
+                  className="text-blue-500 hover:text-blue-700"
+                  aria-label="Edit"
+                >
+                  <FaEdit className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => handleDelete(web.id)}
+                  className="text-red-500 hover:text-red-700"
+                  aria-label="Delete"
+                >
+                  <FaTrashAlt className="w-5 h-5" />
+                </button>
+              </div>
+            </td>
+            <td className="text-center px-4 py-3 border-b border-gray-300 text-sm">
+              <div className="mt-2 flex justify-center">
+                <button className="border-1 border-blue-600 text-blue-600 p-[0.5rem] text-[14px] whitespace-nowrap font-small rounded-md">
+                  Check Insights
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="8" className="text-center py-4 text-gray-500">
+            No entries found.
+          </td>
+        </tr>
+      )}
                   </tbody>
                 </table>
               </div>

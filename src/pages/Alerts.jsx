@@ -119,20 +119,54 @@ export default function Alerts () {
     });
   };
 
+  
+  const [navbarFixed, setNavbarFixed] = useState(() => {
+    return JSON.parse(localStorage.getItem('navbarFixed')) || false;
+  });
+
+  const [darkMode, setDarkMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("darkMode")) || false;
+  });
+
+
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode
+      ? "rgb(23,23,23)"
+      : "rgb(243,244,246)";
+  }, [darkMode]);
+
+  useEffect(() => {
+    const storedNavbarFixed = JSON.parse(localStorage.getItem('navbarFixed'));
+    setNavbarFixed(storedNavbarFixed);  // Sync with localStorage on component load
+    const storedDarkMode = JSON.parse(localStorage.getItem('darkMode'));
+    setDarkMode(storedDarkMode);
+  }, []);
+
+
   return (
-    <div className="min-h-screen ml-[15rem] flex bg-gray-100 p-2">
+    <div className="min-h-screen ml-[15rem] flex p-2">
    
-    <SidebarModal />
+   <SidebarModal darkMode={darkMode} />
 
       {/* Main content */}
-      <div className="flex-1 pl-4 pr-2 overflow-y-auto">
-        <header className="flex items-center justify-between mb-8">
-        <div className=" pl-3 flex items-center text-[16px] font-small text-gray-600">
+      <div className={`flex-1 pl-4 pr-2 overflow-y-auto ${navbarFixed ? "mt-[5.7%]" : ""}`}>
+      <header
+          className={`flex items-center justify-between mb-8  ${
+            navbarFixed
+              ? `fixed top-0 ml-[15rem] rounded-lg p-2 left-4 right-0 z-50 shadow-md ${
+                  darkMode
+                    ? "bg-gradient-to-br from-[#323a54] to-[#1a2035]"
+                    : "bg-white text-black"
+                }`
+              : ""
+          }`}
+        >
+        <div className={`pl-3 flex items-center text-[16px] font-small ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
             Pages /
             <Link to="/alerts">
-            <h1 className="text-[16px] cursor-pointer font-small text-black ml-1" >Alerts</h1> 
+              <h1 className={`text-[16px] cursor-pointer font-small ml-1 ${darkMode ? "text-[#fff]" : "text-black"}`} >Alerts</h1>
             </Link>
-        </div>
+          </div>
           
           <div className="flex items-center space-x-4">
          
@@ -149,26 +183,36 @@ export default function Alerts () {
         </button>
             
         <IoSettingsOutline
-          className="w-5 h-5 cursor-pointer text-gray-600"
-          onClick={() => setIsSettingsOpen(true)} 
-        />
-      
-        <SettingsBar
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-        />
+              className={`w-5 h-5 cursor-pointer ${darkMode ? "text-gray-300 hover:text-[#fff]" : " text-gray-600 hover:text-gray-800"}`}
+              onClick={() => setIsSettingsOpen(true)}
+            />
+            <SettingsBar
+              isOpen={isSettingsOpen}
+              onClose={() => setIsSettingsOpen(false)}
+              setNavbarFixed={setNavbarFixed} 
+              navbarFixed={navbarFixed} 
+              setDarkMode={setDarkMode} 
+              darkMode={darkMode} 
+            />
+           <NotificationDropdown
+              darkMode={darkMode}
+            />
 
-                 <NotificationDropdown />
-                
-                 <Logout />
+            <Logout darkMode={darkMode} />
           </div>
         </header>
 
         <div className="container mx-auto md:w-[80%] py-1">
       {/* Alerts Section */}
-      <div className="card mt-2 bg-white shadow-lg rounded-lg">
-      <div className="card-header bg-white px-6 py-4 bg-gray-100">
-        <h5 className="mb-0 text-2xl font-semibold">Status History Alerts</h5>
+      <div className={`card mt-2  rounded-lg ${darkMode
+              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+              : "bg-white border-1 border-gray-200 border-opacity-100 shadow-sm"
+              }`}>
+      <div className={`card-header px-6 py-4 ${darkMode
+              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+              : "bg-white border-1 border-gray-200 border-opacity-100 shadow-sm"
+              }`}>
+        <h5 className={`mb-0 text-2xl font-semibold ${darkMode ? "text-[#fff]" : "text-black"}`}>Status History Alerts</h5>
       </div>
       <div className="card-body px-6 py-4 space-y-4">
         {alertHistory.length === 0 ? (
@@ -250,10 +294,16 @@ export default function Alerts () {
     </div>
 
       {/* Notifications Section */}
-      <div className="card mt-6 bg-white shadow-lg rounded-lg">
-        <div className="card-header bg-white px-6 py-4 bg-gray-100 border-b">
-          <h5 className="mb-0 text-2xl font-semibold">Notifications</h5>
-          <p className="text-sm">
+      <div className={`card mt-6 rounded-lg ${darkMode
+              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+              : "bg-white border-1 border-gray-200 border-opacity-100 shadow-lg"
+              }`}>
+        <div className={`card-header px-6 py-4 border-b ${darkMode
+              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+              : "bg-white border-1 border-gray-200 border-opacity-100 shadow-sm"
+              }`}>
+          <h5 className={`mb-0 text-2xl font-semibold ${darkMode ? "text-[#fff]" : "text-black"}`}>Notifications</h5>
+          <p className={`text-sm ${darkMode ? "text-gray-300" : "text-black"}`}>
             Notifications on this page use Toasts. Read more details{" "}
             <a
               href="https://getbootstrap.com/docs/5.0/components/toasts/"

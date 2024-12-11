@@ -9,7 +9,6 @@ const SidebarModal = ({ darkMode }) => {
   const [sidebarType, setSidebarType] = useState("White"); 
   const location = useLocation();
 
-  
   useEffect(() => {
     const updateSidebarType = () => {
       const savedType = localStorage.getItem("sidebarType");
@@ -27,7 +26,6 @@ const SidebarModal = ({ darkMode }) => {
 
     updateSidebarType();
     updateColor();
-
 
     window.addEventListener("storage", () => {
       updateSidebarType(); 
@@ -70,29 +68,28 @@ const SidebarModal = ({ darkMode }) => {
     backgroundColor: sidebarType === "Dark" ? "#1D1D1D" : sidebarType === "Transparent" ? "transparent" : "#fff",
   };
 
+  const hoverStyle = sidebarType === "Dark" ? "hover:bg-gray-700" : "hover:bg-gray-200";
 
   return (
-   
     <aside
-    className={`w-[15rem] rounded-lg  p-4 flex flex-col animate-slideInLeft ${darkMode
-              ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
-              : "border-1 border-gray-200 border-opacity-100 shadow-sm"
-              }`}
-    style={{
-      ...sidebarBackgroundStyle, 
-      position: "fixed",
-      top: "7px",
-      left: "7px",
-      height: "98vh",
-      overflowY: "auto",
-      zIndex: 1000,
-    }}
-  >
+      className={`w-[15rem] rounded-lg p-4 flex flex-col animate-slideInLeft ${darkMode
+        ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md"
+        : "border-1 border-gray-200 border-opacity-100 shadow-sm"
+      }`}
+      style={{
+        ...sidebarBackgroundStyle,
+        position: "fixed",
+        top: "7px",
+        left: "7px",
+        height: "98vh",
+        overflowY: "auto",
+        zIndex: 1000,
+      }}
+    >
       <Link to="/dashboard">
         <div
-          className={`flex items-center justify-between mb-4 ${
-            sidebarType === "Dark" ? "text-white" : ""
-          }`}>
+          className={`flex items-center justify-between mb-4 ${sidebarType === "Dark" ? "text-white" : ""}`}
+        >
           <img
             src="/images/fluxsight.png"
             alt="fluxsight logo"
@@ -109,8 +106,8 @@ const SidebarModal = ({ darkMode }) => {
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer  ${
                 activeButton === "dashboard" || sidebarType === "Dark"
                   ? "text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              } `}
+                  : "text-gray-700"
+              } ${sidebarType === "Dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
               style={activeButton === "dashboard" ? activeButtonStyle : {}}
             >
               <span
@@ -127,8 +124,8 @@ const SidebarModal = ({ darkMode }) => {
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
                 activeButton === "tables" || sidebarType === "Dark"
                   ? "text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              } `}
+                  : "text-gray-700"
+              } ${sidebarType === "Dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
               style={activeButton === "tables" ? activeButtonStyle : {}}
             >
               <span
@@ -145,8 +142,8 @@ const SidebarModal = ({ darkMode }) => {
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
                 activeButton === "notifications" || sidebarType === "Dark"
                   ? "text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
+                  : "text-gray-700"
+              } ${sidebarType === "Dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
               style={activeButton === "notifications" ? activeButtonStyle : {}}
             >
               <span
@@ -159,15 +156,17 @@ const SidebarModal = ({ darkMode }) => {
             </li>
           </Link>
         </ul>
-        <div className={`font-semibold text-[15px] mt-8 pl-6 ${sidebarType === "Dark" ? "text-white" : "text-gray-500" }`}> ACCOUNT PAGES</div>
+        <div className={`font-semibold text-[15px] mt-8 pl-6 ${sidebarType === "Dark" ? "text-white" : "text-gray-500"}`}>
+          ACCOUNT PAGES
+        </div>
         <ul className="space-y-2">
           <Link to="/profile">
             <li
               className={`flex items-center p-2 text-[13.5px] font-medium rounded-md cursor-pointer ${
                 activeButton === "profile" || sidebarType === "Dark"
                   ? "text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
+                  : "text-gray-700"
+              } ${sidebarType === "Dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
               style={activeButton === "profile" ? activeButtonStyle : {}}
             >
               <span

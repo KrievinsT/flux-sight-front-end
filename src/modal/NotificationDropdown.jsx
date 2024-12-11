@@ -75,16 +75,18 @@ const NotificationDropdown = ({ darkMode }) => {
         classNames="fade"
         unmountOnExit
       >
-        <ul className="absolute z-50 right-0 mt-4 w-64 bg-white border border-gray-200 rounded-lg py-3 px-2">
+        <ul className={`absolute z-50 right-0 mt-4 w-64 border border-gray-200 rounded-lg py-3 px-2
+         ${darkMode ? "bg-[#1D1D1D] border-1 border-white border-opacity-50 shadow-md" : "bg-white"}`}>
           {/* Arrow pointing to the icon */}
-          <div className="absolute -top-2 right-2 w-4 h-4 border-t border-l border-gray-200 bg-white transform rotate-45"></div>
+          <div className={`absolute -top-2 right-2 w-4 h-4 transform rotate-45
+          ${darkMode ? "bg-[#1D1D1D] border-t border-l border-white border-opacity-50 shadow-md" : "bg-white border-gray-200 border-t border-l"}`}></div>
 
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <li key={notification.id} className="mb-2">
                 <a
                   href="#"
-                  className="dropdown-item flex items-center p-2 rounded-md hover:bg-gray-100"
+                  className={`dropdown-item flex items-center p-2 rounded-md ${darkMode ? "hover:bg-black" : "hover:bg-gray-100"}`}
                   onClick={(e) => e.preventDefault()}
                 >
                   <div className="flex items-center">
@@ -94,10 +96,11 @@ const NotificationDropdown = ({ darkMode }) => {
                       className="w-10 h-10 rounded-full mr-3"
                     />
                     <div className="flex flex-col">
-                      <h6 className="text-sm font-semibold">
+                      <h6 className={`text-sm font-semibold 
+                      ${darkMode ? "text-[#fff]" : ""}`}>
                         {notification.message}
                       </h6>
-                      <p className="text-xs text-gray-500 flex items-center">
+                      <p className={`text-xs flex items-center ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                         <FaClock className="mr-1" /> {notification.time}
                       </p>
                     </div>
